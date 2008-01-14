@@ -1,0 +1,966 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns='http://www.w3.org/2005/Atom'
+      xmlns:thr='http://purl.org/syndication/thread/1.0'
+      xml:base='http://www.tbray.org/ongoing/ongoing.atom'
+      xml:lang='en-us'>
+ <title>ongoing</title>
+ <id>http://www.tbray.org/ongoing/</id>
+ <link href='./' />
+ <link rel='self' href='' />
+ <link rel='replies'       thr:count='101'       href='/home/tbray.org/www/html/ongoing/comments.atom' />
+ <logo>rsslogo.jpg</logo>
+ <icon>/favicon.ico</icon>
+ <updated>2008-01-13T16:12:16-08:00</updated>
+ <author><name>Tim Bray</name></author>
+ <subtitle>ongoing fragmented essay by Tim Bray</subtitle>
+ <rights>All content written by Tim Bray and photos by Tim Bray Copyright Tim Bray, some rights reserved, see /ongoing/misc/Copyright</rights>
+ <generator uri='/misc/Colophon'>Generated from XML source code using Perl, Expat, Emacs, Mysql, Ruby, Java, and ImageMagick.  Industrial-strength technology, baby.</generator>
+
+<entry xml:base='When/200x/2008/01/12/'>
+ <title>Thousandths of a Dragon</title>
+ <link href='Dragon' />
+ <link rel='replies'        thr:count='2'        type='application/xhtml+xml'        href='Dragon#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/12/Dragon</id>
+ <published>2008-01-12T01:00:00-08:00</published>
+ <updated>2008-01-12T18:56:24-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Arts/Photos' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Arts' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Photos' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>Illustrated in glorious red and gold as appropriate.</div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>Illustrated in glorious red and gold as appropriate.</p>
+<img src="IMGP7440.png" alt="Dragon jigsaw puzzle" />
+<p>Jigsaw puzzles are a family Christmas tradition. Well, to be honest, a
+tradition among the women of the family.  This was assembled by my mother,
+wife, and sister-in-law.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/11/'>
+ <title>Autotools 1, Tim 0</title>
+ <link href='Autotools-Hate' />
+ <link rel='replies'        thr:count='2'        type='application/xhtml+xml'        href='Autotools-Hate#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/11/Autotools-Hate</id>
+ <published>2008-01-11T01:00:00-08:00</published>
+ <updated>2008-01-11T22:15:10-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Coding' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Coding' />
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>I’m going to do some more work on
+<a href="/ongoing/misc/Software#p-5">mod_atom</a>, but I have a problem; it
+doesn’t work on Leopard.  That’s OK, the
+<a href="http://www.tbray.org/ongoing/misc/Software#p-4">Ape</a> blows it up
+repeatably, so should be no biggie.  Hmm, except for
+<a href="http://apr.apache.org/docs/apr/1.2/group___a_p_r___global_mutex.html#g7a5ade1ba8ea6c7a7a61e3e719683cb0">apr_global_mutex_create</a>
+is acting weird, removing the lockfile while failing.  Docs no help... OK,
+let’s look at the code.  Urgh.  Let’s use the debugger to see where it’s
+going.
+Well... that was a day and a half ago.  Since then, been in a
+<a href="http://mail-archives.apache.org/mod_mbox/apr-dev/200801.mbox/%3c7DE7D25E-8BF5-4D36-AB78-BB325270A734@Sun.COM%3e">maze
+of twisty little passages</a>.  I’m beginning to think that Brian McCallister
+has a point in saying
+<a href="http://kasparov.skife.org/blog/src/autotools-are-the-devil.html">Autotools
+are the Devil</a>.  I used to know how to compile C code, sigh.
+<br/><i>[Update]:</i> Hey, check out
+<a href="http://mail-archives.apache.org/mod_mbox/httpd-dev/200801.mbox/browser">the
+follow-ups</a>.  I think this Open Source stuff is going to catch on.<br/>
+<i>[Again]:</i> Hah!
+<a href="http://mail-archives.apache.org/mod_mbox/httpd-dev/200801.mbox/%3c4787EFB3.9000804@force-elite.com%3e">Paul
+Querna’s suggestion</a> not only made the compilation problems go away, the
+original bug vanished too.  You know, that Apache community is first-rate.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/11/'>
+ <title>The Ruby News</title>
+ <link href='Ruby-News' />
+ <link rel='replies'        thr:count='1'        type='application/xhtml+xml'        href='Ruby-News#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/11/Ruby-News</id>
+ <published>2008-01-11T01:00:00-08:00</published>
+ <updated>2008-01-11T16:46:05-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Ruby' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Ruby' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Open Source' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Open Source' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>I keep putting off this Ruby News Survey piece because there keeps being more news, but hey, you have to pull the trigger sometime.</div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>I keep putting off this Ruby News Survey piece because there keeps being
+more news, but hey, you have to pull the trigger sometime.</p>
+<h2 id='p-3'>1.9</h2>
+<p>Check out Tor Norbye’s write-up on 
+<a href="http://blogs.sun.com/tor/entry/ruby_screenshot_of_the_week24">using
+NetBeans to migrate to 1.8</a>.</p>
+<p>Sam Ruby reported at length on
+<a href="http://intertwingly.net/blog/2007/12/31/Porting-REXML-to-Ruby-1-9">Porting REXML to Ruby 1.9</a>
+and, get this, check
+<a href="http://svn.ruby-lang.org/cgi-bin/viewvc.cgi?view=rev&amp;revision=14826">what
+happened</a> to his patch.
+Sam
+<a href="http://intertwingly.net/blog/2008/01/10/Paradise-Regained">hasn’t
+stopped</a>.</p>
+<h2 id='p-1'>Rubinius</h2>
+<p>First of all,
+<a href="http://blog.fallingsnow.net/">it runs IRB</a>; I remember the JRuby
+guys having surprising difficulty there; thus this has to be a real milestone.
+</p>
+<p><a href="http://www.engineyard.com/">Engine Yard</a> is Rubinius World
+Headquarters, and they just
+<a href="http://www.engineyard.com/2008/1/11/engine-yard-benchmark-capital">took
+a butt-load of money</a> from Benchmark Capital.
+Frankly, I’m dubious about the value of most Venture Capital investments in
+the modern Web economy; but if it keeps Rubinius moving along it’s A Good
+Thing.</p>
+<h2 id='p-4'>Rails</h2>
+<p>Shortly after I
+<a href="/ongoing/When/200x/2008/01/03/Prediction-Rails">predicted good times
+for Rails</a>, there was the infamous
+<a href="http://www.zedshaw.com/rants/rails_is_a_ghetto.html">Zed rant</a>
+which is worth reading, not for the morsels of truth possibly burrowed in the
+billows of bile, but for the flame itself, which is monumental in its scope
+and ambition.  Sample: “Jesus fucking christ on a goddamned pike you absolute
+mother fucking donkey dick sucking morons get a fucking grip!”
+The production is so obviously staged that it’s hard to get mad at its
+infantile drama-queen rhetoric; but I’ll make an exception for Zed’s dissing
+the people coming over to Rails from PHP; it’s a <em>good</em> thing if people
+who haven’t spent years on the theory can still build decent Web sites.</p>
+<p>For the kinder, gentler, Zed, read Joe Gregorio’s
+<a href="http://bitworking.org/news/282/Tim-Bray-on-Ruby-on-Rails">Tim Bray on
+Ruby on Rails</a>, which sees Rails as being in decline (but read Joe’s
+commenters too).
+I find that really hard to believe, since more or less everything Web-related
+is growing, it’s the relative speeds that matter; but the January
+<a href="http://www.tiobe.com/tpci.htm">Tiobe Index</a> is interesting.
+Python, you know, not much hype but lots of real work getting done.</p>
+<h2 id='p-2'>Frameworks</h2>
+<p>You know, it’s not all Rails any more.  Camping, Merb, and hey, here’s the
+pretty nice looking
+<a href="http://ramaze.net/">Ramaze</a> which thoughtfully includes a list of
+<a href="http://ramaze.net/#other-frameworks">other Ruby Web frameworks</a>.
+I call that damn sporting.</p>
+<h2 id='p-5'>Performance Picture</h2>
+<p>Check out the second graphic in Dion Hinchcliffe’s
+<a href="http://hinchcliffe.org/archive/2008/01/10/16613.aspx">Creating Open
+Web APIs: Exploring REST and WOA in Rails 2.0</a>.  Dion deploys a few too
+many words and pictures for my taste, but the graphic entitled “21st Century
+Web Development” is thought-provoking.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/10/'>
+ <title>Ape News</title>
+ <link href='Ape-News' />
+ <link rel='replies'        thr:count='0'        type='application/xhtml+xml'        href='Ape-News#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/10/Ape-News</id>
+ <published>2008-01-10T01:00:00-08:00</published>
+ <updated>2008-01-10T16:37:34-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Atom' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Atom' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Syndication' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Syndication' />
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>There’s been some New-year 
+<a href="http://www.tbray.org/ongoing/misc/Software#p-4">Ape</a> tinkering.
+A few bug-fixes from me and 
+<a href="http://www.thinkincode.net/">David Calavera</a>, and also I finally
+rolled in <a href="http://bitworking.org/projects/tmp/ape.patch">Joe Gregorio’s
+patch</a> to make it work with Google’s semi-proprietary authent voodoo.
+Last and best, we have a new committer,
+<a href="http://atonie.org/">Simon Rozet</a>, whose first patch was a Mongrel
+adapter, so you can type <code>ruby go-mongrel.rb</code> and there’s your Ape
+on port 4000.  Simon will probably have checked that in by the time you read
+this.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/09/'>
+ <title>NetNewsWire &#x26; NewsGator go Free</title>
+ <link href='NetNewsWire-NewsGator' />
+ <link rel='replies'        thr:count='7'        type='application/xhtml+xml'        href='NetNewsWire-NewsGator#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/09/NetNewsWire-NewsGator</id>
+ <published>2008-01-09T01:00:00-08:00</published>
+ <updated>2008-01-09T14:22:05-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Business/Open Source' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Business' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Open Source' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Web' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>There&#x2019;s a boring press release; and interesting write-ups from <a href='http://www.rassoc.com/gregr/weblog/2008/01/09/newsgators-rss-clients-are-now-free/'>Greg Reinacker</a> and <a href='http://inessential.com/?comments=1&amp;postid=3461'>Brent Simmons</a>. (Oh, and why is it we need press releases any more?) This is interesting on a bunch of grounds.</div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>There’s a boring press release; and interesting write-ups from
+<a href="http://www.rassoc.com/gregr/weblog/2008/01/09/newsgators-rss-clients-are-now-free/">Greg
+Reinacker</a> and
+<a href="http://inessential.com/?comments=1&amp;postid=3461">Brent Simmons</a>.
+(Oh, and why is it we need press releases any more?)
+This is interesting on a bunch of grounds.</p>
+<h2 id='p-1'>Why a Newsreading Client?</h2>
+<p>There are those, hardwired to Google Reader or some such, who genuinely
+don’t understand why someone would use client software at all.  Google Reader
+is just fine, but I still haven’t seen anything that gets me the news anywhere
+near as fast or as flexibly as NetNewsWire.  Well, and it makes offline catch-up
+very easy, but mostly it’s just about the speed.  If you’ve got a job where
+you need to soak up a big news-flow without wasting much time, and you’re on a
+Mac, you really ought to give NNW a try.</p>
+<h2 id='p-2'>Business Model</h2>
+<p>Why would you give away popular 
+software?
+Quoting Greg Reinacker: “What we’re working to do is to saturate the market
+with our clients.”  Which makes excellent sense; because they’re really in the
+server/service business.</p>
+<p>Plus, they think they can do something interesting with attention data.
+Not the first time I’ve heard that, and it’s sure plausible, although I’m not
+sure anyone’s actually making much hay with it just yet.</p>
+<p>But hey, thanks guys.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/09/'>
+ <title>NeoOffice</title>
+ <link href='NeoOffice' />
+ <link rel='replies'        thr:count='1'        type='application/xhtml+xml'        href='NeoOffice#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/09/NeoOffice</id>
+ <published>2008-01-09T01:00:00-08:00</published>
+ <updated>2008-01-09T13:26:35-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Open Source' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Open Source' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Business/Open Source' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Business' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Mac OS X' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Mac OS X' />
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>I just made my annual donation to
+<a href="http://www.neooffice.org/">NeoOffice</a>.  If you want to deal with
+MS Office and OpenOffice.org and ODF documents on the Mac and you don’t want
+to buy any overpriced opaque binaries, it’s your best bet.  The
+new news
+is that that the latest NeoOffice (2.2.2) startup is irritatingly slow on my
+2GHz MacBook.  Which, you see, is <em>good</em> news, because previous
+combinations of older NeoOffices and older Macs started up painfully,
+agonizingly, slow.  For those of us who live on the Web, at this point in
+history it’s hard to feel much love for office-doc processing software; but of
+its kind, Neo is really not bad.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/08/'>
+ <title>Upcoming Gig: Austin Summit</title>
+ <link href='Avenue-A-Razorfish' />
+ <link rel='replies'        thr:count='0'        type='application/xhtml+xml'        href='Avenue-A-Razorfish#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/08/Avenue-A-Razorfish</id>
+ <published>2008-01-08T01:00:00-08:00</published>
+ <updated>2008-01-08T23:54:37-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World/Events' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Events' />
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>To be more precise, that’d be the
+<a href="http://www.facebook.com/event.php?eid=7188466571">Avenue A |
+Razorfish Technology Summit</a> on January 25th.  It must be hip because, wow,
+it’s listed on Facebook.  Oh no, that was 2007; it must be lame, because it’s
+listed on, you know, <em>Facebook</em>.  It’s free (if you have a relationship
+with AA|R) 
+and looks pretty interesting.  I’ll talk about Web 2.0 culture and
+technology to an audience that sounds like it’ll be a little more mainstream
+than I’m used to.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/08/'>
+ <title>Uncommon Light</title>
+ <link href='Winter-Light' />
+ <link rel='replies'        thr:count='8'        type='application/xhtml+xml'        href='Winter-Light#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/08/Winter-Light</id>
+ <published>2008-01-08T01:00:00-08:00</published>
+ <updated>2008-01-08T00:23:01-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Arts/Photos' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Arts' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Photos' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World/Places/Vancouver' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Places' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Vancouver' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>Three photos on bright December days; not common in Vancouver, so this is a quality of light you don&#x2019;t often see.</div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>Three photos on bright December days; not common in Vancouver, so this is a
+quality of light you don’t often see.</p>
+<p>The first two are shot near Prior and Main, not the prettiest part of
+town.</p>
+<img src="IMGP7346.png" alt="Poles and wires against Vancouver winter sky" />
+<img src="IMGP7350.png" alt="North along Main Street from Prior Street" />
+<p>This is our city hall, a building I’ve always liked.</p>
+<img src="IMGP7394.png" alt="Vancouver City Hall" />
+<p>Especially the pink neon clock.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/01/'>
+ <title>2008 Prediction 1: RIA vs. AJAX</title>
+ <link href='Predictions' />
+ <link rel='replies'        thr:count='22'        type='application/xhtml+xml'        href='Predictions#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/01/Predictions</id>
+ <published>2008-01-01T01:00:00-08:00</published>
+ <updated>2008-01-05T22:31:48-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Web' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>What happened was, a sudden email from Sun PR went around about fifteen minutes to Christmas saying &#x201c;SYS-CON wants predictions for 2008; right now would be good.&#x201d;  It happened that I was in the middle of doing three months and ten trips&#x2019; worth of expenses, thus bored out of my mind, thus happy to prognosticate.  I gave them <a href='http://java.sys-con.com/read/478303.htm'>five</a>, but, given the urgency, not much more than sound-bites.  I think each of them is worth a little exegesis.</div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>What happened was, a sudden email from Sun PR went around about fifteen
+minutes to Christmas saying “SYS-CON
+wants predictions for 2008; right now would be good.”  It happened that I was in
+the middle of doing three months and ten trips’ worth of expenses, thus bored
+out of my mind, thus happy to prognosticate.  I gave them
+<a href="http://java.sys-con.com/read/478303.htm">five</a>, but, given the
+urgency, not much more than sound-bites.  I think each of them is
+worth a little exegesis.</p>
+<ol>
+<li><p><i>RIA vs. AJAX</i>: below, in this fragment.</p></li>
+<li><p><a href="/ongoing/When/200x/2008/01/02/Prediction-Windows-OS-X-Linux">Windows
+Looks Bad</a>.</p></li>
+<li><p><a href="/ongoing/When/200x/2008/01/03/Prediction-Rails">Rails
+Rules</a>.</p></li>
+<li><p><a href="/ongoing/When/200x/2008/01/04/Predictions-PHP">PHP Problems</a>.</p></li>
+<li><p><a href="/ongoing/When/200x/2008/01/05/Prediction-Social-Networking">Social
+Networking</a>.</p></li>
+</ol>
+<h2 id='p-1'>Prediction</h2>
+<p>The short version:</p>
+<blockquote><p>There's a major struggle going on between “RIAs” (Rich Internet
+Applications) and AJAX, which tries to do everything in the browser using just
+what the browser ships with. RIA frameworks are AIR (“Flash, the Next
+Generation”), Silverlight (“Microsoft wants in”) and JavaFX (“Isn't
+open-source better?”) I'm not brave enough to predict who wins, but I do
+predict that 2008 will be a crucial year; either RIAs enter the mainstream, or
+they start to smell like a red herring left in the sun.</p></blockquote>
+<h2 id='p-2'>Suspicion</h2>
+<p>Ever since we’ve had the Web, we’ve had those who say it’s Not Good Enough.
+I’ve long been among the RIA skeptics, for a couple of reasons.  First, let me
+quote myself, from
+<a href="/ongoing/When/200x/2006/05/19/Continuations-and-GUIs">here</a>:</p>
+<blockquote><p>This notion, that the Web GUI is insufficiently interactive and
+we need something richer, is widely held among developers and almost never
+among actual users of computers, and it’s entirely wrong. I can remember when
+people were forced to use compiled Windows and X11 applications, and most of
+them were extremely bad because it’s really hard to design a good interactive
+UI; when the Web came along, more or less everyone abandoned those UIs in
+favor of the Web, almost instantly and with shrieks of glee. Yes, Web UIs are
+drastically constrained, offer a paucity of controls, and enforce a brutally
+linear control flow; and these are good things. I remember, in the early days,
+people saying “Once you know how to use one Windows app, you know how to use
+them all”. Ha ha ha. But you know what? Once you know how to use a browser,
+you are well on the way to being able to use most Web apps. The best AJAX apps
+are still very Web-like (as in, the Back button always works); but they’re
+faster and more responsive and nicer to look at. The worst AJAX apps are like
+bad Nineties VB.</p></blockquote>
+<p>I stand by my point: the people who want to add UI “richness” to the Web
+are always developers, never users.  Doesn’t mean they’re wrong; after all,
+the users weren’t clamoring for the Web before it arrived, either.</p>
+<p>My other problem is that while I like my Internet applications to be rich,
+I have this old-fashioned notion that “richness” is mostly about 
+compelling words and pictures and sounds and especially, most especially,
+interaction with living people.</p>
+<h2 id='p-3'>On The Other Hand</h2>
+<p>I use Rich Internet Applications all the time.  Mail. iTunes.  In fact all
+rich applications have become Internet applications: I can publish 
+<span class='o'>ongoing</span> fragments with a keystroke in Emacs, and create
+a Web slide-show from Lightroom.</p>
+<p>But that’s not what they mean when they say RIAs; they mean “Whatever lies
+in the direction that Flash is pointing.”  Which puzzles me, because near as I
+can tell, Flash is most useful for watching movies portably (a la YouTube) and
+cool casual games like
+<a href="http://www.harveycartel.org/metanet/n.html">N</a> and
+<a href="http://www.handdrawngames.com/DesktopTD/Game.asp">Desktop Tower
+Defense</a>.</p>
+<h2 id='p-4'>But I Could Be Wrong</h2>
+<p>I’ve always seen it as a big problem that at the end of the day, Flash is
+proprietary.  So is Silverlight (although it’s <em>damn</em> interesting that
+it runs on OS X).  JavaFX tries to remove that problem.  Maybe if we unleash
+the creativity of all the people who just don’t want to be
+<a href="/ongoing/When/200x/2003/07/12/WebsThePlace">sharecroppers</a> on someone else’s
+plantation, we’ll see some RIAs that are actually interesting to business.</p>
+<p>But don’t kid yourself that it’ll be easy.  The browser already offers what
+most people (who aren’t software developers) consider an excellent user
+experience, and AJAX, done well, makes it even better.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/05/'>
+ <title>2008 Prediction 5: Social Networking</title>
+ <link href='Prediction-Social-Networking' />
+ <link rel='replies'        thr:count='1'        type='application/xhtml+xml'        href='Prediction-Social-Networking#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/05/Prediction-Social-Networking</id>
+ <published>2008-01-05T01:00:00-08:00</published>
+ <updated>2008-01-05T22:30:22-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World/Life Online' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Life Online' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Business/Internet' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Business' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Internet' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>This is the fifth of five predictions for 2008, expanded from the short form generated on short notice as  <a href='/ongoing/When/200x/2008/01/01/Predictions'>described here</a>. </div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>This is the fifth of five predictions for 2008, expanded from the short
+form generated on short notice as 
+<a href="/ongoing/When/200x/2008/01/01/Predictions">described here</a>.
+</p>
+<h2 id='p-1'>Prediction</h2>
+<p>The short version:</p>
+<blockquote><p>There will be massive, newsworthy, churn in the
+social-networking space, as Facebook creaks under the strain of its own size
+and growth, and nimbler competitors find chinks in its armor.</p></blockquote>
+<h2 id='p-1'>Told Ya So</h2>
+<p>This one came true within a week of me making it:
+<a href="http://scobleizer.com/2008/01/04/erased/">Scoble got erased</a>.
+Yes, there are multiple sides to that issue.  But it’s a hot issue
+nonetheless; since Facebook and its competitors are trying to become the
+experience of the Internet for a huge number of people, minor disturbances in
+that weather system quickly become major issues.</p>
+<p>Let me crank that prediction up a bit: The Scoble imbroglio will be just
+one of many Social Networking Scare stories this year.</p>
+<p>Hold on a second... there’ve been two already since that one blew up.
+From Toronto, 
+<a href="http://www.cbc.ca/canada/toronto/story/2008/01/04/rengel-facebook.html?ref=rss">serious
+legal-disclosure issues</a> and from Fortinet,
+<a href="http://www.fortiguardcenter.com/advisory/FGA-2007-16.html">insecure
+Facebook apps</a>.</p>
+<h2 id='p-2'>The Lesson Is</h2>
+<p>Leave a gap, as I did, between making your predictions and expanding on
+them. Some of them might already have come true.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/04/'>
+ <title>2008 Prediction 4: PHP Problems</title>
+ <link href='Predictions-PHP' />
+ <link rel='replies'        thr:count='12'        type='application/xhtml+xml'        href='Predictions-PHP#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/04/Predictions-PHP</id>
+ <published>2008-01-04T01:00:00-08:00</published>
+ <updated>2008-01-05T09:16:38-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Web' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>This is the fourth of five predictions for 2008, expanded from the short form generated on short notice as  <a href='/ongoing/When/200x/2008/01/01/Predictions'>described here</a>. </div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>This is the fourth of five predictions for 2008, expanded from the short
+form generated on short notice as 
+<a href="/ongoing/When/200x/2008/01/01/Predictions">described here</a>.
+</p>
+<h2 id='p-1'>Prediction</h2>
+<p>The short version:</p>
+<blockquote><p>PHP will remain popular but its growth will slow, as people get
+nervous about its maintainability and security stories.</p></blockquote>
+<p>Ambivalent, that’s me; I totally have a love/hate relationship with PHP.</p> 
+<h2 id='p-1'>Yes, ...</h2>
+<p>It’s enabled
+huge numbers of people to create decent Web sites without having to learn too
+much or try too hard; a very good thing.  Also, it runs pretty fast.  Plus,
+it’s been used to build some of the most instructive and useful apps out
+there, like MediaWiki and WordPress.</p>
+<p>So I totally think PHP has earned its huge community and thriving ecosystem
+fair and square; good on it.</p>
+<h2 id='p-2'>... and No</h2>
+<p>On the other hand, speaking as an actual computer programmer, I really
+dislike PHP.
+I find it ugly and un-modular and there’s something about it that encourages
+people to write horrible code.  We’re talking serious maintainability pain.</p>
+<p>Also, I observe a certain amount of tension involving the
+community and Zend.  
+Symptoms may be observed, among other places, at
+<a href="http://www.hardened-php.net/">hardened-php.net</a>.
+I was going to drop in a wry comment about the
+elusiveness of “The PHP Group” who own all the copyrights and so on, and just
+now failed to find a pointer to the
+page which lists them (I know it exists, I’ve seen it), so I guess that’s
+self-referentially wry enough. 
+And you have to raise your eyebrows over the course of the transition from
+PHP4 to PHP5.</p>
+<p>Finally, some recent hands-on experience: a big project I’m peripherally
+involved with needed to include an outward-facing Wiki, and I suggested that
+MediaWiki was damn good stuff.  They put in quite a bit of work and failed to
+get MW to integrate with the rest of the system.  Yes, it’s a good wiki, but it
+shouldn’t have been that hard to make it play nice with others, and I got the
+impression that the PHP-ness of it was a big part of the problem.</p>
+<h2 id='p-4'>I Could Be Wrong</h2>
+<p>At the 2006 Zend conference, Andi or Zeev (I forget which) took a question
+about Rails and said “Ruby is appropriate for computer-science-loving people
+who have a puristic attitude.”  Maybe that’s all there is to it.</p>
+<h2 id='p-3'>Under My Sun Hat</h2>
+<p>I think we need to do a much better job of
+supporting PHP natively in Solaris and NetBeans and so on up and down the
+stack.  But at the same time, I can’t honestly encourage people to use it for
+building anything new.</p>
+<p>And I think I’m far from alone in that impression.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/03/'>
+ <title>Django on Jython</title>
+ <link href='Django-on-Jython' />
+ <link rel='replies'        thr:count='0'        type='application/xhtml+xml'        href='Django-on-Jython#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/03/Django-on-Jython</id>
+ <published>2008-01-03T01:00:00-08:00</published>
+ <updated>2008-01-04T12:00:45-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Dynamic Languages' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Dynamic Languages' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Python' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Python' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Java' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Java' />
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>It’s
+<a href="http://zyasoft.com/pythoneering/2008/01/django-on-jython-minding-gap.html">starting
+to happen</a>.  There’s a long way to go between successfully executing a
+bit of Rails and actually making the sucker run usefully, as
+the JRuby guys will tell you.
+But speaking of JRuby, there are some eerie similarities: a language-platform
+project that was promising, then drifting, now revitalized.
+The ecosystem gets more interesting all the time.
+<i>[Update:]</i>
+<a href="http://fwierzbicki.blogspot.com/2008/01/django-beginning-to-work-on-jython.html">Frank
+Wierzbicki reports</a> that Jython is rockin’ &amp; rollin’, it’s not just
+Django. Good stuff!</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/03/'>
+ <title>2008 Prediction 3: Rails Rules</title>
+ <link href='Prediction-Rails' />
+ <link rel='replies'        thr:count='10'        type='application/xhtml+xml'        href='Prediction-Rails#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/03/Prediction-Rails</id>
+ <published>2008-01-03T01:00:00-08:00</published>
+ <updated>2008-01-04T11:02:54-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Ruby' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Ruby' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>This is the third of five predictions for 2008, expanded from the short form generated on short notice as  <a href='/ongoing/When/200x/2008/01/01/Predictions'>described here</a>. </div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>This is the third of five predictions for 2008, expanded from the short
+form generated on short notice as 
+<a href="/ongoing/When/200x/2008/01/01/Predictions">described here</a>.
+</p>
+<h2 id='p-1'>Prediction</h2>
+<p>The short version:</p>
+<blockquote><p>Rails will continue to grow at a dizzying speed, and Ruby will
+in consequence inevitably become one of the top two or three strategic choices
+for software developers. But at the same time, other frameworks and tool-sets
+are learning its lessons, so Rails will get some serious
+competition.</p></blockquote>
+<h2 id='p-2'>I Hear a Very Gentle Sound</h2>
+<p>I don’t know anyone who’s actually doing methodologically respectable
+head-counts of Web developers, so any opinion from anyone is based on anecdotal
+evidence at best.  But these days, based on <em>my</em> anecdotal evidence,
+everything I see and smell, the white-hot
+pace of Rails adoption isn’t slowing down at all.</p>
+<p>Rails drags Ruby along behind it, and good programmers who are exposed to
+Ruby tend to become addicted pretty quickly.</p>
+<p><i>[Hoisted from Comments]</i> Joe Gregorio
+<a href="http://bitworking.org/news/282/Tim-Bray-on-Ruby-on-Rails">argues</a>
+that Rails peaked in mid-2006 and is now declining.  But read his comments,
+too.</p>
+<h2 id='p-3'>Who’s Watching</h2>
+<p>There is one group of technologists who are now 100% familiar with Rails.
+I’m speaking of the developers of competitive Web frameworks, many of whom
+felt somewhat smacked upside the head by Rails’ sudden noisy chomp into their
+market share.</p>
+<p>By and large, they’re not stupid.  They may not have been as quick to
+notice the things that DHH and the other Railsists noticed, but they’ve
+noticed them now, and more or less every other piece of the Web ecosystem has
+something “Rails-like” in hot development or in production.  Some of the names
+to watch are
+<a href="http://www.djangoproject.com/">Django</a> (based on Python), 
+<a href="http://liftweb.net/">lift</a> (based on Scala), and
+<a href="http://grails.codehaus.org/">Grails</a> (based on Groovy).
+But I predict fearlessly that there will be a Real Important Web-framework
+grabbing mindshare a year from now that’s learned Rails’ lessons but ain’t one
+of those.</p>
+<h2 id='p-4'>I Could Be Wrong</h2>
+<p>Maybe the population of developers will wake up, shake their heads, and say
+“Nah, going back to PHP, it’s faster” or “Actually, now I see that Java EE’s
+XML configuration files are da bomb”.</p>
+<p>But I don’t think so.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/04/'>
+ <title>Mountain Chimney</title>
+ <link href='Mountains' />
+ <link rel='replies'        thr:count='1'        type='application/xhtml+xml'        href='Mountains#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/04/Mountains</id>
+ <published>2008-01-04T01:00:00-08:00</published>
+ <updated>2008-01-04T00:40:41-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Arts/Photos' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Arts' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Photos' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World/Places/Vancouver' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Places' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Vancouver' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>A picture of snow-covered mountains from our bedroom window.</div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>A picture of snow-covered mountains from our bedroom window.</p>
+<img src="IMGP7417.png" alt="Vancouver’s North-Shore mountains" />
+<p>The ski-ers are looking happy these days.</p>
+<p>Shot with the 70-210 Tamron telephoto, you can’t actually see this view
+from that window unless you’ve got surgically modified eyes.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/02/'>
+ <title>Social!</title>
+ <link href='Social' />
+ <link rel='replies'        thr:count='0'        type='application/xhtml+xml'        href='Social#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/02/Social</id>
+ <published>2008-01-02T01:00:00-08:00</published>
+ <updated>2008-01-02T22:30:05-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World/Events' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Events' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>Our traditional (well, this is the third in four years) New Year&#x2019;s Day social went off very nicely, thank you.  We had RSVP&#x2019;s from 40 or so adults with at least ten kids.  Things that we kept the same: <a href='http://www.mumm.com/champagnes/?page=nos_champagnes_cordon_rouge'>Cordon Rouge</a>, gazpacho, lentil soup, and coffee cake.  Innovation: hiring a real babysitter to hang out upstairs with the kids.  Emma was great but went home looking frazzled; there are still a few nerf darts on the ceiling.</div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>Our traditional (well, this is the third in four years) New Year’s Day
+social went off very nicely, thank you.  We had RSVP’s from 40 or so adults
+with at least ten kids.  Things that we kept the same:
+<a href="http://www.mumm.com/champagnes/?page=nos_champagnes_cordon_rouge">Cordon Rouge</a>,
+gazpacho, lentil soup, and coffee cake.  Innovation:
+hiring a real babysitter to hang out upstairs with the kids.  Emma was great
+but went home looking frazzled; there are still a few nerf darts on the
+ceiling.</p>
+<p>Here’s a shot of part of our front hall once things were well under way.</p>
+<img src="IMGP7423.png" alt="Assembled shoes and other paraphernalia in the front hall during party" />
+<p>Thanks everyone for coming, and if our invite went astray or you slipped
+our minds, sorry.</p>
+<p>We’re thinking of maybe shifting it to the summer solstice when it’s not so
+dark and cold and awful and the kids can go out in the yard.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/02/'>
+ <title>2008 Prediction 2: Windows Looks Bad</title>
+ <link href='Prediction-Windows-OS-X-Linux' />
+ <link rel='replies'        thr:count='26'        type='application/xhtml+xml'        href='Prediction-Windows-OS-X-Linux#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/02/Prediction-Windows-OS-X-Linux</id>
+ <published>2008-01-02T01:00:00-08:00</published>
+ <updated>2008-01-02T22:11:29-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Business/Microsoft' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Business' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Microsoft' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>This is the second of five predictions for 2008, expanded from the short form generated on short notice as  <a href='/ongoing/When/200x/2008/01/01/Predictions'>described here</a>. </div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>This is the second of five predictions for 2008, expanded from the short
+form generated on short notice as 
+<a href="/ongoing/When/200x/2008/01/01/Predictions">described here</a>.
+</p>
+<h2 id='p-1'>Prediction</h2>
+<p>The short version:</p>
+<blockquote><p>The strain due to the fact that most business desktops are
+locked into the Microsoft platform, at a time when both the Apple and
+GNU/Linux alternatives are qualitatively safer, better, and cheaper to
+operate, will start to become impossible to ignore.</p></blockquote>
+<h2 id='p-2'>Experience</h2>
+<p>Around our house, we have screens connected to Windows XP, OS X, and Ubuntu
+GNU/Linux.
+Ubuntu and OS X are easier to install, less trouble to maintain, and more
+pleasant to use.  If we were tracking the time we spend maintaining these
+things, I’m willing to bet that Windows takes more care &amp; feeding than the
+other two put together.  Down the road we’ll have Windows only for games, I
+think.</p>
+<p>We also provide tech support for our mothers, a local Pilates studio, and
+various random friends, local and remote.  Wherever we can, we’re steering them
+to OS X just because they’ll experience less pain and be more productive.</p>
+<h2 id='p-4'>Pain</h2>
+<p>These days, when you live mostly on OS X &amp; Ubuntu, XP is just
+incredibly irritating.  There’s always something pestering you to update it:
+Adobe, Java, Norton, whatever.  Plus random other whining from the bottom right
+corner of the screen, about unused icons and firewall security and so on.</p>
+<p>As for my family &amp; friends who aren’t pros, and who haven’t been under
+the tutelage of one either, their Windows boxes are mostly smoking, diseased,
+quivering heaps of goo.  Who’s got the time to deal with that shit?</p>
+<h2 id='p-5'>Why I Might Be Wrong</h2>
+<p>I haven’t spent any time with Vista.  Possibly, after a couple of releases,
+it’ll make Windows competitive again.</p>
+<h2 id='p-6'>From the Business Point of View</h2>
+<p>I talk to the individuals and small businesses who are still running Windows,
+and I compare them to those who’ve escaped, and it’s just not close.  Recently
+I was helping Mairin get her system set up—a Mac mini, which BTW is a fabulous
+computer for a small business—and was showing her how to do
+something and she said “But that’s so easy?  Why?” and I said “Well, that’s
+how things work on this system” and she said “Well, why are people still using
+Windows then?”</p>
+<h2 id='p-7'>The Future</h2>
+<p>Microsoft’s continuing extraction of monopoly rents is dependent, near as I
+can tell, on just two things:</p>
+<ol>
+<li><p>MS Office staying good enough that people don’t
+mind paying the fearful Windows tax that goes with it.  Except for, Office
+runs better on OS X than on Windows.</p></li>
+<li><p>The Exchange/Outlook lock-in.  This seems the big one to me.</p></li>
+</ol>
+<h2 id='p-8'>Like I Said</h2>
+<p>This problem is becoming increasingly impossible to ignore.  Especially now
+that nearly everyone has someone in the family with a Mac.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2008/01/01/'>
+ <title>Now That&#x2019;s a Patch</title>
+ <link href='REXML-Patch' />
+ <link rel='replies'        thr:count='1'        type='application/xhtml+xml'        href='REXML-Patch#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2008/01/01/REXML-Patch</id>
+ <published>2008-01-01T01:00:00-08:00</published>
+ <updated>2008-01-01T23:02:45-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Ruby' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Ruby' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/XML' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='XML' />
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>I refer to Sam Ruby’s
+<a href="http://intertwingly.net/blog/2007/12/31/Porting-REXML-to-Ruby-1-9">massive
+patch</a> to make REXML work properly with the latest Ruby.
+I’ve long disliked REXML (see
+<a href="/ongoing/When/200x/2006/08/17/Why-JRuby">here</a> and
+<a href="/ongoing/When/200x/2006/08/22/REXML">here</a>), but it’s here and it
+works.  Only the <em>way</em> it works changed in 1.9, and there were some
+horrible regressions, and it gets patched very slowly.  (I’m actually wondering
+why Ruby needs to have a weird regex-based parser when Expat is plenty good
+enough for Perl and Python, and in fact if you look at
+<code>xmlparser.rb</code>, you can switch parsers, just as Nick Sieger has done for
+JRuby with
+<a href="http://caldersphere.rubyforge.org/jrexml/">JREXML</a>.
+But I digress.) 
+In the short term, we need to see if the REXML maintainers are responsive
+to Sam’s patch.</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2007/12/31/'>
+ <title>What the Pope Can&#x2019;t Do</title>
+ <link href='What-the-Pope-Cant-Do' />
+ <link rel='replies'        thr:count='3'        type='application/xhtml+xml'        href='What-the-Pope-Cant-Do#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2007/12/31/What-the-Pope-Cant-Do</id>
+ <published>2007-12-31T01:00:00-08:00</published>
+ <updated>2007-12-31T22:05:42-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World' />
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>Was listening to an argument and someone said “Gimme a break. Even the Pope
+has to put his pants on one leg at a time!”  And I thought that was incredibly
+lame.  To start with, the Pope wears a dress, everyone knows that.  And this
+afternoon, I was changing my 18-month-old, and once the underneath
+layers had been put back together, held her pants up to her
+feet.  She considered them, then coolly thrust both legs through at once, her
+tiny bare pink toes emerging without a hitch.  And who cares what
+the Pope can’t do, anyhow?</p>
+</div></content></entry>
+
+<entry xml:base='When/200x/2007/12/31/'>
+ <title>Year-End Sweep &#x2014; Tech</title>
+ <link href='Year-Sweep-Tech' />
+ <link rel='replies'        thr:count='6'        type='application/xhtml+xml'        href='Year-Sweep-Tech#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2007/12/31/Year-Sweep-Tech</id>
+ <published>2007-12-31T01:00:00-08:00</published>
+ <updated>2007-12-31T19:52:13-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/XML' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='XML' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Ruby' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Ruby' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Coding' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Coding' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Open Source' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Open Source' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>Over the course of the year, in browser tabs, bookmarks, and <a href='http://del.icio.us/TimBray/write-about'>del.icio.us</a>, I&#x2019;ve built up a huge list of things that I felt I <em>should</em> write about, at least at the time I saw them.  Well, dammit, I&#x2019;m not gonna let 2007 end without at least making a try.  Here goes. Categorized, even.</div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>Over the course of the year, in browser tabs, bookmarks, and
+<a href="http://del.icio.us/TimBray/write-about">del.icio.us</a>, I’ve built
+up a huge list of things that I felt I <em>should</em> write about, at least
+at the time I saw them.  Well,
+dammit, I’m not gonna let 2007 end without at least making a try.  Here
+goes. Categorized, even.</p>
+<h2 id='p-1'>XML</h2>
+<p><a href="http://www.oreillynet.com/xml/blog/2007/12/xml_schemas_needs_profiles.html">Jelliffe
+on the awfulness of XML Schemas</a>.</p>
+<p><a href="http://people.w3.org/~cmsmcq/blog/">CMSMCQ</a> has a klog.
+Which is to say, C. Michael Sperberg-McQueen has a blog that he calls a “klog”
+for reasons described
+<a href="http://people.w3.org/~cmsmcq/blog/?p=3">here</a>.  Michael and I
+wrote
+the XML 1.0 specification; he’s smart and writes well.</p>
+<p>The eleven-act OOXML high opera
+<a href="http://www.ecma-international.org/news/TC45_current_work/New%20proposed%20dispositions%20extend%20progress%20in%20addressing%20all%20National%20Body%20comments.htm">trundles
+on</a>.</p>
+<h2 id='p-2'>Ruby and Rails</h2>
+<p>Ola Bini on 
+<a href="http://ola-bini.blogspot.com/2007/12/jtestr-01-released.html">JtestR</a>;
+code in Java, test in Ruby.  Sounds like a step forward.</p>
+<p>Reg Braithwaite on <a href="http://weblog.raganwald.com/2007/12/why-rubinius-matters-to-rubys-future.html">why
+Ruby needs to be self-extending</a>.  Not the first time this point has been
+made.</p>
+<p>Oh, and
+<a href="http://www.ruby-lang.org/en/news/2007/12/25/ruby-1-9-0-released/">Ruby
+1.9 is out</a>.</p>
+<p>I’ve written before about Rails and ETags and how they’re important and
+Rails probably can’t Solve The Whole Problem, but could do better, and while I
+haven’t gone deep (because I’m not actually running any Rails at the
+moment) it
+seems that Assaf Arkin’s
+<a href="http://blog.labnotes.org/2007/12/14/if_modified-second-round/"><code>if_modified</code>
+probably does do better</a>.  If so, it’s important</p>
+<p>Dave Thomas:
+<a href="http://pragdave.blogs.pragprog.com/pragdave/2007/12/pipelines-using.html">Pipelines Using Fibers in Ruby 1.9</a>.
+Oh my goodness gracious.</p>
+<h2 id='p-3'>Programming</h2>
+<p>A <a href="http://www.artima.com/weblogs/viewpost.jsp?thread=221622">nice
+commencement address</a> by Bruce Eckel.</p>
+<p>You’d think that regular expression processing would be a closed book after
+all these years. 
+<a href="http://swtch.com/~rsc/regexp/regexp1.html">You’d be wrong</a>.</p>
+<p>_why, in 
+<a href="http://hackety.org/2007/12/24/thisHackWasNotProperlyPlanned.html">This Hack Was Not Properly Planned</a>,
+says “You could blame Stallman, but I just don’t think that gives entropy
+enough credit.” and a whole lot of other wise and surprising things too.</p> 
+<h2 id='p-4'>The Web</h2>
+<p>Ka-Ping Yee explains 
+<a href="http://zestyping.livejournal.com/124503.html">Why PHP should never be
+taught</a>. Ouf.  And then follows up with with
+<a href="http://zestyping.livejournal.com/233348.html">Why PHP should never be
+taught, Part II</a>.</p>
+<p>I contributed to the 
+<a href="http://www.w3.org/TR/webarch/">Architecture of the World Wide Web</a>
+document, and mostly I’m proud of that work.  On the other hand, it may be
+true that, as
+<a href="http://www.w3.org/QA/2007/12/version_identifiers_reconsider.html">Noah
+Mendelson suggests</a>, its advice that data formats version themselves is,
+well, wrong.  I spent some years of my life helping design
+<a href="http://atompub.org/rfc4287.html">The Atom Syndication Format</a>,
+which emphatically does <em>not</em> do versioning, and I agree with
+that decision.  Hmmm.</p>
+<p>There’s this guy named Bob Aman whom I’ve only met once, but I’m a 
+fan.  He’s maniacally determined that Ruby shall have the world’s best
+URI-handling library, so he’s building it, and it’s called
+<a href="http://addressable.rubyforge.org/">adressable</a>, which is
+a good name.  I was sitting on the floor talking to the RSpec guys at the last
+RubyConf and Bob plunked himself down and started wondering out loud about the
+best way to manage his many thousands of test cases.  Someone who’ll write
+thousands of test-cases for URI wrangling is totally OK by me.</p>
+<p>From
+<a href="http://www.devchix.com/author/gloriajw/">gloriajw</a> at
+<a href="http://www.devchix.com/">devchix</a>,
+<a href="http://www.devchix.com/2007/08/16/restful-thoughts-on-a-web-20-python-project/">RESTful Thoughts on a Web 2.0 Python Project</a>.
+Mmm, very very tasty, one of the better why-REST statements ever.</p>
+<h2 id='p-8'>Things Open</h2>
+<p>GlassFish, the Open-Source instantiation of the Sun Java Application
+Server, has gone from boring and corporate to kind of interesting.  As witness
+its
+<a href="http://blogs.sun.com/draks/entry/glassfish_is_in_debian">showing up
+in Debian</a>, with the Maven dependency amputated.  Gotta like that.  As far
+as I know, Sun didn’t even know this was happening.  Gotta like that.</p>
+<p>There’s an internal Sun mailing list I’m on that’s concerned with
+government technology policy, and I keep seeing stories go by about
+governments liking Open Source and Open Data Formats, often confusing the two
+laughably, but still, it’s a real trend.  One particularly tasty example is
+Arve Bersvendsen’s 
+<a href="http://virtuelvis.com/archives/2007/12/norway-mandates-html-pdf-odf">Norway mandates open formats</a>.</p>
+<h2 id='p-6'>Hardware</h2>
+<p>I exist at the airy, arm-waving level of the Web Tier.  Descend
+twenty-three levels of indirection and you end up with silicon and the people
+who build it.  There’s some
+<a href="http://www.electronicsweekly.com/blogs/david-manners-semiconductor-blog/2007/12/apocalyptic-statistics-for-fut.html">serious
+churn</a> happening in that world.</p>
+<h2 id='p-7'>User Interfaces</h2>
+<p>The famous Tog explains in parts
+<a href="http://www.asktog.com/TOI/toi06KeyboardVMouse1.html">1</a>,
+<a href="http://www.asktog.com/TOI/toi22KeyboardVMouse2.html">2</a>, and
+<a href="http://www.asktog.com/SunWorldColumns/S02KeyboardVMouse3.html">3</a>,
+why the mouse is always faster than the keyboard.  He’s wrong. Why is left as
+an exercise for the reader.</p>
+
+</div></content></entry>
+
+<entry xml:base='When/200x/2007/12/30/'>
+ <title>TV and the LazyWeb</title>
+ <link href='LazyWeb-TV' />
+ <link rel='replies'        thr:count='15'        type='application/xhtml+xml'        href='LazyWeb-TV#comments' />
+ <id>http://www.tbray.org/ongoing/When/200x/2007/12/30/LazyWeb-TV</id>
+ <published>2007-12-30T01:00:00-08:00</published>
+ <updated>2007-12-31T08:24:17-08:00</updated>
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Video' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Video' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/TV' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='TV' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Technology/Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Web' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World/Life Online' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='The World' />
+ <category scheme='http://www.tbray.org/ongoing/What/' term='Life Online' />
+ <summary type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>I have a problem: I want a new HDTV, I have very specific requirements, and I&#x2019;m not which models match, or even how best to find that out. There&#x2019;s always the LazyWeb, and it&#x2019;s showing new signs of life, in the form of Dave Sifry&#x2019;s <a href='http://www.hoosgot.com/'>Hoosgot</a>.  Let&#x2019;s see if it can help me find the right TV.</div></summary>
+<content type='xhtml'><div xmlns='http://www.w3.org/1999/xhtml'>
+<p>I have a problem: I want a new HDTV, I have very specific requirements,
+and I’m not which models match, or even how best to find that out.
+There’s always the LazyWeb, and it’s
+showing new signs of life, in the form of Dave Sifry’s
+<a href="http://www.hoosgot.com/">Hoosgot</a>.  Let’s see if it can help me
+find the right TV.</p>
+<h2 id='p-1'>The TV Problem</h2>
+<p>I
+<a href="/ongoing/When/200x/2004/10/05/KrashTV">bought an HDTV setup</a> to
+watch the 2004 World Series; a Hitachi plasma set with only 480 lines of
+native vertical resolution.  For its original purpose, watching high-def
+sports broadcasts, it works just fine.  Based on what I’ve seen on other sets,
+even the latest 1080p sets, I’m not sure that the nominal-1080
+coming out of the satellite receiver has much more to offer than the Hitachi
+can handle; and in any case it seems like there’s
+<a href="http://reviews.cnet.com/4520-6449_7-6810011-1.html">not much of a
+case</a> for going past 720p in my form factor (see #2 below).</p>
+<p>But there are two apps for which I really want the 1080.  First, my
+<a href="/ongoing/When/200x/2006/05/08/Video">video camera shoots 1080i</a>.
+Second, I want to use the TV for outboard display of my pictures.  I grew up in
+a family where we took slides and sometimes set up the screen and projector
+for a family
+slide-show.  I liked that and want to recreate it, and the current screen does
+a really bad job.
+Also, it looks like 1080p is a technology plateau that should last for a while.
+So here are my requirements:</p>
+<ol>
+<li><p>1080p.</p></li>
+<li><p>There’s only one place in the house to put it, so it can’t be more than
+about 41 inches wide, which means 42" in whatever 
+units they use to measure TV screens.</p></li>
+<li><p>Needs to be really shallow, which
+means either plasma or LCD I guess.  When I go to the stores, it seems that the
+LCD screens please my eye a little better, but probably either would be
+OK.</p></li>
+<li><p>Needs to be suitable for watching live sports via satellite (but this
+seems pretty well a wash with the good modern sets).</p></li>
+<li><p>Needs to appear to my Mac as a 1920x1080 display, no fuss, no muss, no
+<a href="http://www.madrau.com/html/SRX/indexSRX.shtml">SwitchResX</a>.
+They say DVI input
+is better than VGA, but I’m not sure I can see that.</p></li>
+<li><p>Multiple inputs is good.  Currently we have the DVD player, the
+satellite, the Wii, and the DVI wire all plugged in, and I have to unplug one
+to plug in the camera, which sucks.  I may have to get some sort of video switcher/receiver.</p></li>
+</ol>
+<p>There you have it.  I’ve done some poking around and it’s gonna be laborious
+to find a box matching all the above.  But I bet there are quite a few Mac
+owners out there who could put up their hand and say “Hey Tim, my
+Pioneer or Sony or Toshiba or whatever is just the ticket”.</p>
+<h2 id='p-2'>Hoosgot</h2>
+<p>Hoosgot (<a href="http://www.hoosgot.com/index.php/about/">About page</a>)
+scans the Technorati flow (including blog feeds and twitters) for anyone
+mentioning its name or “LazyWeb” (thus, it
+<a href="http://www.hoosgot.com/index.php/2007/12/31/tv-and-the-lazyweb/">includes</a> the article you are
+now reading), and aggregates
+short summaries.  Obviously, credit is due to Ben Hammersley for the original
+<a href="http://www.lazyweb.org/">LazyWeb</a> idea.</p>
+<p>If it becomes popular at all, <em>subscribing</em> to Hoosgot will become
+untenable.  I currently follow it on Twitter and even in its pre-announce
+phase, it’s kinda noisy.</p>
+<p>I suppose the notion is that if it gets some traction, it’ll develop good
+Google-karma and someone like me, looking for a TV (or for an android assistant
+or blues bassist or chlamydia cure) might turn up the answer on Hoosgot.
+Anyhow, it belongs at the very least in the “worth watching” category.</p>
+<p>Something else interesting; I note that that Dave used WordPress to build
+the front-end for this new thing.  I wonder what other strange and wonderful
+uses will emerge for well-engineered personal publishing platforms.</p>
+</div></content></entry>
+
+</feed>

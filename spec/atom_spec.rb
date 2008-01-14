@@ -23,12 +23,12 @@ describe Atom do
     end    
   end
   
-  describe 'SimpleSingleFeed' do    
-    describe Atom::Feed do
-      before(:each) do 
-        @feed = Atom.parse(File.open('spec/fixtures/simple_single_entry.atom'))
-      end
-      
+  describe 'SimpleSingleFeed' do
+    before(:all) do 
+      @feed = Atom.parse(File.open('spec/fixtures/simple_single_entry.atom'))
+    end
+       
+    describe Atom::Feed do      
       it "should parse title" do
         @feed.title.should == 'Example Feed'
       end
@@ -64,7 +64,7 @@ describe Atom do
 
     describe Atom::Entry do
       before(:each) do
-        @entry = Atom.parse(File.open('spec/fixtures/simple_single_entry.atom')).entries.first
+        @entry = @feed.entries.first
       end
       
       it "should parse title" do
@@ -98,11 +98,11 @@ describe Atom do
   end
   
   describe 'ComplexFeed' do
-    describe Atom::Feed do
-      before(:each) do
-        @feed = Atom.parse(File.open('spec/fixtures/complex_single_entry.atom'))
-      end
-      
+    before(:all) do
+      @feed = Atom.parse(File.open('spec/fixtures/complex_single_entry.atom'))
+    end
+    
+    describe Atom::Feed do    
       it "should have a title" do
         @feed.title.should == 'dive into mark'
       end
@@ -174,7 +174,6 @@ describe Atom do
     
     describe Atom::Entry do
       before(:each) do
-        @feed = Atom.parse(File.open('spec/fixtures/complex_single_entry.atom'))
         @entry = @feed.entries.first
       end
       
@@ -227,7 +226,6 @@ describe Atom do
     describe Atom::Link do
       describe 'alternate link' do        
         before(:each) do
-          @feed = Atom.parse(File.open('spec/fixtures/complex_single_entry.atom'))
           @entry = @feed.entries.first
           @link = @entry.alternate
         end
@@ -251,7 +249,6 @@ describe Atom do
       
       describe 'enclosure link' do
         before(:each) do
-          @feed = Atom.parse(File.open('spec/fixtures/complex_single_entry.atom'))
           @entry = @feed.entries.first
           @link = @entry.enclosures.first
         end
@@ -280,7 +277,6 @@ describe Atom do
     
     describe Atom::Person do
       before(:each) do
-        @feed = Atom.parse(File.open('spec/fixtures/complex_single_entry.atom'))
         @entry = @feed.entries.first
         @person = @entry.authors.first
       end
@@ -299,8 +295,7 @@ describe Atom do
     end
     
     describe Atom::Content do
-      before(:each) do
-        @feed = Atom.parse(File.open('spec/fixtures/complex_single_entry.atom'))
+      before(:each) do        
         @entry = @feed.entries.first
         @content = @entry.content
       end
@@ -315,6 +310,143 @@ describe Atom do
             
       it "should have the content as the string representation" do
         @content.should == '<p xmlns="http://www.w3.org/1999/xhtml"><i>[Update: The Atom draft is finished.]</i></p>'
+      end
+    end
+  end
+  
+  describe 'ConformanceTests' do
+    describe Atom::Links do
+      before(:all) do
+        @feed = Atom.parse(File.open('spec/conformance/linktests.xml'))
+        @entries = @feed.entries
+      end
+      
+      describe 'linktest1' do
+        before(:each) do
+          @entry = @entries[0]
+        end
+        
+        it "should pick single alternate link without rel" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+      end
+      
+      describe 'linktest2' do
+        before(:each) do
+          @entry = @entries[1]
+        end
+        
+        it "should be picky about case of alternate rel" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+        
+        it "should be picky when picking the alternate by type" do
+          @entry.alternate('text/plain').href.should == 'http://www.snellspace.com/public/linktests/alternate2'
+        end
+      end
+      
+      describe 'linktest3' do
+        before(:each) do
+          @entry = @entries[2]
+        end
+        
+        it "should parse all links" do
+          @entry.should have(5).links
+        end
+        
+        it "should pick the alternate from a full list of core types" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+      end
+      
+      describe 'linktest4' do
+        before(:each) do
+          @entry = @entries[3]
+        end
+        
+        it "should parse all links" do
+          @entry.should have(6).links
+        end
+        
+        it "should pick the first alternate from a full list of core types with an extra alternate" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+        
+        it "should pick the alternate by type from a full list of core types with an extra alternate" do
+          @entry.alternate('text/plain').href.should == 'http://www.snellspace.com/public/linktests/alternate2'
+        end
+      end
+      
+      describe 'linktest5' do
+        before(:each) do
+          @entry = @entries[4]
+        end
+        
+        it "should parse all links" do
+          @entry.should have(2).links
+        end
+        
+        it "should pick the alternate without choking on a non-core type" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+        
+        it "should include the non-core type in the list of links" do
+          @entry.links.map(&:href).should include('http://www.snellspace.com/public/linktests/license')
+        end
+      end
+      
+      describe 'linktest6' do
+        before(:each) do
+          @entry = @entries[5]
+        end
+        
+        it "should parse all links" do
+          @entry.should have(2).links
+        end
+        
+        it "should pick the alternate without choking on a non-core type identified by a uri" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+        
+        it "should include the non-core type in the list of links identified by a uri" do
+          @entry.links.map(&:href).should include('http://www.snellspace.com/public/linktests/example')
+        end
+      end
+      
+      describe 'linktest7' do
+        before(:each) do
+          @entry = @entries[6]
+        end
+        
+        it "should parse all links" do
+          @entry.should have(2).links
+        end
+        
+        it "should pick the alternate without choking on a non-core type" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+        
+        it "should include the non-core type in the list of links" do
+          @entry.links.map(&:href).should include('http://www.snellspace.com/public/linktests/license')
+        end
+      end
+      
+      describe 'linktest8' do
+        before(:each) do
+          @entry = @entries[7]
+        end
+        
+        it "should parse all links" do
+          @entry.should have(2).links
+        end
+        
+        it "should pick the alternate without choking on a non-core type identified by a uri" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+        
+        it "should include the non-core type in the list of links identified by a uri" do
+          @entry.links.map(&:href).should include('http://www.snellspace.com/public/linktests/example')
+        end
       end
     end
   end

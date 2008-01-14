@@ -5,6 +5,7 @@
 # Please contact info@peerworks.org for further information.
 #
 
+require 'rubygems'
 require 'xml/libxml'
 require 'activesupport'
 require 'atom/xml/parser.rb'
@@ -159,11 +160,11 @@ module Atom
       super([])
     end
     
-    def alternate
-      detect { |link| link.rel.nil? || link.rel == 'alternate' }
+    def alternate(type = nil)
+      detect { |link| (link.rel.nil? || link.rel == 'alternate') && (type.nil? || type == link.type) }
     end
     
-    def alternates
+    def alternates(type = nil)
       select { |link| link.rel.nil? || link.rel == 'alternate' }
     end
     
