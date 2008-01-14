@@ -43,61 +43,112 @@ module Atom
     def member(xml)
       "Atom::#{xml.name.capitalize}".constantize.new(xml)
     end
+    
+    def next_node_is?(xml, element)
+      xml.next == 1 && current_node_is?(xml, element)
+    end
+      
+    def current_node_is?(xml, element)
+      xml.node_type == XML::Reader::TYPE_ELEMENT && xml.name == element
+    end
   end
   
-  class AtomElement
-    class_inheritable_array :simple_elements, :date_elements, :collection_elements, :attributes
-    self.simple_elements = []
-    self.date_elements = []
-    self.collection_elements = []
-    self.attributes = []
+  module Parseable
+    #simple_elements = []
+    #date_elements = []
+    #collection_elements = []
+    #attributes = []
+    
+    def Parseable.included(o)
+      o.send(:cattr_accessor, :simple_elements, :date_elements, :collection_elements, :attributes)
+      o.simple_elements = []
+      o.date_elements = []
+      o.collection_elements = []
+      o.attributes = []
+      o.send(:extend, Definitions)
+    end
+    
+    module Definitions
+      def element(*names)
+        names.each do |name|
+          attr_accessor name
+          self.simple_elements << name.to_s
+        end
+      end
+      
+      def date_element(*names)
+        names.each do |name|
+          attr_accessor name
+          self.date_elements << name.to_s
+        end
+      end
+      
+      def elements(*names)
+        names.each do |name|
+          attr_accessor name
+          self.collection_elements << name.to_s.singularize
+        end
+      end
+      
+      def attribute(*names)
+        names.each do |name|
+          attr_accessor name
+          self.attributes << name.to_s
+        end
+      end
+    end
   end
   
-  class Feed < AtomElement
+  class Feed
     include Parser
+    include Parseable
     extend Forwardable
     def_delegator :@links, :alternate
-    attr_accessor :title, :id, :updated, :links, :entries
         
-    self.simple_elements = ['title', 'id']
-    self.collection_elements = ['link', 'entry']
-    self.date_elements = ['updated']
+    element :title, :id
+    date_element :updated
+    elements :links, :entries
     
     def initialize(xml)
       @links, @entries = Links.new, []
-      position_xml(xml)      
-      parse(xml)      
-      xml.close
+      
+      begin
+        if next_node_is?(xml, 'feed')
+          xml.read
+          parse(xml)
+        else
+          raise ArgumentError, "XML document was missing atom:feed"        
+        end
+      ensure
+        xml.close
+      end
     end
     
     private
     def position_xml(xml)
-      # first element should be feed element
-      unless xml.next == 1 && 
-             xml.node_type == XML::Reader::TYPE_ELEMENT && 
-             xml.name == 'feed'
-        xml.close
-        raise ArgumentError, "XML document missing feed element"
-      else
-        # step into the feed element
-        xml.read
-      end
+     
     end        
   end
   
-  class Entry < AtomElement
+  class Entry
     include Parser
+    include Parseable
     extend Forwardable
     def_delegators :@links, :alternate
     attr_accessor :title, :id, :updated, :summary, :links
-    self.simple_elements = ['title', 'id', 'summary']
-    self.date_elements = ['updated']
-    self.collection_elements = ['link']
+    
+    element :title, :id, :summary
+    date_element :updated
+    elements :links
         
     def initialize(xml)
       @links = Links.new
-      xml.read
-      parse(xml)
+      if current_node_is?(xml, 'entry')
+        xml.read
+        parse(xml)
+      else
+        raise ArgumentError, "Entry created with node other than atom:entry: #{xml.name}"
+      end
     end
   end
   
@@ -115,13 +166,17 @@ module Atom
     end         
   end
   
-  class Link < AtomElement
+  class Link
     include Parser
-    attr_accessor :href
-    self.attributes = ['href']
+    include Parseable
+    attribute :href
     
     def initialize(xml)
-      parse(xml, :once => true)
+      if current_node_is?(xml, 'link')
+        parse(xml, :once => true)
+      else
+        raise ArgumentError, "Link created with node other than atom:link: #{xml.name}"
+      end
     end
   end
 end
