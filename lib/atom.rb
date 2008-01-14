@@ -5,8 +5,6 @@
 # Please contact info@peerworks.org for further information.
 #
 
-$:.unshift File.dirname(__FILE__)
-
 require 'xml/libxml'
 require 'activesupport'
 
@@ -17,31 +15,25 @@ module Atom
     Feed.new(XML::Reader.new(io.read))
   end
   
-  module Parser
+  module Parseable
     def parse(xml, options = {})
+      starting_depth = xml.depth
       loop do
         case xml.node_type
         when XML::Reader::TYPE_ELEMENT
-          if simple_elements.include?(xml.name)
-            self.send("#{xml.name}=", xml.read_string)
-          elsif date_elements.include?(xml.name)
-            self.send("#{xml.name}=", Time.parse(xml.read_string))
-          elsif collection_elements.include?(xml.name)            
-            self.send("#{xml.name.pluralize}") << member(xml)
+          if element_specs.include?(xml.name)
+            element_specs[xml.name].parse(self, xml)
           elsif attributes.any?
             while (xml.move_to_next_attribute == 1)
               if attributes.include?(xml.name)
-                self.send("#{xml.name}=", xml.value)
+                # Support attribute names with namespace prefixes
+                self.send("#{xml.name.sub(/:/, '_')}=", xml.value)
               end
             end
           end
         end
-        break unless !options[:once] && xml.next == 1
+        break unless !options[:once] && xml.next == 1 && xml.depth >= starting_depth
       end
-    end
-    
-    def member(xml)
-      "Atom::#{xml.name.capitalize}".constantize.new(xml)
     end
     
     def next_node_is?(xml, element)
@@ -51,62 +43,184 @@ module Atom
     def current_node_is?(xml, element)
       xml.node_type == XML::Reader::TYPE_ELEMENT && xml.name == element
     end
-  end
   
-  module Parseable
-    #simple_elements = []
-    #date_elements = []
-    #collection_elements = []
-    #attributes = []
-    
     def Parseable.included(o)
-      o.send(:cattr_accessor, :simple_elements, :date_elements, :collection_elements, :attributes)
-      o.simple_elements = []
-      o.date_elements = []
-      o.collection_elements = []
+      o.send(:cattr_accessor, :element_specs, :attributes)
+      o.element_specs = {}
       o.attributes = []
-      o.send(:extend, Definitions)
+      o.send(:extend, DeclarationMethods)
     end
     
-    module Definitions
+    module DeclarationMethods
       def element(*names)
+        options = {:type => :single}
+        options.merge!(names.pop) if names.last.is_a?(Hash) 
+        
         names.each do |name|
-          attr_accessor name
-          self.simple_elements << name.to_s
+          attr_accessor name          
+          self.element_specs[name.to_s] = ParseSpec.new(name, options)
         end
       end
-      
-      def date_element(*names)
-        names.each do |name|
-          attr_accessor name
-          self.date_elements << name.to_s
-        end
-      end
-      
+            
       def elements(*names)
+        options = {:type => :collection}
+        options.merge!(names.pop) if names.last.is_a?(Hash)
+        
         names.each do |name|
           attr_accessor name
-          self.collection_elements << name.to_s.singularize
+          self.element_specs[name.to_s.singularize] = ParseSpec.new(name, options)
         end
       end
       
       def attribute(*names)
         names.each do |name|
-          attr_accessor name
+          attr_accessor name.to_s.sub(/:/, '_').to_sym
           self.attributes << name.to_s
+        end
+      end
+      
+      def parse(xml)
+        new(xml)
+      end
+    end
+    
+    # Contains the specification for how an element should be parsed.
+    #
+    # This should not need to be constructed directly, instead use the
+    # element and elements macros in the declaration of the class.
+    #
+    # See Parseable.
+    #
+    class ParseSpec
+      attr_reader :name, :options
+      
+      def initialize(name, options = {})
+        @name = name.to_s
+        @attribute = name.to_s.sub(/:/, '_')
+        @options = options
+      end
+      
+      # Parses a chunk of XML according the specification.
+      # The data extracted will be assigned to the target object.
+      #
+      def parse(target, xml)
+        case options[:type]
+        when :single
+          target.send("#{@attribute}=".to_sym, build(xml))
+        when :collection
+          target.send("#{@attribute}") << build(xml)
+        end
+      end
+      
+      private
+      # Create a member 
+      def build(xml)
+        if options[:class].is_a?(Class)
+          if options[:content_only]
+            options[:class].parse(xml.read_string)
+          else
+            options[:class].parse(xml)
+          end
+        elsif options[:type] == :single
+          xml.read_string
+        else
+          "Atom::#{name.singularize.capitalize}".constantize.parse(xml)
         end
       end
     end
   end
   
+  class Generator
+    include Parseable
+    
+    attr_reader :name
+    attribute :uri, :version
+    
+    def initialize(xml)
+      @name = xml.read_string.strip
+      parse(xml, :once => true)
+    end
+  end
+    
+  class Person
+    include Parseable
+    element :name, :uri, :email
+    
+    def initialize(xml)
+      xml.read
+      parse(xml)
+    end
+  end
+  
+  class Content
+    def self.parse(xml)
+      case xml['type']
+      when "xhtml"
+        Xhtml.new(xml)
+      when "html"
+        Html.new(xml)
+      else
+        Text.new(xml)
+      end
+    end
+  
+    class Base < SimpleDelegator
+      include Parseable      
+      attribute :type, :'xml:lang'
+      
+      def initialize(xml, content = "")
+        super(content)
+        parse(xml, :once => true)
+      end
+      
+      protected
+      def set_content(c)
+        __setobj__(c)
+      end
+    end
+    
+    class Text < Base    
+      def initialize(xml)
+        super(xml, xml.read_string)
+      end
+    end
+    
+    class Html < Base
+      def initialize(xml)
+        super(xml, xml.read_string.gsub(/\s+/, ' ').strip)
+      end
+    end
+    
+    class Xhtml < Base
+      def initialize(xml)
+        super(xml)
+        
+        starting_depth = xml.depth
+        
+        # Get the next element - should be a div according to the atom spec
+        while xml.read == 1 && xml.node_type != XML::Reader::TYPE_ELEMENT; end
+        
+        if xml.name == 'div' && xml.namespace_uri == 'http://www.w3.org/1999/xhtml'
+          set_content(xml.read_inner_xml.strip)
+        else
+          set_content(xml.read_outer_xml)
+        end
+        
+        # get back to the end of the element we were created with
+        while xml.read == 1 && xml.depth > starting_depth; end
+      end
+    end
+  end
+   
   class Feed
-    include Parser
     include Parseable
     extend Forwardable
-    def_delegator :@links, :alternate
+    def_delegators :@links, :alternate, :self
         
-    element :title, :id
-    date_element :updated
+    element :id, :rights
+    element :generator, :class => Generator
+    element :title, :subtitle, :class => Content
+    element :updated, :class => Time, :content_only => true
     elements :links, :entries
     
     def initialize(xml)
@@ -122,27 +236,25 @@ module Atom
       ensure
         xml.close
       end
-    end
-    
-    private
-    def position_xml(xml)
-     
-    end        
+    end       
   end
   
   class Entry
-    include Parser
     include Parseable
     extend Forwardable
-    def_delegators :@links, :alternate
-    attr_accessor :title, :id, :updated, :summary, :links
+    def_delegators :@links, :alternate, :self, :alternates, :enclosures
     
     element :title, :id, :summary
-    date_element :updated
+    element :updated, :published, :class => Time, :content_only => true
+    element :content, :class => Content
     elements :links
+    elements :authors, :contributors, :class => Person
         
     def initialize(xml)
       @links = Links.new
+      @authors = []
+      @contributors = []
+      
       if current_node_is?(xml, 'entry')
         xml.read
         parse(xml)
@@ -152,31 +264,48 @@ module Atom
     end
   end
   
-  class Links
-    extend Forwardable
+  class Links < DelegateClass(Array)
     include Enumerable
-    def_delegators :@links, :<<, :size, :each
     
     def initialize
-      @links = []
+      super([])
     end
     
     def alternate
-      @links.first
-    end         
+      detect { |link| link.rel.nil? || link.rel == 'alternate' }
+    end
+    
+    def alternates
+      select { |link| link.rel.nil? || link.rel == 'alternate' }
+    end
+    
+    def self
+      detect { |link| link.rel == 'self' }
+    end
+    
+    def enclosures
+      select { |link| link.rel == 'enclosure' }
+    end
   end
   
   class Link
-    include Parser
     include Parseable
-    attribute :href
-    
+    attribute :href, :rel, :type, :length
+        
     def initialize(xml)
       if current_node_is?(xml, 'link')
         parse(xml, :once => true)
       else
         raise ArgumentError, "Link created with node other than atom:link: #{xml.name}"
       end
+    end
+    
+    def length=(v)
+      @length = v.to_i
+    end
+    
+    def to_s
+      self.href
     end
   end
 end
