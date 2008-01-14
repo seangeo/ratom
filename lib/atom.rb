@@ -7,6 +7,7 @@
 
 require 'xml/libxml'
 require 'activesupport'
+require 'atom/xml/parser.rb'
 
 module Atom
   def self.parse(io)
@@ -14,124 +15,9 @@ module Atom
     
     Feed.new(XML::Reader.new(io.read))
   end
-  
-  module Parseable
-    def parse(xml, options = {})
-      starting_depth = xml.depth
-      loop do
-        case xml.node_type
-        when XML::Reader::TYPE_ELEMENT
-          if element_specs.include?(xml.name)
-            element_specs[xml.name].parse(self, xml)
-          elsif attributes.any?
-            while (xml.move_to_next_attribute == 1)
-              if attributes.include?(xml.name)
-                # Support attribute names with namespace prefixes
-                self.send("#{xml.name.sub(/:/, '_')}=", xml.value)
-              end
-            end
-          end
-        end
-        break unless !options[:once] && xml.next == 1 && xml.depth >= starting_depth
-      end
-    end
     
-    def next_node_is?(xml, element)
-      xml.next == 1 && current_node_is?(xml, element)
-    end
-      
-    def current_node_is?(xml, element)
-      xml.node_type == XML::Reader::TYPE_ELEMENT && xml.name == element
-    end
-  
-    def Parseable.included(o)
-      o.send(:cattr_accessor, :element_specs, :attributes)
-      o.element_specs = {}
-      o.attributes = []
-      o.send(:extend, DeclarationMethods)
-    end
-    
-    module DeclarationMethods
-      def element(*names)
-        options = {:type => :single}
-        options.merge!(names.pop) if names.last.is_a?(Hash) 
-        
-        names.each do |name|
-          attr_accessor name          
-          self.element_specs[name.to_s] = ParseSpec.new(name, options)
-        end
-      end
-            
-      def elements(*names)
-        options = {:type => :collection}
-        options.merge!(names.pop) if names.last.is_a?(Hash)
-        
-        names.each do |name|
-          attr_accessor name
-          self.element_specs[name.to_s.singularize] = ParseSpec.new(name, options)
-        end
-      end
-      
-      def attribute(*names)
-        names.each do |name|
-          attr_accessor name.to_s.sub(/:/, '_').to_sym
-          self.attributes << name.to_s
-        end
-      end
-      
-      def parse(xml)
-        new(xml)
-      end
-    end
-    
-    # Contains the specification for how an element should be parsed.
-    #
-    # This should not need to be constructed directly, instead use the
-    # element and elements macros in the declaration of the class.
-    #
-    # See Parseable.
-    #
-    class ParseSpec
-      attr_reader :name, :options
-      
-      def initialize(name, options = {})
-        @name = name.to_s
-        @attribute = name.to_s.sub(/:/, '_')
-        @options = options
-      end
-      
-      # Parses a chunk of XML according the specification.
-      # The data extracted will be assigned to the target object.
-      #
-      def parse(target, xml)
-        case options[:type]
-        when :single
-          target.send("#{@attribute}=".to_sym, build(xml))
-        when :collection
-          target.send("#{@attribute}") << build(xml)
-        end
-      end
-      
-      private
-      # Create a member 
-      def build(xml)
-        if options[:class].is_a?(Class)
-          if options[:content_only]
-            options[:class].parse(xml.read_string)
-          else
-            options[:class].parse(xml)
-          end
-        elsif options[:type] == :single
-          xml.read_string
-        else
-          "Atom::#{name.singularize.capitalize}".constantize.parse(xml)
-        end
-      end
-    end
-  end
-  
   class Generator
-    include Parseable
+    include Xml::Parseable
     
     attr_reader :name
     attribute :uri, :version
@@ -143,7 +29,7 @@ module Atom
   end
     
   class Person
-    include Parseable
+    include Xml::Parseable
     element :name, :uri, :email
     
     def initialize(xml)
@@ -165,7 +51,7 @@ module Atom
     end
   
     class Base < SimpleDelegator
-      include Parseable      
+      include Xml::Parseable      
       attribute :type, :'xml:lang'
       
       def initialize(xml, content = "")
@@ -192,6 +78,8 @@ module Atom
     end
     
     class Xhtml < Base
+      XHTML = 'http://www.w3.org/1999/xhtml'
+      
       def initialize(xml)
         super(xml)
         
@@ -200,7 +88,7 @@ module Atom
         # Get the next element - should be a div according to the atom spec
         while xml.read == 1 && xml.node_type != XML::Reader::TYPE_ELEMENT; end
         
-        if xml.name == 'div' && xml.namespace_uri == 'http://www.w3.org/1999/xhtml'
+        if xml.name == 'div' && xml.namespace_uri == XHTML
           set_content(xml.read_inner_xml.strip)
         else
           set_content(xml.read_outer_xml)
@@ -213,7 +101,7 @@ module Atom
   end
    
   class Feed
-    include Parseable
+    include Xml::Parseable
     extend Forwardable
     def_delegators :@links, :alternate, :self
         
@@ -240,7 +128,7 @@ module Atom
   end
   
   class Entry
-    include Parseable
+    include Xml::Parseable
     extend Forwardable
     def_delegators :@links, :alternate, :self, :alternates, :enclosures
     
@@ -289,7 +177,7 @@ module Atom
   end
   
   class Link
-    include Parseable
+    include Xml::Parseable
     attribute :href, :rel, :type, :length
         
     def initialize(xml)
