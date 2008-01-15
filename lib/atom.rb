@@ -11,12 +11,21 @@ require 'activesupport'
 require 'atom/xml/parser.rb'
 
 module Atom
+  class ParseError < StandardError; end
+  
   NAMESPACE = 'http://www.w3.org/2005/Atom' unless defined?(NAMESPACE)
   
   def self.parse(io)
-    raise ArgumentError, "Atom.parse expects an instance of IO" unless io.is_a?(IO)
+    raise ArgumentError, "Atom.parse expects an instance of IO" unless io.respond_to?(:read)
     
-    Feed.new(XML::Reader.new(io.read))
+    xml = XML::Reader.new(io.read)
+    xml.set_error_handler do |reader, msg, severity, base, line|
+      if severity == XML::Reader::SEVERITY_ERROR
+        raise ParseError, "Error on line #{line}: #{msg}"
+      end
+    end
+    
+    Feed.new(xml)
   end
     
   class Generator
@@ -241,12 +250,21 @@ module Atom
     include Xml::Parseable
     attribute :href, :rel, :type, :length
         
-    def initialize(xml)
-      if current_node_is?(xml, 'link')
-        parse(xml, :once => true)
+    def initialize(o)
+      case o
+      when XML::Reader
+        if current_node_is?(o, 'link')
+          parse(o, :once => true)
+        else
+          raise ArgumentError, "Link created with node other than atom:link: #{o.name}"
+        end
+      when Hash
+        [:href, :rel, :type, :length].each do |attr|
+          self.send("#{attr}=", o[attr])
+        end
       else
-        raise ArgumentError, "Link created with node other than atom:link: #{xml.name}"
-      end
+        raise ArgumentError, "Don't know how to handle #{o}"
+      end        
     end
     
     def length=(v)
@@ -259,6 +277,16 @@ module Atom
     
     def ==(o)
       o.respond_to?(:href) && o.href == self.href
+    end
+    
+    def fetch
+      content = Net::HTTP.get_response(URI.parse(self.href)).body
+      
+      begin
+        Atom.parse(StringIO.new(content))
+      rescue ArgumentError, ParseError => ae
+        content
+      end
     end
   end
 end

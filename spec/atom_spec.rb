@@ -6,6 +6,7 @@
 #
 
 require File.dirname(__FILE__) + '/spec_helper.rb'
+require 'net/http'
 
 describe Atom do  
   describe "Atom.parse" do
@@ -392,7 +393,7 @@ describe Atom do
       end
       
       describe 'linktest1' do
-        before(:each) do
+        before(:all) do
           @entry = @entries[0]
         end
         
@@ -402,7 +403,7 @@ describe Atom do
       end
       
       describe 'linktest2' do
-        before(:each) do
+        before(:all) do
           @entry = @entries[1]
         end
         
@@ -416,7 +417,7 @@ describe Atom do
       end
       
       describe 'linktest3' do
-        before(:each) do
+        before(:all) do
           @entry = @entries[2]
         end
         
@@ -430,7 +431,7 @@ describe Atom do
       end
       
       describe 'linktest4' do
-        before(:each) do
+        before(:all) do
           @entry = @entries[3]
         end
         
@@ -448,7 +449,7 @@ describe Atom do
       end
       
       describe 'linktest5' do
-        before(:each) do
+        before(:all) do
           @entry = @entries[4]
         end
         
@@ -466,7 +467,7 @@ describe Atom do
       end
       
       describe 'linktest6' do
-        before(:each) do
+        before(:all) do
           @entry = @entries[5]
         end
         
@@ -484,7 +485,7 @@ describe Atom do
       end
       
       describe 'linktest7' do
-        before(:each) do
+        before(:all) do
           @entry = @entries[6]
         end
         
@@ -502,7 +503,7 @@ describe Atom do
       end
       
       describe 'linktest8' do
-        before(:each) do
+        before(:all) do
           @entry = @entries[7]
         end
         
@@ -530,7 +531,7 @@ describe Atom do
       end
       
       describe 'ordertest1' do
-        before(:each) do
+        before(:all) do
           @entry = @feed.entries[0]
         end
         
@@ -540,7 +541,7 @@ describe Atom do
       end
       
       describe 'ordertest2' do
-        before(:each) do
+        before(:all) do
           @entry = @feed.entries[1]
         end
         
@@ -550,7 +551,7 @@ describe Atom do
       end
       
       describe "ordertest3" do 
-        before(:each) do
+        before(:all) do
           @entry = @feed.entries[2]
         end
         
@@ -564,7 +565,7 @@ describe Atom do
       end
       
       describe 'ordertest4' do
-        before(:each) do
+        before(:all) do
           @entry = @feed.entries[3]
         end
         
@@ -578,7 +579,7 @@ describe Atom do
       end
       
       describe 'ordertest5' do
-        before(:each) do
+        before(:all) do
           @entry = @feed.entries[4]
         end
         
@@ -599,7 +600,7 @@ describe Atom do
         end
         
         describe Atom::Source do
-          before(:each) do
+          before(:all) do
             @source = @entry.source
           end
           
@@ -642,7 +643,7 @@ describe Atom do
       end
       
       describe 'ordertest6' do
-        before(:each) do
+        before(:all) do
           @entry = @feed.entries[5]
         end
         
@@ -664,7 +665,7 @@ describe Atom do
       end
       
       describe 'ordetest7' do
-        before(:each) do
+        before(:all) do
           @entry = @feed.entries[6]
         end
         
@@ -686,7 +687,7 @@ describe Atom do
       end
       
       describe 'ordertest8' do
-        before(:each) do
+        before(:all) do
           @entry = @feed.entries[7]
         end
         
@@ -700,7 +701,7 @@ describe Atom do
       end
       
       describe 'ordertest9' do
-        before(:each) do
+        before(:all) do
           @entry = @feed.entries[8]
         end
         
@@ -804,6 +805,40 @@ describe Atom do
       it "should have last_page" do
         @feed.last_page.href.should == 'http://example.org/index.atom?page=10'
       end
+    end
+  end
+  
+  describe Atom::Link do
+    before(:each) do
+      @href = 'http://example.org/next'
+      @link = Atom::Link.new(:rel => 'next', :href => @href)
+    end    
+    
+    it "should fetch feed for fetch_next" do
+      response = Net::HTTPSuccess.new(nil, nil, nil)
+      response.stub!(:body).and_return(File.read('spec/paging/middle_paged_feed.atom'))
+      Net::HTTP.should_receive(:get_response).with(URI.parse(@href)).and_return(response)
+      @link.fetch.should be_an_instance_of(Atom::Feed)
+    end
+    
+    it "should fetch content when response is not xml" do
+      response = Net::HTTPSuccess.new(nil, nil, nil)
+      response.stub!(:body).and_return('some text.')
+      Net::HTTP.should_receive(:get_response).with(URI.parse(@href)).and_return(response)
+      @link.fetch.should == 'some text.'
+    end
+    
+    it "should fetch content when response is not atom" do
+      content = <<-END
+      <?xml version="1.0" ?>
+      <foo>
+        <bar>text</bar>
+      </foo>        
+      END
+      response = Net::HTTPSuccess.new(nil, nil, nil)
+      response.stub!(:body).and_return(content)
+      Net::HTTP.should_receive(:get_response).with(URI.parse(@href)).and_return(response)
+      @link.fetch.should == content
     end
   end
 end
