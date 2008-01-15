@@ -11,6 +11,8 @@ require 'activesupport'
 require 'atom/xml/parser.rb'
 
 module Atom
+  NAMESPACE = 'http://www.w3.org/2005/Atom' unless defined?(NAMESPACE)
+  
   def self.parse(io)
     raise ArgumentError, "Atom.parse expects an instance of IO" unless io.is_a?(IO)
     
@@ -38,7 +40,7 @@ module Atom
       parse(xml)
     end
   end
-  
+    
   class Content
     def self.parse(xml)
       case xml['type']
@@ -89,8 +91,8 @@ module Atom
         # Get the next element - should be a div according to the atom spec
         while xml.read == 1 && xml.node_type != XML::Reader::TYPE_ELEMENT; end
         
-        if xml.name == 'div' && xml.namespace_uri == XHTML
-          set_content(xml.read_inner_xml.strip)
+        if xml.local_name == 'div' && xml.namespace_uri == XHTML
+          set_content(xml.read_inner_xml.strip.gsub(/\s+/, ' '))
         else
           set_content(xml.read_outer_xml)
         end
@@ -101,6 +103,29 @@ module Atom
     end
   end
    
+  class Source
+    extend Forwardable
+    def_delegators :@links, :alternate, :self, :alternates, :enclosures
+    include Xml::Parseable
+    
+    element :id
+    element :updated, :class => Time, :content_only => true
+    element :title, :subtitle, :class => Content
+    elements :authors, :contributors, :class => Person
+    elements :links
+    
+    def initialize(xml)
+      unless current_node_is?(xml, 'source', NAMESPACE)
+        raise ArgumentError, "Invalid node for atom:source - #{xml.name}(#{xml.namespace})"
+      end
+      
+      @authors, @contributors, @links = [], [], Links.new
+      
+      xml.read
+      parse(xml)
+    end
+  end
+  
   class Feed
     include Xml::Parseable
     extend Forwardable
@@ -116,7 +141,7 @@ module Atom
       @links, @entries = Links.new, []
       
       begin
-        if next_node_is?(xml, 'feed')
+        if next_node_is?(xml, 'feed', Atom::NAMESPACE)
           xml.read
           parse(xml)
         else
@@ -136,6 +161,7 @@ module Atom
     element :title, :id, :summary
     element :updated, :published, :class => Time, :content_only => true
     element :content, :class => Content
+    element :source, :class => Source
     elements :links
     elements :authors, :contributors, :class => Person
         
@@ -144,7 +170,7 @@ module Atom
       @authors = []
       @contributors = []
       
-      if current_node_is?(xml, 'entry')
+      if current_node_is?(xml, 'entry', Atom::NAMESPACE)
         xml.read
         parse(xml)
       else

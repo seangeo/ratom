@@ -315,7 +315,77 @@ describe Atom do
   end
   
   describe 'ConformanceTests' do
-    describe Atom::Links do
+    describe 'nondefaultnamespace.atom' do
+      before(:all) do
+        @feed = Atom.parse(File.open('spec/conformance/nondefaultnamespace.atom'))
+      end
+      
+      it "should have a title" do
+        @feed.title.should == 'Non-default namespace test'
+      end
+      
+      it "should have 1 entry" do
+        @feed.should have(1).entries
+      end
+      
+      describe Atom::Entry do
+        before(:all) do 
+          @entry = @feed.entries.first
+        end
+        
+        it "should have a title" do
+          @entry.title.should == 'If you can read the content of this entry, your aggregator works fine.'
+        end
+        
+        it "should have content" do
+          @entry.content.should_not be_nil
+        end
+        
+        it "should have 'xhtml' for the type of the content" do
+          @entry.content.type.should == 'xhtml'
+        end
+        
+        it "should strip the outer div of the content" do
+          @entry.content.should_not match(/div/)
+        end
+        
+        it "should keep inner xhtml of content" do
+          @entry.content.should == '<p xmlns="http://www.w3.org/1999/xhtml">For information, see:</p> ' +
+  			    '<ul xmlns="http://www.w3.org/1999/xhtml"> ' +
+    				 '<li><a href="http://plasmasturm.org/log/376/">Who knows an <abbr title="Extensible Markup Language">XML</abbr> document from a hole in the ground?</a></li> ' +
+    				 '<li><a href="http://plasmasturm.org/log/377/">More on Atom aggregator <abbr title="Extensible Markup Language">XML</abbr> namespace conformance tests</a></li> ' +
+    				 '<li><a href="http://www.intertwingly.net/wiki/pie/XmlNamespaceConformanceTests"><abbr title="Extensible Markup Language">XML</abbr> Namespace Conformance Tests</a></li> ' +
+    			  '</ul>'
+  			end
+      end
+    end
+    
+    describe 'unknown-namespace.atom' do
+      before(:all) do
+        @feed = Atom.parse(File.open('spec/conformance/unknown-namespace.atom'))
+        @entry = @feed.entries.first
+        @content = @entry.content
+      end
+      
+      it "should have content" do
+        @content.should_not be_nil
+      end
+      
+      it "should strip surrounding div" do
+        @content.should_not match(/div/)
+			end
+			
+			it "should keep inner lists" do
+			  @content.should match(/<h:ul/)
+			  @content.should match(/<ul/)
+		  end
+			
+      it "should have xhtml type" do
+        @content.type.should == 'xhtml'
+      end      
+    end
+    
+    describe 'linktests.atom' do
       before(:all) do
         @feed = Atom.parse(File.open('spec/conformance/linktests.xml'))
         @entries = @feed.entries
@@ -446,6 +516,200 @@ describe Atom do
         
         it "should include the non-core type in the list of links identified by a uri" do
           @entry.links.map(&:href).should include('http://www.snellspace.com/public/linktests/example')
+        end
+      end
+    end
+    
+    describe 'ordertest.atom' do
+      before(:all) do
+        @feed = Atom.parse(File.open('spec/conformance/ordertest.xml'))
+      end
+      
+      it 'should have 9 entries' do
+        @feed.should have(9).entries
+      end
+      
+      describe 'ordertest1' do
+        before(:each) do
+          @entry = @feed.entries[0]
+        end
+        
+        it "should have the correct title" do
+          @entry.title.should == 'Simple order, nothing fancy'
+        end
+      end
+      
+      describe 'ordertest2' do
+        before(:each) do
+          @entry = @feed.entries[1]
+        end
+        
+        it "should have the correct title" do
+          @entry.title.should == 'Same as the first, only mixed up a bit'
+        end
+      end
+      
+      describe "ordertest3" do 
+        before(:each) do
+          @entry = @feed.entries[2]
+        end
+        
+        it "should have the correct title" do
+          @entry.title.should == 'Multiple alt link elements, which one does your reader show?'
+        end
+        
+        it "should pick the first alternate" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/alternate'
+        end
+      end
+      
+      describe 'ordertest4' do
+        before(:each) do
+          @entry = @feed.entries[3]
+        end
+        
+        it "should have the correct title" do
+          @entry.title.should == 'Multiple link elements, does your feed reader show the "alternate" correctly?'
+        end
+        
+        it "should pick the right link" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/alternate'
+        end
+      end
+      
+      describe 'ordertest5' do
+        before(:each) do
+          @entry = @feed.entries[4]
+        end
+        
+        it "should have a source" do
+          @entry.source.should_not be_nil
+        end
+        
+        it "should have the correct title" do
+          @entry.title.should == 'Entry with a source first'
+        end
+        
+        it "should have the correct updated" do
+          @entry.updated.should == Time.parse('2006-01-26T09:20:05Z')
+        end
+        
+        it "should have the correct alt link" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/alternate'
+        end
+        
+        describe Atom::Source do
+          before(:each) do
+            @source = @entry.source
+          end
+          
+          it "should have an id" do
+            @source.id.should == 'tag:example.org,2006:atom/conformance/element_order'
+          end
+          
+          it "should have a title" do
+            @source.title.should == 'Order Matters'
+          end
+          
+          it "should have a subtitle" do
+            @source.subtitle.should == 'Testing how feed readers handle the order of entry elements'
+          end
+          
+          it "should have a updated" do
+            @source.updated.should == Time.parse('2006-01-26T09:16:00Z')
+          end
+          
+          it "should have an author" do
+            @source.should have(1).authors
+          end
+          
+          it "should have the right name for the author" do
+            @source.authors.first.name.should == 'James Snell'
+          end
+          
+          it "should have 2 links" do
+            @source.should have(2).links
+          end
+          
+          it "should have an alternate" do
+            @source.alternate.href.should == 'http://www.snellspace.com/wp/?p=255'
+          end
+          
+          it "should have a self" do
+            @source.self.href.should == 'http://www.snellspace.com/public/ordertest.xml'
+          end
+        end
+      end
+      
+      describe 'ordertest6' do
+        before(:each) do
+          @entry = @feed.entries[5]
+        end
+        
+        it "should have a source" do
+          @entry.source.should_not be_nil
+        end
+
+        it "should have the correct title" do
+          @entry.title.should == 'Entry with a source last'
+        end
+
+        it "should have the correct updated" do
+          @entry.updated.should == Time.parse('2006-01-26T09:20:06Z')
+        end
+
+        it "should have the correct alt link" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/alternate'
+        end
+      end
+      
+      describe 'ordetest7' do
+        before(:each) do
+          @entry = @feed.entries[6]
+        end
+        
+        it "should have a source" do
+          @entry.source.should_not be_nil
+        end
+
+        it "should have the correct title" do
+          @entry.title.should == 'Entry with a source in the middle'
+        end
+
+        it "should have the correct updated" do
+          @entry.updated.should == Time.parse('2006-01-26T09:20:07Z')
+        end
+
+        it "should have the correct alt link" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/alternate'
+        end
+      end
+      
+      describe 'ordertest8' do
+        before(:each) do
+          @entry = @feed.entries[7]
+        end
+        
+        it "should have the right title" do
+          @entry.title.should == 'Atom elements in an extension element'
+        end
+        
+        it "should have right id" do
+          @entry.id.should == 'tag:example.org,2006:atom/conformance/element_order/8'
+        end
+      end
+      
+      describe 'ordertest9' do
+        before(:each) do
+          @entry = @feed.entries[8]
+        end
+        
+        it "should have the right title" do
+          @entry.title.should == 'Atom elements in an extension element'
+        end
+        
+        it 'should have the right id' do
+          @entry.id.should == 'tag:example.org,2006:atom/conformance/element_order/9'
         end
       end
     end

@@ -13,8 +13,8 @@ module Atom
         loop do
           case xml.node_type
           when XML::Reader::TYPE_ELEMENT
-            if element_specs.include?(xml.name)
-              element_specs[xml.name].parse(self, xml)
+            if element_specs.include?(xml.local_name)
+              element_specs[xml.local_name].parse(self, xml)
             elsif attributes.any?
               while (xml.move_to_next_attribute == 1)
                 if attributes.include?(xml.name)
@@ -28,12 +28,12 @@ module Atom
         end
       end
     
-      def next_node_is?(xml, element)
+      def next_node_is?(xml, element, ns = nil)
         xml.next == 1 && current_node_is?(xml, element)
       end
       
-      def current_node_is?(xml, element)
-        xml.node_type == XML::Reader::TYPE_ELEMENT && xml.name == element
+      def current_node_is?(xml, element, ns = nil)
+        xml.node_type == XML::Reader::TYPE_ELEMENT && xml.local_name == element && (ns.nil? || ns == xml.namespace_uri)
       end
   
       def Parseable.included(o)
