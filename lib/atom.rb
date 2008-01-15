@@ -129,7 +129,7 @@ module Atom
   class Feed
     include Xml::Parseable
     extend Forwardable
-    def_delegators :@links, :alternate, :self
+    def_delegators :@links, :alternate, :self, :first_page, :last_page, :next_page, :prev_page
         
     element :id, :rights
     element :generator, :class => Generator
@@ -150,7 +150,15 @@ module Atom
       ensure
         xml.close
       end
-    end       
+    end
+    
+    def first?
+      links.self == links.first_page
+    end 
+    
+    def last?
+      links.self == links.last_page
+    end
   end
   
   class Entry
@@ -187,23 +195,49 @@ module Atom
     end
     
     def alternate(type = nil)
-      detect { |link| (link.rel.nil? || link.rel == 'alternate') && (type.nil? || type == link.type) }
+      detect { |link| (link.rel.nil? || link.rel == Link::Rel::ALTERNATE) && (type.nil? || type == link.type) }
     end
     
     def alternates(type = nil)
-      select { |link| link.rel.nil? || link.rel == 'alternate' }
+      select { |link| link.rel.nil? || link.rel == Link::Rel::ALTERNATE }
     end
     
     def self
-      detect { |link| link.rel == 'self' }
+      detect { |link| link.rel == Link::Rel::SELF }
     end
     
     def enclosures
-      select { |link| link.rel == 'enclosure' }
+      select { |link| link.rel == Link::Rel::ENCLOSURE }
+    end
+    
+    def first_page
+      detect { |link| link.rel == Link::Rel::FIRST }
+    end
+    
+    def last_page
+      detect { |link| link.rel == Link::Rel::LAST }
+    end
+    
+    def next_page
+      detect { |link| link.rel == Link::Rel::NEXT }
+    end
+    
+    def prev_page
+      detect { |link| link.rel == Link::Rel::PREVIOUS }
     end
   end
   
   class Link
+    module Rel
+      ALTERNATE = 'alternate'
+      SELF = 'self'
+      ENCLOSURE = 'enclosure'
+      FIRST = 'first'
+      LAST = 'last'
+      PREVIOUS = 'prev'
+      NEXT = 'next'
+    end    
+    
     include Xml::Parseable
     attribute :href, :rel, :type, :length
         
@@ -221,6 +255,10 @@ module Atom
     
     def to_s
       self.href
+    end
+    
+    def ==(o)
+      o.respond_to?(:href) && o.href == self.href
     end
   end
 end

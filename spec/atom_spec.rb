@@ -714,4 +714,96 @@ describe Atom do
       end
     end
   end
+  
+  describe 'pagination' do
+    describe 'first_paged_feed.atom' do
+      before(:all) do
+        @feed = Atom.parse(File.open('spec/paging/first_paged_feed.atom'))
+      end
+      
+      it "should be first?" do
+        @feed.should be_first
+      end
+      
+      it "should not be last?" do
+        @feed.should_not be_last
+      end
+      
+      it "should have next" do
+        @feed.next_page.href.should == 'http://example.org/index.atom?page=2'
+      end
+      
+      it "should not have prev" do
+        @feed.prev_page.should be_nil
+      end
+      
+      it "should have last" do
+        @feed.last_page.href.should == 'http://example.org/index.atom?page=10'
+      end
+      
+      it "should have first" do
+        @feed.first_page.href.should == 'http://example.org/index.atom'
+      end
+    end
+    
+    describe 'middle_paged_feed.atom' do
+      before(:all) do
+        @feed = Atom.parse(File.open('spec/paging/middle_paged_feed.atom'))
+      end
+      
+      it "should not be last?" do
+        @feed.should_not be_last
+      end
+      
+      it "should not be first?" do
+        @feed.should_not be_first
+      end
+      
+      it "should have next_page" do
+        @feed.next_page.href.should == 'http://example.org/index.atom?page=4'
+      end
+      
+      it "should have prev_page" do
+        @feed.prev_page.href.should == 'http://example.org/index.atom?page=2'
+      end
+      
+      it "should have last_page" do
+        @feed.last_page.href.should == 'http://example.org/index.atom?page=10'
+      end
+      
+      it "should have first_page" do
+        @feed.first_page.href.should == 'http://example.org/index.atom'
+      end
+    end
+    
+    describe 'last_paged_feed.atom' do
+      before(:all) do
+        @feed = Atom.parse(File.open('spec/paging/last_paged_feed.atom'))
+      end
+      
+      it "should not be first?" do
+        @feed.should_not be_first
+      end
+      
+      it "should be last?" do
+        @feed.should be_last
+      end
+      
+      it "should have prev_page" do
+        @feed.prev_page.href.should == 'http://example.org/index.atom?page=9'
+      end
+      
+      it "should not have next_page" do
+        @feed.next_page.should be_nil
+      end
+      
+      it "should have first_page" do
+        @feed.first_page.href.should == 'http://example.org/index.atom'
+      end
+      
+      it "should have last_page" do
+        @feed.last_page.href.should == 'http://example.org/index.atom?page=10'
+      end
+    end
+  end
 end
