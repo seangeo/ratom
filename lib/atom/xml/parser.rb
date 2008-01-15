@@ -98,15 +98,15 @@ module Atom
         def parse(target, xml)
           case options[:type]
           when :single
-            target.send("#{@attribute}=".to_sym, build(xml))
+            target.send("#{@attribute}=".to_sym, build(target, xml))
           when :collection
-            target.send("#{@attribute}") << build(xml)
+            target.send("#{@attribute}") << build(target, xml)
           end
         end
       
         private
         # Create a member 
-        def build(xml)
+        def build(target, xml)
           if options[:class].is_a?(Class)
             if options[:content_only]
               options[:class].parse(xml.read_string)
@@ -115,8 +115,12 @@ module Atom
             end
           elsif options[:type] == :single
             xml.read_string
+          elsif options[:content_only] 
+            xml.read_string
           else
-            "Atom::#{name.singularize.capitalize}".constantize.parse(xml)
+            target_class = target.class.name
+            target_class = target_class.sub(/#{target_class.demodulize}$/, name.singularize.capitalize)
+            target_class.constantize.parse(xml)
           end
         end
       end
