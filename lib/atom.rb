@@ -49,14 +49,23 @@ module Atom
     end
   
     class Base < SimpleDelegator
-      include Xml::Parseable      
+      include Xml::Parseable
       attribute :type, :'xml:lang'
       
       def initialize(xml, content = "")
         super(content)
+        @content = content
         parse(xml, :once => true)
       end
       
+      def ==(o)
+        if o.instance_of?(self.class)
+          self.type == o.type &&
+           self.xml_lang == o.xml_lang &&
+           self.to_s == o.to_s
+        end
+      end
+            
       protected
       def set_content(c)
         __setobj__(c)
@@ -94,6 +103,23 @@ module Atom
         
         # get back to the end of the element we were created with
         while xml.read == 1 && xml.depth > starting_depth; end
+      end
+      
+      def to_xml(nodeonly = true, name = 'content')
+        node = XML::Node.new(name)
+        node['type'] = 'xhtml'
+        node['xml:lang'] = self.xml_lang
+        
+        div = XML::Node.new('div')        
+        div['xmlns'] = XHTML
+        div
+        
+        p = XML::Parser.string(to_s)
+        content = p.parse.root.copy(true)
+        div << content
+        
+        node << div
+        node
       end
     end
   end
@@ -182,7 +208,7 @@ module Atom
       else
         raise ArgumentError, "Entry created with node other than atom:entry: #{xml.name}"
       end
-    end
+    end   
   end
   
   class Links < DelegateClass(Array)

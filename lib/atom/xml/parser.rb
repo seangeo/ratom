@@ -31,7 +31,7 @@ module Atom
       end
     
       def next_node_is?(xml, element, ns = nil)
-        xml.next == 1 && current_node_is?(xml, element)
+        xml.next == 1 && current_node_is?(xml, element, ns)
       end
       
       def current_node_is?(xml, element, ns = nil)
@@ -43,6 +43,58 @@ module Atom
         o.element_specs = {}
         o.attributes = []
         o.send(:extend, DeclarationMethods)
+      end
+      
+      def ==(o)
+        if self.object_id == o.object_id
+          true
+        elsif o.instance_of?(self.class)
+          self.class.element_specs.values.all? do |spec|
+            self.send(spec.attribute) == o.send(spec.attribute)
+          end
+        else
+          false
+        end
+      end
+      
+      def to_xml(nodeonly = false, root_name = self.class.name.demodulize.downcase)
+        
+        node = XML::Node.new(root_name)
+        node['xmlns'] = Atom::NAMESPACE unless nodeonly
+        
+        self.class.element_specs.values.each do |spec|
+          if spec.single?
+            if attribute = self.send(spec.attribute)
+              if attribute.is_a?(Time)
+                node << XML::Node.new(spec.name, attribute.xmlschema)
+              elsif attribute.respond_to?(:to_xml)
+                node << attribute.to_xml(true)
+              else
+                node << XML::Node.new(spec.name, attribute)
+              end
+            end
+          else
+            self.send(spec.attribute).each do |attribute|
+              node << attribute.to_xml(true, spec.name.singularize)
+            end
+          end
+        end
+        
+        self.class.attributes.each do |attribute|
+          if value = self.send(attribute)
+            if value != 0
+              node[attribute] = value.to_s
+            end
+          end
+        end
+        
+        unless nodeonly
+          doc = XML::Document.new
+          doc.root = node
+          doc
+        else
+          node
+        end
       end
     
       module DeclarationMethods
@@ -118,7 +170,7 @@ module Atom
       # See Parseable.
       #
       class ParseSpec
-        attr_reader :name, :options
+        attr_reader :name, :options, :attribute
       
         def initialize(name, options = {})
           @name = name.to_s
@@ -138,6 +190,10 @@ module Atom
           end
         end
       
+        def single?
+          options[:type] == :single
+        end
+        
         private
         # Create a member 
         def build(target, xml)

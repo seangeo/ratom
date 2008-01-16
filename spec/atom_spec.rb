@@ -884,4 +884,35 @@ describe Atom do
       @link.fetch.should == content
     end
   end
+  
+  describe Atom::Entry do
+    before(:all) do
+      @entry = Atom::Entry.load_entry(File.read('spec/fixtures/entry.atom'))
+    end
+    
+    it "should be == to itself" do
+      @entry.should == Atom::Entry.load_entry(File.read('spec/fixtures/entry.atom'))
+    end
+    
+    it "should be != if something changes" do
+      @other = Atom::Entry.load_entry(File.read('spec/fixtures/entry.atom'))
+      @other.title = 'foo'
+      @entry.should_not == @other
+    end
+    
+    it "should be != if content changes" do
+      @other = Atom::Entry.load_entry(File.read('spec/fixtures/entry.atom'))
+      @other.content.type = 'html'
+      @entry.should_not == @other
+    end
+    
+    it "should output itself" do
+      xml = @entry.to_xml
+      File.open('/tmp/temp.xml', 'w') do |io|
+        xml.dump(io)
+      end
+      other = Atom::Entry.load_entry(File.open('/tmp/temp.xml'))
+      @entry.should == other
+    end
+  end
 end

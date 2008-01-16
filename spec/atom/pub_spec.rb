@@ -137,4 +137,21 @@ describe Atom::Pub do
       lambda { Atom::Pub::Service.load_service(URI.parse('file:/tmp')) }.should raise_error(ArgumentError)
     end
   end
+  
+  describe Atom::Pub::Collection do
+    before(:each) do
+      @collection = Atom::Pub::Collection.new(:href => 'http://example.org/blog')
+    end
+    
+    it "should set the href from the hash" do
+      @collection.href.should == 'http://example.org/blog'
+    end
+      
+    it "should return the feed" do
+      response = Net::HTTPSuccess.new(nil, nil, nil)
+      response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
+      Net::HTTP.should_receive(:get_response).with(URI.parse(@collection.href)).and_return(response)
+      @collection.feed.should be_an_instance_of(Atom::Feed)
+    end
+  end
 end

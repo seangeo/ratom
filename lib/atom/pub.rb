@@ -69,11 +69,24 @@ module Atom
       
       def initialize(o)
         @accepts = []
-        # do it once to get the attributes
-        parse(o, :once => true)
-        # now step into the element and the sub tree
-        o.read
-        parse(o)
+        case o
+        when XML::Reader
+          # do it once to get the attributes
+          parse(o, :once => true)
+          # now step into the element and the sub tree
+          o.read
+          parse(o)
+        when Hash
+          o.each do |k, v|
+            self.send("#{k}=", v)
+          end  
+        end
+      end
+      
+      def feed
+        if href
+          Atom::Feed.load_feed(URI.parse(href))
+        end
       end
     end    
   end  
