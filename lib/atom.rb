@@ -163,6 +163,7 @@ module Atom
     extend Forwardable
     def_delegators :@links, :alternate, :self, :alternates, :enclosures
     
+    loadable!
     element :title, :id, :summary
     element :updated, :published, :class => Time, :content_only => true
     element :content, :class => Content
@@ -175,7 +176,7 @@ module Atom
       @authors = []
       @contributors = []
       
-      if current_node_is?(xml, 'entry', Atom::NAMESPACE)
+      if current_node_is?(xml, 'entry', Atom::NAMESPACE) || next_node_is?(xml, 'entry', Atom::NAMESPACE)
         xml.read
         parse(xml)
       else

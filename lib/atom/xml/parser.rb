@@ -5,6 +5,8 @@
 # Please contact info@peerworks.org for further information.
 #
 
+require 'net/http'
+
 module Atom
   module Xml
     module Parseable

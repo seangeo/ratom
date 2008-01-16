@@ -41,6 +41,32 @@ describe Atom do
     end
   end
   
+  describe 'Atom::Entry.load_entry' do
+    it "should accept an IO" do
+      Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom')).should be_an_instance_of(Atom::Entry)
+    end
+    
+    it "should accept a URI" do
+      uri = URI.parse('http://example.org/')
+      response = Net::HTTPSuccess.new(nil, nil, nil)
+      response.stub!(:body).and_return(File.read('spec/fixtures/entry.atom'))
+      Net::HTTP.should_receive(:get_response).with(uri).and_return(response)
+      Atom::Entry.load_entry(uri).should be_an_instance_of(Atom::Entry)
+    end
+    
+    it "should accept a String" do
+      Atom::Entry.load_entry(File.read('spec/fixtures/entry.atom')).should be_an_instance_of(Atom::Entry)
+    end
+    
+    it "should raise ArgumentError with something other than IO, String or URI" do
+      lambda { Atom::Entry.load_entry(nil) }.should raise_error(ArgumentError)
+    end
+  
+    it "should raise ArgumentError with non-http uri" do
+      lambda { Atom::Entry.load_entry(URI.parse('file:/tmp')) }.should raise_error(ArgumentError)
+    end
+  end
+  
   describe 'SimpleSingleFeed' do
     before(:all) do 
       @feed = Atom::Feed.load_feed(File.open('spec/fixtures/simple_single_entry.atom'))
