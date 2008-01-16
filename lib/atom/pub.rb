@@ -7,20 +7,21 @@
 
 require 'atom/xml/parser'
 require 'xml/libxml'
+require 'uri'
+require 'net/http'
 
 module Atom
   module Pub
     NAMESPACE = 'http://www.w3.org/2007/app'
     
-    def self.parse(io)
-      raise ArgumentError, "Service.parse needs an IO" unless io.respond_to?(:read)
-      xml = XML::Reader.new(io.read)
-      Service.parse(xml)
-    end
-    
     class Service
-      include Atom::Xml::Parseable      
+      include Atom::Xml::Parseable
       elements :workspaces
+      loadable! do |reader, message, severity, base, line|
+        if severity == XML::Reader::SEVERITY_ERROR
+          raise ParseError, "#{message} at #{line}"
+        end
+      end
       
       def initialize(xml)
         @workspaces = []
@@ -44,6 +45,7 @@ module Atom
         o.read
         parse(o)
       end
+      
     end
     
     class Workspace

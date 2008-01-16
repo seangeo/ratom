@@ -12,22 +12,8 @@ require 'atom/xml/parser.rb'
 
 module Atom
   class ParseError < StandardError; end
-  
   NAMESPACE = 'http://www.w3.org/2005/Atom' unless defined?(NAMESPACE)
-  
-  def self.parse(io)
-    raise ArgumentError, "Atom.parse expects an instance of IO" unless io.respond_to?(:read)
-    
-    xml = XML::Reader.new(io.read)
-    xml.set_error_handler do |reader, msg, severity, base, line|
-      if severity == XML::Reader::SEVERITY_ERROR
-        raise ParseError, "Error on line #{line}: #{msg}"
-      end
-    end
-    
-    Feed.new(xml)
-  end
-    
+      
   class Generator
     include Xml::Parseable
     
@@ -140,6 +126,8 @@ module Atom
     extend Forwardable
     def_delegators :@links, :alternate, :self, :first_page, :last_page, :next_page, :prev_page
         
+    loadable! 
+    
     element :id, :rights
     element :generator, :class => Generator
     element :title, :subtitle, :class => Content
@@ -283,7 +271,7 @@ module Atom
       content = Net::HTTP.get_response(URI.parse(self.href)).body
       
       begin
-        Atom.parse(StringIO.new(content))
+        Atom::Feed.load_feed(content)
       rescue ArgumentError, ParseError => ae
         content
       end

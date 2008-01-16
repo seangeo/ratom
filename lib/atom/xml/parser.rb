@@ -71,6 +71,38 @@ module Atom
           end
         end
       
+        def loadable!(&error_handler)
+          class_name = self.name
+          (class << self; self; end).instance_eval do
+            define_method "load_#{class_name.demodulize.downcase}" do |o|
+               xml = nil
+                case o
+                when String
+                  xml = XML::Reader.new(o)
+                when IO
+                  xml = XML::Reader.new(o.read)
+                when URI
+                  raise ArgumentError, "Service.load_service only handles http URIs" if o.scheme != 'http'
+                  xml = XML::Reader.new(Net::HTTP.get_response(o).body)
+                else
+                  raise ArgumentError, "Service.load_service needs String, URI or IO"
+                end
+
+                if error_handler
+                  xml.set_error_handler(&error_handler)
+                else
+                  xml.set_error_handler do |reader, message, severity, base, line|
+                    if severity == XML::Reader::SEVERITY_ERROR
+                      raise ParseError, "#{message} at #{line}"
+                    end
+                  end
+                end
+                
+                self.new(xml)
+            end
+          end
+        end
+        
         def parse(xml)
           new(xml)
         end

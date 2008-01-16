@@ -9,24 +9,41 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'net/http'
 
 describe Atom do  
-  describe "Atom.parse" do
+  describe "Atom::Feed.load_feed" do
     it "should accept an IO" do
-      lambda { Atom.parse(File.open('spec/fixtures/simple_single_entry.atom')) }.should_not raise_error
+      lambda { Atom::Feed.load_feed(File.open('spec/fixtures/simple_single_entry.atom')) }.should_not raise_error
     end
     
-    it "should raise ArgumentError with something other than IO" do
-      lambda { Atom.parse(nil) }.should raise_error(ArgumentError)
+    it "should raise ArgumentError with something other than IO or URI" do
+      lambda { Atom::Feed.load_feed(nil) }.should raise_error(ArgumentError)
+    end
+    
+    it "should accept a String" do
+      Atom::Feed.load_feed(File.read('spec/fixtures/simple_single_entry.atom')).should be_an_instance_of(Atom::Feed)
+    end
+    
+    it "should accept a URI" do
+      uri = URI.parse('http://example.com/feed.atom')
+      response = Net::HTTPSuccess.new(nil, nil, nil)
+      response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
+      Net::HTTP.should_receive(:get_response).with(uri).and_return(response)
+      Atom::Feed.load_feed(uri).should be_an_instance_of(Atom::Feed)
+    end
+    
+    it "should raise ArgumentError with non-http uri" do
+      uri = URI.parse('file:/tmp')
+      lambda { Atom::Feed.load_feed(uri) }.should raise_error(ArgumentError)
     end
     
     it "should return an Atom::Feed" do
-      feed = Atom.parse(File.open('spec/fixtures/simple_single_entry.atom'))
+      feed = Atom::Feed.load_feed(File.open('spec/fixtures/simple_single_entry.atom'))
       feed.should be_an_instance_of(Atom::Feed)
-    end    
+    end
   end
   
   describe 'SimpleSingleFeed' do
     before(:all) do 
-      @feed = Atom.parse(File.open('spec/fixtures/simple_single_entry.atom'))
+      @feed = Atom::Feed.load_feed(File.open('spec/fixtures/simple_single_entry.atom'))
     end
        
     describe Atom::Feed do      
@@ -100,7 +117,7 @@ describe Atom do
   
   describe 'ComplexFeed' do
     before(:all) do
-      @feed = Atom.parse(File.open('spec/fixtures/complex_single_entry.atom'))
+      @feed = Atom::Feed.load_feed(File.open('spec/fixtures/complex_single_entry.atom'))
     end
     
     describe Atom::Feed do    
@@ -318,7 +335,7 @@ describe Atom do
   describe 'ConformanceTests' do
     describe 'nondefaultnamespace.atom' do
       before(:all) do
-        @feed = Atom.parse(File.open('spec/conformance/nondefaultnamespace.atom'))
+        @feed = Atom::Feed.load_feed(File.open('spec/conformance/nondefaultnamespace.atom'))
       end
       
       it "should have a title" do
@@ -363,7 +380,7 @@ describe Atom do
     
     describe 'unknown-namespace.atom' do
       before(:all) do
-        @feed = Atom.parse(File.open('spec/conformance/unknown-namespace.atom'))
+        @feed = Atom::Feed.load_feed(File.open('spec/conformance/unknown-namespace.atom'))
         @entry = @feed.entries.first
         @content = @entry.content
       end
@@ -388,7 +405,7 @@ describe Atom do
     
     describe 'linktests.atom' do
       before(:all) do
-        @feed = Atom.parse(File.open('spec/conformance/linktests.xml'))
+        @feed = Atom::Feed.load_feed(File.open('spec/conformance/linktests.xml'))
         @entries = @feed.entries
       end
       
@@ -523,7 +540,7 @@ describe Atom do
     
     describe 'ordertest.atom' do
       before(:all) do
-        @feed = Atom.parse(File.open('spec/conformance/ordertest.xml'))
+        @feed = Atom::Feed.load_feed(File.open('spec/conformance/ordertest.xml'))
       end
       
       it 'should have 9 entries' do
@@ -531,7 +548,7 @@ describe Atom do
       end
       
       describe 'ordertest1' do
-        before(:all) do
+        before(:each) do
           @entry = @feed.entries[0]
         end
         
@@ -541,7 +558,7 @@ describe Atom do
       end
       
       describe 'ordertest2' do
-        before(:all) do
+        before(:each) do
           @entry = @feed.entries[1]
         end
         
@@ -551,7 +568,7 @@ describe Atom do
       end
       
       describe "ordertest3" do 
-        before(:all) do
+        before(:each) do
           @entry = @feed.entries[2]
         end
         
@@ -565,7 +582,7 @@ describe Atom do
       end
       
       describe 'ordertest4' do
-        before(:all) do
+        before(:each) do
           @entry = @feed.entries[3]
         end
         
@@ -579,7 +596,7 @@ describe Atom do
       end
       
       describe 'ordertest5' do
-        before(:all) do
+        before(:each) do
           @entry = @feed.entries[4]
         end
         
@@ -600,7 +617,7 @@ describe Atom do
         end
         
         describe Atom::Source do
-          before(:all) do
+          before(:each) do
             @source = @entry.source
           end
           
@@ -643,7 +660,7 @@ describe Atom do
       end
       
       describe 'ordertest6' do
-        before(:all) do
+        before(:each) do
           @entry = @feed.entries[5]
         end
         
@@ -665,7 +682,7 @@ describe Atom do
       end
       
       describe 'ordetest7' do
-        before(:all) do
+        before(:each) do
           @entry = @feed.entries[6]
         end
         
@@ -687,7 +704,7 @@ describe Atom do
       end
       
       describe 'ordertest8' do
-        before(:all) do
+        before(:each) do
           @entry = @feed.entries[7]
         end
         
@@ -701,7 +718,7 @@ describe Atom do
       end
       
       describe 'ordertest9' do
-        before(:all) do
+        before(:each) do
           @entry = @feed.entries[8]
         end
         
@@ -719,7 +736,7 @@ describe Atom do
   describe 'pagination' do
     describe 'first_paged_feed.atom' do
       before(:all) do
-        @feed = Atom.parse(File.open('spec/paging/first_paged_feed.atom'))
+        @feed = Atom::Feed.load_feed(File.open('spec/paging/first_paged_feed.atom'))
       end
       
       it "should be first?" do
@@ -749,7 +766,7 @@ describe Atom do
     
     describe 'middle_paged_feed.atom' do
       before(:all) do
-        @feed = Atom.parse(File.open('spec/paging/middle_paged_feed.atom'))
+        @feed = Atom::Feed.load_feed(File.open('spec/paging/middle_paged_feed.atom'))
       end
       
       it "should not be last?" do
@@ -779,7 +796,7 @@ describe Atom do
     
     describe 'last_paged_feed.atom' do
       before(:all) do
-        @feed = Atom.parse(File.open('spec/paging/last_paged_feed.atom'))
+        @feed = Atom::Feed.load_feed(File.open('spec/paging/last_paged_feed.atom'))
       end
       
       it "should not be first?" do
