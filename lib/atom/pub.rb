@@ -6,6 +6,7 @@
 #
 
 require 'atom/xml/parser'
+require 'atom/version'
 require 'xml/libxml'
 require 'uri'
 require 'net/http'
@@ -87,6 +88,33 @@ module Atom
         if href
           Atom::Feed.load_feed(URI.parse(href))
         end
+      end
+      
+      def publish(entry)
+        uri = URI.parse(href)
+        response = nil
+        Net::HTTP.start(uri.host, uri.port) do |http|
+          response = http.post(uri.path, entry.to_xml.to_s, headers)
+        end
+        
+        published = Atom::Entry.load_entry(response.body)
+        if response['Location']
+          if published.edit_link
+            published.edit_link.href = response['Location']
+          else
+            published.links << Atom::Link.new(:rel => 'edit', :href => response['Location'])
+          end
+        end
+        
+        published
+      end
+      
+      private
+      def headers
+        {'Accept' => 'application/atom+xml',
+         'Content-Type' => 'application/atom+xml;type=entry',
+         'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
+         }
       end
     end    
   end  

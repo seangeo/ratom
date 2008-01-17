@@ -8,6 +8,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 require 'atom'
 require 'atom/pub'
+require 'atom/version'
 require 'uri'
 require 'net/http'
 
@@ -141,6 +142,10 @@ describe Atom::Pub do
   describe Atom::Pub::Collection do
     before(:each) do
       @collection = Atom::Pub::Collection.new(:href => 'http://example.org/blog')
+      @request_headers = {'Accept' => 'application/atom+xml', 
+                 'Content-Type' => 'application/atom+xml;type=entry',
+                 'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
+                 }
     end
     
     it "should set the href from the hash" do
@@ -152,6 +157,46 @@ describe Atom::Pub do
       response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
       Net::HTTP.should_receive(:get_response).with(URI.parse(@collection.href)).and_return(response)
       @collection.feed.should be_an_instance_of(Atom::Feed)
+    end
+    
+    it "should send a POST request when an entry is published" do      
+      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
+                 
+      response = mock_response(Net::HTTPCreated, entry.to_xml.to_s)
+      
+      http = mock('http')
+      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+      created = @collection.publish(entry)
+      created.should == entry
+    end
+    
+    it "should copy Location into edit link of entry" do
+      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
+                 
+      response = mock_response(Net::HTTPCreated, entry.to_xml.to_s, 'Location' => 'http://example.org/edit/entry1.atom')
+      
+      http = mock('http')
+      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+      created = @collection.publish(entry)
+      created.edit_link.should_not be_nil
+      created.edit_link.href.should == 'http://example.org/edit/entry1.atom'
+    end
+    
+    it "should update the entry when response is different" do
+      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
+      response = mock_response(Net::HTTPCreated, File.read('spec/fixtures/created_entry.atom'),
+                               'Location' => 'http://example.org/edit/atom')
+      
+      http = mock('http')
+      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+      created = @collection.publish(entry)
+      created.should == Atom::Entry.load_entry(File.open('spec/fixtures/created_entry.atom'))
     end
   end
 end

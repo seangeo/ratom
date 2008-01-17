@@ -152,7 +152,9 @@ module Atom
                   end
                 end
                 
-                self.new(xml)
+                o = self.new(xml)
+                xml.close
+                o
             end
           end
         end

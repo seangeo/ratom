@@ -34,6 +34,10 @@ module Atom
       xml.read
       parse(xml)
     end
+    
+    def inspect
+      "<Atom::Person name:'#{name}' uri:'#{uri}' email:'#{email}"
+    end
   end
     
   class Content
@@ -187,7 +191,7 @@ module Atom
   class Entry
     include Xml::Parseable
     extend Forwardable
-    def_delegators :@links, :alternate, :self, :alternates, :enclosures
+    def_delegators :@links, :alternate, :self, :alternates, :enclosures, :edit_link
     
     loadable!
     element :title, :id, :summary
@@ -249,6 +253,10 @@ module Atom
     def prev_page
       detect { |link| link.rel == Link::Rel::PREVIOUS }
     end
+    
+    def edit_link
+      detect { |link| link.rel == 'edit' }
+    end
   end
   
   class Link
@@ -302,6 +310,10 @@ module Atom
       rescue ArgumentError, ParseError => ae
         content
       end
+    end
+    
+    def inspect
+      "<Atom::Link href:'#{href}' type:'#{type}'>"
     end
   end
 end
