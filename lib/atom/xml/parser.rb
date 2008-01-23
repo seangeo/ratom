@@ -81,7 +81,7 @@ module Atom
         end
         
         self.class.attributes.each do |attribute|
-          if value = self.send(attribute)
+          if value = self.send("#{attribute.sub(/:/, '_')}")
             if value != 0
               node[attribute] = value.to_s
             end
@@ -91,7 +91,7 @@ module Atom
         unless nodeonly
           doc = XML::Document.new
           doc.root = node
-          doc
+          doc.to_s
         else
           node
         end
@@ -136,10 +136,10 @@ module Atom
                 when IO
                   xml = XML::Reader.new(o.read)
                 when URI
-                  raise ArgumentError, "Service.load_service only handles http URIs" if o.scheme != 'http'
+                  raise ArgumentError, "#{class_name}.load only handles http URIs" if o.scheme != 'http'
                   xml = XML::Reader.new(Net::HTTP.get_response(o).body)
                 else
-                  raise ArgumentError, "Service.load_service needs String, URI or IO"
+                  raise ArgumentError, "#{class_name}.load needs String, URI or IO, got #{o.class.name}"
                 end
 
                 if error_handler

@@ -30,9 +30,16 @@ module Atom
     include Xml::Parseable
     element :name, :uri, :email
     
-    def initialize(xml)
-      xml.read
-      parse(xml)
+    def initialize(o = {})
+      case o
+      when XML::Reader
+        o.read
+        parse(o)
+      when Hash
+        o.each do |k, v|
+          self.send("#{k.to_s}=", v)
+        end
+      end
     end
     
     def inspect
@@ -55,13 +62,7 @@ module Atom
     class Base < SimpleDelegator
       include Xml::Parseable
       attribute :type, :'xml:lang'
-      
-      def initialize(xml, content = "")
-        super(content)
-        @content = content
-        parse(xml, :once => true)
-      end
-      
+            
       def ==(o)
         if o.instance_of?(self.class)
           self.type == o.type &&
@@ -78,31 +79,45 @@ module Atom
     
     class Text < Base    
       def initialize(xml)
-        super(xml, xml.read_string)
+        super(xml.read_string)
+        parse(xml, :once => true)
       end
     end
     
     class Html < Base
-      def initialize(xml)
-        super(xml, xml.read_string.gsub(/\s+/, ' ').strip)
+      def initialize(o)
+        case o
+        when XML::Reader
+          super(o.read_string.gsub(/\s+/, ' ').strip)
+          parse(o, :once => true)
+        when String
+          super(o)
+          @type = 'html'
+        end        
+      end
+      
+      def to_xml(nodeonly = true, name = 'content')
+        node = XML::Node.new(name, self.to_s)
+        node['type'] = 'html'
+        node['xml:lang'] = self.xml_lang        
+        node
       end
     end
     
     class Xhtml < Base
       XHTML = 'http://www.w3.org/1999/xhtml'
       
-      def initialize(xml)
-        super(xml)
-        
+      def initialize(xml)        
+        parse(xml, :once => true)
         starting_depth = xml.depth
         
         # Get the next element - should be a div according to the atom spec
         while xml.read == 1 && xml.node_type != XML::Reader::TYPE_ELEMENT; end
         
         if xml.local_name == 'div' && xml.namespace_uri == XHTML
-          set_content(xml.read_inner_xml.strip.gsub(/\s+/, ' '))
+          super(xml.read_inner_xml.strip.gsub(/\s+/, ' '))
         else
-          set_content(xml.read_outer_xml)
+          super(xml.read_outer_xml)
         end
         
         # get back to the end of the element we were created with
@@ -161,22 +176,27 @@ module Atom
     element :id, :rights
     element :generator, :class => Generator
     element :title, :subtitle, :class => Content
-    element :updated, :class => Time, :content_only => true
+    element :updated, :published, :class => Time, :content_only => true
     elements :links, :entries
     
-    def initialize(xml)
+    def initialize(o = {})
       @links, @entries = Links.new, []
       
-      begin
-        if next_node_is?(xml, 'feed', Atom::NAMESPACE)
-          xml.read
-          parse(xml)
+      case o
+      when XML::Reader
+        if next_node_is?(o, 'feed', Atom::NAMESPACE)
+          o.read
+          parse(o)
         else
-          raise ArgumentError, "XML document was missing atom:feed"        
+          raise ArgumentError, "XML document was missing atom:feed: #{o.read_outer_xml}"
         end
-      ensure
-        xml.close
+      when Hash
+        o.each do |k, v|
+          self.send("#{k.to_s}=", v)
+        end
       end
+      
+      yield(self) if block_given?
     end
     
     def first?
@@ -201,17 +221,26 @@ module Atom
     elements :links
     elements :authors, :contributors, :class => Person
         
-    def initialize(xml)
+    def initialize(o = {})
       @links = Links.new
       @authors = []
       @contributors = []
       
-      if current_node_is?(xml, 'entry', Atom::NAMESPACE) || next_node_is?(xml, 'entry', Atom::NAMESPACE)
-        xml.read
-        parse(xml)
-      else
-        raise ArgumentError, "Entry created with node other than atom:entry: #{xml.name}"
+      case o
+      when XML::Reader
+        if current_node_is?(o, 'entry', Atom::NAMESPACE) || next_node_is?(o, 'entry', Atom::NAMESPACE)
+          o.read
+          parse(o)
+        else
+          raise ArgumentError, "Entry created with node other than atom:entry: #{o.name}"
+        end
+      when Hash
+        o.each do |k,v|
+          send("#{k.to_s}=", v)
+        end
       end
+
+      yield(self) if block_given?
     end   
   end
   

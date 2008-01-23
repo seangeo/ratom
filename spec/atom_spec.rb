@@ -138,6 +138,14 @@ describe Atom do
       it "should parse summary" do
         @entry.summary.should == 'Some text.'
       end
+      
+      it "should parse content" do
+        @entry.content.should == 'This <em>is</em> html.'
+      end
+      
+      it "should parse content type" do
+        @entry.content.type.should == 'html'
+      end
     end
   end
   
@@ -907,12 +915,38 @@ describe Atom do
     end
     
     it "should output itself" do
-      xml = @entry.to_xml
-      File.open('/tmp/temp.xml', 'w') do |io|
-        xml.dump(io)
-      end
-      other = Atom::Entry.load_entry(File.open('/tmp/temp.xml'))
+      other = Atom::Entry.load_entry(@entry.to_xml)
       @entry.should == other
+    end
+  end
+  
+  describe 'Atom::Feed initializer' do
+    it "should create an empty Feed" do
+      lambda { Atom::Feed.new }.should_not raise_error
+    end
+    
+    it "should yield to a block" do
+      lambda do
+        Atom::Feed.new do |f|
+          f.should be_an_instance_of(Atom::Feed)
+          throw :yielded
+        end
+      end.should throw_symbol(:yielded)
+    end
+  end
+  
+  describe 'Atom::Entry initializer' do
+    it "should create an empty feed" do
+      lambda { Atom::Entry.new }.should_not raise_error
+    end
+    
+    it "should yield to a block" do
+      lambda do
+        Atom::Entry.new do |f|
+          f.should be_an_instance_of(Atom::Entry)
+          throw :yielded
+        end
+      end.should throw_symbol(:yielded)
     end
   end
 end
