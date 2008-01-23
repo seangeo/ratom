@@ -206,6 +206,12 @@ module Atom
     def last?
       links.self == links.last_page
     end
+    
+    def reload!
+      if links.self
+        Feed.load_feed(URI.parse(links.self.href))
+      end
+    end
   end
   
   class Entry
@@ -242,6 +248,12 @@ module Atom
 
       yield(self) if block_given?
     end   
+    
+    def reload!
+      if links.self
+        Entry.load_entry(URI.parse(links.self.href))
+      end
+    end
   end
   
   class Links < DelegateClass(Array)
