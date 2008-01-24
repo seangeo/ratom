@@ -13,6 +13,7 @@ require 'net/http'
 
 module Atom
   module Pub
+    class NotSupported < StandardError; end
     NAMESPACE = 'http://www.w3.org/2007/app'
     
     class Service
@@ -116,6 +117,38 @@ module Atom
          'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
          }
       end
+    end
+  end
+  
+  class Entry    
+    def save!
+      if edit = edit_link
+        uri = URI.parse(edit.href)
+        Net::HTTP.start(uri.host, uri.port) do |http|
+          http.put(uri.path, self.to_xml, headers)
+        end
+      else
+        raise Atom::Pub::NotSupported, "Entry does not have an edit link"
+      end
+    end
+    
+    def destroy!
+      if edit = edit_link
+        uri = URI.parse(edit.href)
+        Net::HTTP.start(uri.host, uri.port) do |http|
+          http.delete(uri.path, {'Accept' => 'application/atom+xml', 'User-Agent' => "rAtom #{Atom::VERSION::STRING}"})
+        end
+      else
+        raise Atom::Pub::NotSupported, "Entry does not have an edit link"
+      end
+    end
+    
+    private
+    def headers
+      {'Accept' => 'application/atom+xml',
+       'Content-Type' => 'application/atom+xml;type=entry',
+       'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
+       }
     end    
-  end  
+  end
 end

@@ -199,4 +199,45 @@ describe Atom::Pub do
       created.should == Atom::Entry.load_entry(File.open('spec/fixtures/created_entry.atom'))
     end
   end
+  
+  describe Atom::Entry do
+    before(:each) do
+      @request_headers = {'Accept' => 'application/atom+xml', 
+                          'Content-Type' => 'application/atom+xml;type=entry',
+                          'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
+                         }
+    end
+    
+    it "should send a PUT to the edit link on save!" do
+      entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
+      response = mock_response(Net::HTTPSuccess, nil)
+      
+      http = mock('http')
+      http.should_receive(:put).with('/member_entry.atom', entry.to_xml, @request_headers).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+      entry.save!
+    end
+    
+    it "should send a DELETE to the edit link on delete!" do
+      entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
+      response = mock_response(Net::HTTPSuccess, nil)
+      
+      http = mock('http')
+      http.should_receive(:delete).with('/member_entry.atom', an_instance_of(Hash)).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+      entry.destroy!
+    end
+    
+    it "should raise exception on save! without an edit link" do
+      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
+      lambda { entry.save! }.should raise_error(Atom::Pub::NotSupported)
+    end
+    
+    it "should raise exception on destroy! without an edit link" do
+      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
+      lambda { entry.destroy! }.should raise_error(Atom::Pub::NotSupported)
+    end
+  end
 end
