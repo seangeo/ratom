@@ -59,15 +59,21 @@ module Atom
       end
     end
   
-    class Base < SimpleDelegator
+    class Base < DelegateClass(String)
       include Xml::Parseable
       attribute :type, :'xml:lang'
             
+      def initialize(c)
+        __setobj__(c)
+      end
+      
       def ==(o)
-        if o.instance_of?(self.class)
+        if o.is_a?(self.class)
           self.type == o.type &&
            self.xml_lang == o.xml_lang &&
            self.to_s == o.to_s
+        elsif o.is_a?(String)
+          self.to_s == o
         end
       end
             
