@@ -5,6 +5,7 @@
 # Please contact info@peerworks.org for further information.
 #
 
+require 'atom'
 require 'atom/xml/parser'
 require 'atom/version'
 require 'xml/libxml'
