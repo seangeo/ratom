@@ -175,7 +175,7 @@ module Atom
   class Feed
     include Xml::Parseable
     extend Forwardable
-    def_delegators :@links, :alternate, :self, :first_page, :last_page, :next_page, :prev_page
+    def_delegators :@links, :alternate, :self, :via, :first_page, :last_page, :next_page, :prev_page
         
     loadable! 
     
@@ -223,7 +223,7 @@ module Atom
   class Entry
     include Xml::Parseable
     extend Forwardable
-    def_delegators :@links, :alternate, :self, :alternates, :enclosures, :edit_link
+    def_delegators :@links, :alternate, :self, :alternates, :enclosures, :edit_link, :via
     
     loadable!
     element :title, :id, :summary
@@ -281,6 +281,10 @@ module Atom
       detect { |link| link.rel == Link::Rel::SELF }
     end
     
+    def via
+      detect { |link| link.rel == Link::Rel::VIA }
+    end
+    
     def enclosures
       select { |link| link.rel == Link::Rel::ENCLOSURE }
     end
@@ -310,6 +314,7 @@ module Atom
     module Rel
       ALTERNATE = 'alternate'
       SELF = 'self'
+      VIA = 'via'
       ENCLOSURE = 'enclosure'
       FIRST = 'first'
       LAST = 'last'
