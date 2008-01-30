@@ -857,6 +857,54 @@ describe Atom do
         @feed.last_page.href.should == 'http://example.org/index.atom?page=10'
       end
     end
+    
+    describe 'pagination using each_entries' do
+      before(:each) do
+        @feed = Atom::Feed.load_feed(File.open('spec/paging/first_paged_feed.atom'))
+        
+       
+      end
+      
+      it "should paginate through each entry" do
+        response1 = Net::HTTPSuccess.new(nil, nil, nil)
+        response1.stub!(:body).and_return(File.read('spec/paging/middle_paged_feed.atom'))
+        Net::HTTP.should_receive(:get_response).with(URI.parse('http://example.org/index.atom?page=2')).and_return(response1)
+
+        response2 = Net::HTTPSuccess.new(nil, nil, nil)
+        response2.stub!(:body).and_return(File.read('spec/paging/last_paged_feed.atom'))
+        Net::HTTP.should_receive(:get_response).with(URI.parse('http://example.org/index.atom?page=4')).and_return(response2)
+          
+        entry_count = 0
+        @feed.each_entry(:paginate => true) do |entry|
+          entry_count += 1
+        end
+        
+        entry_count.should == 3
+      end
+      
+      it "should not paginate through each entry when paginate not true" do
+        entry_count = 0
+        @feed.each_entry do |entry|
+          entry_count += 1
+        end
+        
+        entry_count.should == 1
+      end
+      
+      it "should only paginate up to since" do
+        response1 = Net::HTTPSuccess.new(nil, nil, nil)
+        response1.stub!(:body).and_return(File.read('spec/paging/middle_paged_feed.atom'))
+        Net::HTTP.should_receive(:get_response).with(URI.parse('http://example.org/index.atom?page=2')).and_return(response1)
+        Net::HTTP.should_receive(:get_response).with(URI.parse('http://example.org/index.atom?page=4')).never
+        
+        entry_count = 0
+        @feed.each_entry(:paginate => true, :since => Time.parse('2003-11-19T18:30:02Z')) do |entry|
+          entry_count += 1
+        end
+
+        entry_count.should == 1
+      end
+    end
   end
   
   describe Atom::Link do

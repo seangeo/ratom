@@ -218,6 +218,31 @@ module Atom
         Feed.load_feed(URI.parse(links.self.href))
       end
     end
+    
+    def each_entry(options = {}, &block)
+      if options[:paginate]
+        since_reached = false
+        feed = self
+        loop do          
+          feed.entries.each do |entry|
+            if options[:since] && entry.updated && options[:since] > entry.updated
+              since_reached = true
+              break
+            else
+              block.call(entry)
+            end
+          end
+          
+          if since_reached || feed.next_page.nil?
+            break
+          else feed.next_page
+            feed = feed.next_page.fetch 
+          end
+        end
+      else
+        self.entries.each(&block)
+      end
+    end
   end
   
   class Entry
