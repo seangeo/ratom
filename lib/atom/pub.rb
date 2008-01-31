@@ -99,7 +99,12 @@ module Atom
           response = http.post(uri.path, entry.to_xml.to_s, headers)
         end
         
-        published = Atom::Entry.load_entry(response.body)
+        published = begin
+          Atom::Entry.load_entry(response.body)
+        rescue Atom::ParseError
+          entry
+        end
+        
         if response['Location']
           if published.edit_link
             published.edit_link.href = response['Location']

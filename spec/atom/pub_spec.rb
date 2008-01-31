@@ -172,6 +172,19 @@ describe Atom::Pub do
       created.should == entry
     end
     
+    it "should behave well when no content is returned" do      
+      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
+                 
+      response = mock_response(Net::HTTPCreated, " ")
+      
+      http = mock('http')
+      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+      created = @collection.publish(entry)
+      created.should == entry
+    end
+    
     it "should copy Location into edit link of entry" do
       entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
                  
