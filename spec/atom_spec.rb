@@ -997,4 +997,10 @@ describe Atom do
       end.should throw_symbol(:yielded)
     end
   end
+  
+  describe Atom::Content::Html do
+    it "should escape ampersands in entities" do
+      Atom::Content::Html.new("&nbsp;").to_xml.to_s.should == "<content type=\"html\">&amp;nbsp;</content>"
+    end
+  end
 end

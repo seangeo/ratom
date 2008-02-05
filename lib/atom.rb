@@ -104,7 +104,8 @@ module Atom
       end
       
       def to_xml(nodeonly = true, name = 'content')
-        node = XML::Node.new(name, self.to_s)
+        node = XML::Node.new(name)
+        node << self.to_s
         node['type'] = 'html'
         node['xml:lang'] = self.xml_lang        
         node
