@@ -5,6 +5,7 @@
 # Please contact info@peerworks.org for further information.
 #
 
+require 'forwardable'
 require 'rubygems'
 require 'xml/libxml'
 require 'activesupport'
