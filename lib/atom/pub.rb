@@ -15,6 +15,12 @@ require 'net/http'
 module Atom
   module Pub
     class NotSupported < StandardError; end
+    class ProtocolError < StandardError
+      attr_reader :response
+      def initialize(response)
+        @response = response
+      end
+    end
     NAMESPACE = 'http://www.w3.org/2007/app'
     
     class Service
@@ -99,21 +105,26 @@ module Atom
           response = http.post(uri.path, entry.to_xml.to_s, headers)
         end
         
-        published = begin
-          Atom::Entry.load_entry(response.body)
-        rescue Atom::ParseError
-          entry
-        end
-        
-        if response['Location']
-          if published.edit_link
-            published.edit_link.href = response['Location']
-          else
-            published.links << Atom::Link.new(:rel => 'edit', :href => response['Location'])
+        case response
+        when Net::HTTPCreated
+          published = begin
+            Atom::Entry.load_entry(response.body)
+          rescue Atom::ParseError
+            entry
           end
-        end
         
-        published
+          if response['Location']
+            if published.edit_link
+              published.edit_link.href = response['Location']
+            else
+              published.links << Atom::Link.new(:rel => 'edit', :href => response['Location'])
+            end
+          end
+        
+          published
+        else
+          raise Atom::Pub::ProtocolError, response
+        end
       end
       
       private
@@ -130,8 +141,15 @@ module Atom
     def save!
       if edit = edit_link
         uri = URI.parse(edit.href)
+        response = nil
         Net::HTTP.start(uri.host, uri.port) do |http|
-          http.put(uri.path, self.to_xml, headers)
+          response = http.put(uri.path, self.to_xml, headers)
+        end
+        
+        case response
+        when Net::HTTPSuccess
+        else
+          raise Atom::Pub::ProtocolError, response
         end
       else
         raise Atom::Pub::NotSupported, "Entry does not have an edit link"
@@ -141,8 +159,15 @@ module Atom
     def destroy!
       if edit = edit_link
         uri = URI.parse(edit.href)
+        response = nil
         Net::HTTP.start(uri.host, uri.port) do |http|
-          http.delete(uri.path, {'Accept' => 'application/atom+xml', 'User-Agent' => "rAtom #{Atom::VERSION::STRING}"})
+          response = http.delete(uri.path, {'Accept' => 'application/atom+xml', 'User-Agent' => "rAtom #{Atom::VERSION::STRING}"})
+        end
+        
+        case response
+        when Net::HTTPSuccess
+        else
+          raise Atom::Pub::ProtocolError, response
         end
       else
         raise Atom::Pub::NotSupported, "Entry does not have an edit link"

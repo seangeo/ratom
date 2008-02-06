@@ -185,6 +185,17 @@ describe Atom::Pub do
       created.should == entry
     end
     
+    it "should raise error when response is not HTTPCreated" do
+      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
+      response = mock_response(Net::HTTPPreconditionFailed, "")
+      
+      http = mock('http')
+      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+      lambda { @collection.publish(entry) }.should raise_error(Atom::Pub::ProtocolError)
+    end
+    
     it "should copy Location into edit link of entry" do
       entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
                  
@@ -248,9 +259,31 @@ describe Atom::Pub do
       lambda { entry.save! }.should raise_error(Atom::Pub::NotSupported)
     end
     
+    it "should raise exception on save failure" do
+      entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
+      response = mock_response(Net::HTTPClientError, nil)
+      
+      http = mock('http')
+      http.should_receive(:put).with('/member_entry.atom', entry.to_xml, @request_headers).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+      lambda { entry.save! }.should raise_error(Atom::Pub::ProtocolError)
+    end
+    
     it "should raise exception on destroy! without an edit link" do
       entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
       lambda { entry.destroy! }.should raise_error(Atom::Pub::NotSupported)
+    end
+    
+    it "should raise exception on destroy failure" do
+      entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
+      response = mock_response(Net::HTTPClientError, nil)
+      
+      http = mock('http')
+      http.should_receive(:delete).with('/member_entry.atom', an_instance_of(Hash)).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+      lambda { entry.destroy! }.should raise_error(Atom::Pub::ProtocolError)
     end
   end
 end
