@@ -70,7 +70,9 @@ module Atom
               elsif attribute.respond_to?(:to_xml)
                 node << attribute.to_xml(true)
               else
-                node << XML::Node.new(spec.name, attribute)
+                n =  XML::Node.new(spec.name)
+                n << attribute
+                node << n
               end
             end
           else

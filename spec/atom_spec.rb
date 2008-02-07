@@ -966,6 +966,12 @@ describe Atom do
       other = Atom::Entry.load_entry(@entry.to_xml)
       @entry.should == other
     end
+    
+    it "should properly escape titles" do
+      @entry.title = "Breaking&nbsp;Space"
+      other = Atom::Entry.load_entry(@entry.to_xml)
+      @entry.should == other
+    end
   end
   
   describe 'Atom::Feed initializer' do
