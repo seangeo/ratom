@@ -8,8 +8,8 @@
 require 'net/http'
 
 module Atom
-  module Xml
-    module Parseable
+  module Xml # :nodoc:
+    module Parseable # :nodoc:
       def parse(xml, options = {})
         starting_depth = xml.depth
         loop do
@@ -99,7 +99,7 @@ module Atom
         end
       end
     
-      module DeclarationMethods
+      module DeclarationMethods # :nodoc:
         def element(*names)
           options = {:type => :single}
           options.merge!(names.pop) if names.last.is_a?(Hash) 
@@ -173,7 +173,7 @@ module Atom
       #
       # See Parseable.
       #
-      class ParseSpec
+      class ParseSpec # :nodoc:
         attr_reader :name, :options, :attribute
       
         def initialize(name, options = {})

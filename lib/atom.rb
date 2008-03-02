@@ -1,8 +1,6 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
-# Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
-# Please contact info@peerworks.org for further information.
+# For licensing information see LICENSE.txt.
 #
 
 require 'forwardable'
@@ -11,26 +9,46 @@ require 'xml/libxml'
 require 'activesupport'
 require 'atom/xml/parser.rb'
 
-module Atom
-  class ParseError < StandardError; end
+module Atom # :nodoc:
   NAMESPACE = 'http://www.w3.org/2005/Atom' unless defined?(NAMESPACE)
+  
+  # Raised when a Parsing Error occurs.
+  class ParseError < StandardError; end
       
+  # Represents a Generator as defined by the Atom Syndication Format specification.
+  #
+  # The generator identifies an agent or engine used to a produce a feed.
+  #
+  # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.generator
   class Generator
     include Xml::Parseable
     
     attr_reader :name
     attribute :uri, :version
     
+    # Initialize a new Generator.
+    #
+    # +xml+:: An XML::Reader object.
+    #
     def initialize(xml)
       @name = xml.read_string.strip
       parse(xml, :once => true)
     end
   end
     
+  # Represents a Person as defined by the Atom Syndication Format specification.
+  #
+  # A Person is used for all author and contributor attributes.
+  #
+  # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#atomPersonConstruct
+  #
   class Person
     include Xml::Parseable
     element :name, :uri, :email
-    
+   
+    # Initialize a new person.
+    #
+    # +o+:: An XML::Reader object or a hash. Valid hash keys are +:name+, +:uri+ and +:email+.
     def initialize(o = {})
       case o
       when XML::Reader
@@ -48,7 +66,7 @@ module Atom
     end
   end
     
-  class Content
+  class Content  # :nodoc:
     def self.parse(xml)
       case xml['type']
       when "xhtml"
@@ -60,6 +78,15 @@ module Atom
       end
     end
   
+    # This is the base class for all content within an atom document.
+    #
+    # Content can be Text, Html or Xhtml.
+    #
+    # A Content object can be treated as a String with type and xml_lang
+    # attributes.
+    #
+    # For a thorough discussion of atom content see 
+    # http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.content
     class Base < DelegateClass(String)
       include Xml::Parseable
       attribute :type, :'xml:lang'
@@ -79,19 +106,26 @@ module Atom
       end
             
       protected
-      def set_content(c)
+      def set_content(c) # :nodoc:
         __setobj__(c)
       end
     end
     
-    class Text < Base    
+    # Text content within an Atom document.
+    class Text < Base
       def initialize(xml)
         super(xml.read_string)
         parse(xml, :once => true)
       end
     end
     
+    # Html content within an Atom document.
     class Html < Base
+      
+      # Creates a new Content::Html.
+      #
+      # +o+:: An XML::Reader or a HTML string.
+      #
       def initialize(o)
         case o
         when XML::Reader
@@ -103,7 +137,7 @@ module Atom
         end        
       end
       
-      def to_xml(nodeonly = true, name = 'content')
+      def to_xml(nodeonly = true, name = 'content') # :nodoc:
         node = XML::Node.new(name)
         node << self.to_s
         node['type'] = 'html'
@@ -112,6 +146,7 @@ module Atom
       end
     end
     
+    # XHTML content within an Atom document.
     class Xhtml < Base
       XHTML = 'http://www.w3.org/1999/xhtml'
       
@@ -151,6 +186,9 @@ module Atom
     end
   end
    
+  # Represents a Source as defined by the Atom Syndication Format specification.
+  #
+  # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.source
   class Source
     extend Forwardable
     def_delegators :@links, :alternate, :self, :alternates, :enclosures
@@ -174,6 +212,30 @@ module Atom
     end
   end
   
+  # Represents a Feed as defined by the Atom Syndication Format specification.
+  #
+  # A feed is the top level element in an atom document.  It is a container for feed level
+  # metadata and for each entry in the feed.
+  #
+  # This supports pagination as defined in RFC 5005, see http://www.ietf.org/rfc/rfc5005.txt
+  # 
+  # == Parsing
+  #
+  # A feed can be parsed using the Feed.load_feed method. This method accepts a String containing
+  # a valid atom document, an IO object, or an URI to a valid atom document. For example:
+  #
+  #   # Using a File
+  #   feed = Feed.load_feed(File.open("/path/to/myfeed.atom"))
+  #
+  #   # Using a URL
+  #   feed = Feed.load_feed(URI.parse("http://example.org/afeed.atom"))
+  # 
+  # == Encoding
+  #
+  # A feed can be converted to XML using, the to_xml method that returns a valid atom document in a String.
+  #
+  # == References
+  # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.feed
   class Feed
     include Xml::Parseable
     extend Forwardable
@@ -187,6 +249,16 @@ module Atom
     element :updated, :published, :class => Time, :content_only => true
     elements :links, :entries
     
+    # Initialize a Feed.
+    #
+    # This will also yield itself, so a feed can be constructed like this:
+    #
+    #   feed = Feed.new do |feed|
+    #     feed.title = "My Cool feed"
+    #   end
+    # 
+    # +o+:: An XML Reader or a Hash of attributes.
+    #
     def initialize(o = {})
       @links, @entries = Links.new, []
       
@@ -207,20 +279,30 @@ module Atom
       yield(self) if block_given?
     end
     
+    # Return true if this is the first feed in a paginated set.
     def first?
       links.self == links.first_page
     end 
     
+    # Returns true if this is the last feed in a paginated set.
     def last?
       links.self == links.last_page
     end
     
+    # Reloads the feed by fetching the self uri.
     def reload!
       if links.self
         Feed.load_feed(URI.parse(links.self.href))
       end
     end
     
+    # Iterates over each entry in the feed.
+    #
+    # ==== Options
+    #
+    # +paginate+::  If true and the feed supports pagination this will fetch each page of the feed.
+    # +since+::     If a Time object is provided each_entry will iterate over all entries that were updated since that time.
+    #
     def each_entry(options = {}, &block)
       if options[:paginate]
         since_reached = false
@@ -247,6 +329,29 @@ module Atom
     end
   end
   
+  # Represents an Entry as defined by the Atom Syndication Format specification.
+  #
+  # An Entry represents an individual entry within a Feed.
+  #
+  # == Parsing
+  #
+  # An Entry can be parsed using the Entry.load_entry method. This method accepts a String containing
+  # a valid atom entry document, an IO object, or an URI to a valid atom entry document. For example:
+  #
+  #   # Using a File
+  #   entry = Entry.load_entry(File.open("/path/to/myfeedentry.atom"))
+  #
+  #   # Using a URL
+  #   Entry = Entry.load_entry(URI.parse("http://example.org/afeedentry.atom"))
+  # 
+  # The document must contain a stand alone entry element as described in the Atom Syndication Format.
+  # 
+  # == Encoding
+  #
+  # A Entry can be converted to XML using, the to_xml method that returns a valid atom entry document in a String.
+  #
+  # == References
+  # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.entry
   class Entry
     include Xml::Parseable
     extend Forwardable
@@ -260,6 +365,16 @@ module Atom
     elements :links
     elements :authors, :contributors, :class => Person
         
+    # Initialize an Entry.
+    #
+    # This will also yield itself, so an Entry can be constructed like this:
+    #
+    #   entry = Entry.new do |entry|
+    #     entry.title = "My Cool entry"
+    #   end
+    # 
+    # +o+:: An XML Reader or a Hash of attributes.
+    #
     def initialize(o = {})
       @links = Links.new
       @authors = []
@@ -282,63 +397,105 @@ module Atom
       yield(self) if block_given?
     end   
     
+    # Reload the Entry by fetching the self link.
     def reload!
       if links.self
         Entry.load_entry(URI.parse(links.self.href))
       end
     end
   end
-  
+
+  # Links provides an Array of Link objects belonging to either a Feed or an Entry.
+  #
+  # Some additional methods to get specific types of links are provided.
+  #
+  # == References
+  # 
+  # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link
+  # for details on link selection and link attributes.
+  #
   class Links < DelegateClass(Array)
     include Enumerable
     
+    # Initialize an empty Links array.
     def initialize
       super([])
     end
     
+    # Get the alternate.
+    #
+    # Returns the first link with rel == 'alternate' that matches the given type.
     def alternate(type = nil)
       detect { |link| (link.rel.nil? || link.rel == Link::Rel::ALTERNATE) && (type.nil? || type == link.type) }
     end
     
-    def alternates(type = nil)
+    # Get all alternates.
+    def alternates
       select { |link| link.rel.nil? || link.rel == Link::Rel::ALTERNATE }
     end
     
+    # Gets the self link.
     def self
       detect { |link| link.rel == Link::Rel::SELF }
     end
     
+    # Gets the via link.
     def via
       detect { |link| link.rel == Link::Rel::VIA }
     end
     
+    # Gets all links with rel == 'enclosure'
     def enclosures
       select { |link| link.rel == Link::Rel::ENCLOSURE }
     end
     
+    # Gets the link with rel == 'first'.
+    #
+    # This is defined as the first page in a pagination set.
     def first_page
       detect { |link| link.rel == Link::Rel::FIRST }
     end
     
+    # Gets the link with rel == 'last'.
+    #
+    # This is defined as the last page in a pagination set.
     def last_page
       detect { |link| link.rel == Link::Rel::LAST }
     end
     
+    # Gets the link with rel == 'next'.
+    #
+    # This is defined as the next page in a pagination set.
     def next_page
       detect { |link| link.rel == Link::Rel::NEXT }
     end
     
+    # Gets the link with rel == 'prev'.
+    #
+    # This is defined as the previous page in a pagination set.
     def prev_page
       detect { |link| link.rel == Link::Rel::PREVIOUS }
     end
     
+    # Gets the edit link.
+    #
+    # This is the link which can be used for posting updates to an item using the Atom Publishing Protocol.
+    #
     def edit_link
       detect { |link| link.rel == 'edit' }
     end
   end
   
+  # Represents a link in an Atom document.
+  #
+  # A link defines a reference from an Atom document to a web resource.
+  #
+  # == References
+  # See http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.link for
+  # a description of the different types of links.
+  #
   class Link
-    module Rel
+    module Rel # :nodoc:
       ALTERNATE = 'alternate'
       SELF = 'self'
       VIA = 'via'
@@ -352,6 +509,10 @@ module Atom
     include Xml::Parseable
     attribute :href, :rel, :type, :length
         
+    # Create a link.
+    #
+    # +o+:: An XML::Reader containing a link element or a Hash of attributes.
+    #
     def initialize(o)
       case o
       when XML::Reader
@@ -381,6 +542,13 @@ module Atom
       o.respond_to?(:href) && o.href == self.href
     end
     
+    # This will fetch the URL referenced by the link.
+    #
+    # If the URL contains a valid feed, a Feed will be returned, otherwise,
+    # the body of the response will be returned.
+    #
+    # TODO: Handle redirects.
+    #
     def fetch
       content = Net::HTTP.get_response(URI.parse(self.href)).body
       
