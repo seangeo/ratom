@@ -3,14 +3,14 @@ require 'atom/version'
 AUTHOR = 'Peerworks'  # can also be an array of Authors
 EMAIL = "info@peerworks.org"
 DESCRIPTION = "Atom Syndication and Publication API"
-GEM_NAME = 'atom' # what ppl will type to install your gem
-RUBYFORGE_PROJECT = 'atom-pw' # The unix name for your project
+GEM_NAME = 'rAtom' # what ppl will type to install your gem
+RUBYFORGE_PROJECT = 'ratom' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 
 @config_file = "~/.rubyforge/user-config.yml"
 @config = nil
-RUBYFORGE_USERNAME = "unknown"
+RUBYFORGE_USERNAME = "sgeo"
 def rubyforge_username
   unless @config
     begin
@@ -59,7 +59,8 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   
   # == Optional
   p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
-  #p.extra_deps = []     # An array of rubygem dependencies [name, version], e.g. [ ['active_support', '>= 1.3.1'] ]
+  # An array of rubygem dependencies [name, version], e.g. [ ['active_support', '>= 1.3.1'] ]
+  p.extra_deps = [['activesupport', '>= 2.0.1'], ['libxml-ruby', '= 0.5.2.0']]     
   
   #p.spec_extras = {}    # A hash of extra values to set in the gemspec.
   

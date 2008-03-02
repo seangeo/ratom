@@ -6,7 +6,9 @@ Rakefile
 config/hoe.rb
 config/requirements.rb
 lib/atom.rb
+lib/atom/pub.rb
 lib/atom/version.rb
+lib/atom/xml/parser.rb
 log/debug.log
 script/destroy
 script/generate
