@@ -1,4 +1,7 @@
-== 0.0.1 2008-01-11
+== 0.2.0 2008-03-03
 
-* 1 major enhancement:
-  * Initial release
+* Initial release to the public.
+
+== < 0.2.0
+
+* Internal releases.
