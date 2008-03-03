@@ -1,8 +1,8 @@
 begin
-  require 'spec/rake/spectask'
+  require 'spec'
 rescue LoadError
   require 'rubygems'
-  gem 'rspec'
+  require 'spec'
 end
 begin
   require 'spec/rake/spectask'
