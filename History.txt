@@ -1,7 +1,7 @@
-== 0.2.0 2008-03-03
+== 0.2.1 2008-03-03
 
 * Initial release to the public.
 
-== < 0.2.0
+== < 0.2.1
 
 * Internal releases.

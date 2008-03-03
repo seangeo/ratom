@@ -3,7 +3,7 @@ require 'atom/version'
 AUTHOR = 'Peerworks'  # can also be an array of Authors
 EMAIL = "info@peerworks.org"
 DESCRIPTION = "Atom Syndication and Publication API"
-GEM_NAME = 'rAtom' # what ppl will type to install your gem
+GEM_NAME = 'ratom' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'ratom' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
@@ -68,5 +68,5 @@ end
 
 CHANGES = hoe.paragraphs_of('History.txt', 0..1).join("\\n\\n")
 PATH    = RUBYFORGE_PROJECT
-hoe.remote_rdoc_dir = File.join(PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,''), 'rdoc')
+hoe.remote_rdoc_dir = PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,'')
 hoe.rsync_args = '-av --delete --ignore-errors'
