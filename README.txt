@@ -105,6 +105,9 @@ You can also delete an entry using the <tt>destroy!</tt> method, but we won't do
 * Support batching of protocol operations.
 * Examples of editing existing entries.
 * All my tests have been against internal systems, I'd really like feedback from those who have tried rAtom using existing blog software that supports APP.
+* Handle all base uri tests.
+* What to do with extension elements?
+* Add slug support.
 
 == Source Code
 
