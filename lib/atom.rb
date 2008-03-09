@@ -4,9 +4,9 @@
 #
 
 require 'forwardable'
+require 'delegate'
 require 'rubygems'
 require 'xml/libxml'
-require 'activesupport'
 require 'atom/xml/parser.rb'
 
 module Atom # :nodoc:
@@ -89,7 +89,6 @@ module Atom # :nodoc:
     # http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.content
     class Base < DelegateClass(String)
       include Xml::Parseable
-      attribute :type, :'xml:lang'
             
       def initialize(c)
         __setobj__(c)
@@ -112,7 +111,8 @@ module Atom # :nodoc:
     end
     
     # Text content within an Atom document.
-    class Text < Base
+    class Text < Base      
+      attribute :type, :'xml:lang'
       def initialize(xml)
         super(xml.read_string)
         parse(xml, :once => true)
@@ -120,8 +120,8 @@ module Atom # :nodoc:
     end
     
     # Html content within an Atom document.
-    class Html < Base
-      
+    class Html < Base      
+      attribute :type, :'xml:lang'
       # Creates a new Content::Html.
       #
       # +o+:: An XML::Reader or a HTML string.
@@ -148,7 +148,8 @@ module Atom # :nodoc:
     
     # XHTML content within an Atom document.
     class Xhtml < Base
-      XHTML = 'http://www.w3.org/1999/xhtml'
+      XHTML = 'http://www.w3.org/1999/xhtml'      
+      attribute :type, :'xml:lang'
       
       def initialize(xml)        
         parse(xml, :once => true)

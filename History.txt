@@ -1,3 +1,7 @@
+== 0.2.2 2008-02-10
+
+* Removed dependency on ActiveSupport.
+
 == 0.2.1 2008-03-03
 
 * Initial release to the public.

@@ -14,7 +14,6 @@ and can be used to access Atom feeds or to script publishing entries to a blog s
 
 == Prerequisites
 
-* ActiveSupport, >= 2.0.1
 * libxml-ruby, = 0.5.2.0
 * rspec (Only required for tests)
 

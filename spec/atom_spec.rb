@@ -513,7 +513,7 @@ describe Atom do
         end
         
         it "should include the non-core type in the list of links" do
-          @entry.links.map(&:href).should include('http://www.snellspace.com/public/linktests/license')
+          @entry.links.map{|l| l.href }.should include('http://www.snellspace.com/public/linktests/license')
         end
       end
       
@@ -531,7 +531,7 @@ describe Atom do
         end
         
         it "should include the non-core type in the list of links identified by a uri" do
-          @entry.links.map(&:href).should include('http://www.snellspace.com/public/linktests/example')
+          @entry.links.map{|l| l.href }.should include('http://www.snellspace.com/public/linktests/example')
         end
       end
       
@@ -549,7 +549,7 @@ describe Atom do
         end
         
         it "should include the non-core type in the list of links" do
-          @entry.links.map(&:href).should include('http://www.snellspace.com/public/linktests/license')
+          @entry.links.map{|l| l.href }.should include('http://www.snellspace.com/public/linktests/license')
         end
       end
       
@@ -567,7 +567,7 @@ describe Atom do
         end
         
         it "should include the non-core type in the list of links identified by a uri" do
-          @entry.links.map(&:href).should include('http://www.snellspace.com/public/linktests/example')
+          @entry.links.map{|l| l.href }.should include('http://www.snellspace.com/public/linktests/example')
         end
       end
     end

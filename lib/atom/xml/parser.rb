@@ -7,6 +7,27 @@
 
 require 'net/http'
 
+# Just a couple methods form transforming strings
+unless defined?(ActiveSupport)
+  class String # :nodoc:
+    def singularize
+      if self =~ /ies$/
+        self.sub(/ies$/, 'y')
+      else
+        self.sub(/s$/, '')
+      end
+    end
+  
+    def demodulize
+      self.sub(/.*::/, '')
+    end
+    
+    def constantize
+      Object.module_eval("::#{self}", __FILE__, __LINE__)
+    end
+  end
+end
+
 module Atom
   module Xml # :nodoc:
     module Parseable # :nodoc:
@@ -39,9 +60,12 @@ module Atom
       end
   
       def Parseable.included(o)
-        o.send(:cattr_accessor, :element_specs, :attributes)
-        o.element_specs = {}
-        o.attributes = []
+        o.class_eval do
+          def o.element_specs;  @element_specs ||= {}; end
+          def o.attributes; @attributes ||= []; end
+          def element_specs; self.class.element_specs; end
+          def attributes; self.class.attributes; end
+        end
         o.send(:extend, DeclarationMethods)
       end
       
