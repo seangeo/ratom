@@ -107,6 +107,7 @@ You can also delete an entry using the <tt>destroy!</tt> method, but we won't do
 * Handle all base uri tests.
 * What to do with extension elements?
 * Add slug support.
+* Handle HTTP basic authentication.
 
 == Source Code
 
