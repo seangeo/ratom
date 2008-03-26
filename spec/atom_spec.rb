@@ -7,6 +7,7 @@
 
 require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'net/http'
+require 'time'
 
 describe Atom do  
   describe "Atom::Feed.load_feed" do
