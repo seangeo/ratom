@@ -9,6 +9,76 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'net/http'
 require 'time'
 
+shared_examples_for 'simple_single_entry.atom attributes' do
+  it "should parse title" do
+    @feed.title.should == 'Example Feed'
+  end
+
+  it "should parse updated" do
+    @feed.updated.should == Time.parse('2003-12-13T18:30:02Z')
+  end
+
+  it "should parse id" do
+    @feed.id.should == 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6'
+  end
+
+  it "should have an entries array" do
+    @feed.entries.should be_an_instance_of(Array)
+  end
+
+  it "should have one element in the entries array" do
+    @feed.entries.size.should == 1
+  end
+
+  it "should have an alternate" do
+    @feed.alternate.should_not be_nil
+  end
+
+  it "should have an Atom::Link as the alternate" do
+    @feed.alternate.should be_an_instance_of(Atom::Link)
+  end
+
+  it "should have the correct href in the alternate" do
+    @feed.alternate.href.should == 'http://example.org/'
+  end
+  
+  it "should parse title" do
+    @entry.title.should == 'Atom-Powered Robots Run Amok'
+  end
+  
+  it "should have an alternate" do
+    @entry.alternate.should_not be_nil
+  end
+  
+  it "should have an Atom::Link as the alternate" do
+    @entry.alternate.should be_an_instance_of(Atom::Link)
+  end
+  
+  it "should have the correct href on the alternate" do
+    @entry.alternate.href.should == 'http://example.org/2003/12/13/atom03'
+  end
+  
+  it "should parse id" do
+    @entry.id.should == 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a'
+  end
+  
+  it "should parse updated" do
+    @entry.updated.should == Time.parse('2003-12-13T18:30:02Z')
+  end
+  
+  it "should parse summary" do
+    @entry.summary.should == 'Some text.'
+  end
+  
+  it "should parse content" do
+    @entry.content.should == 'This <em>is</em> html.'
+  end
+  
+  it "should parse content type" do
+    @entry.content.type.should == 'html'
+  end
+end
+
 describe Atom do  
   describe "Atom::Feed.load_feed" do
     it "should accept an IO" do
@@ -71,83 +141,10 @@ describe Atom do
   describe 'SimpleSingleFeed' do
     before(:all) do 
       @feed = Atom::Feed.load_feed(File.open('spec/fixtures/simple_single_entry.atom'))
+      @entry = @feed.entries.first
     end
        
-    describe Atom::Feed do      
-      it "should parse title" do
-        @feed.title.should == 'Example Feed'
-      end
-
-      it "should parse updated" do
-        @feed.updated.should == Time.parse('2003-12-13T18:30:02Z')
-      end
-
-      it "should parse id" do
-        @feed.id.should == 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6'
-      end
-
-      it "should have an entries array" do
-        @feed.entries.should be_an_instance_of(Array)
-      end
-
-      it "should have one element in the entries array" do
-        @feed.entries.size.should == 1
-      end
-
-      it "should have an alternate" do
-        @feed.alternate.should_not be_nil
-      end
-
-      it "should have an Atom::Link as the alternate" do
-        @feed.alternate.should be_an_instance_of(Atom::Link)
-      end
-
-      it "should have the correct href in the alternate" do
-        @feed.alternate.href.should == 'http://example.org/'
-      end
-    end
-
-    describe Atom::Entry do
-      before(:each) do
-        @entry = @feed.entries.first
-      end
-      
-      it "should parse title" do
-        @entry.title.should == 'Atom-Powered Robots Run Amok'
-      end
-      
-      it "should have an alternate" do
-        @entry.alternate.should_not be_nil
-      end
-      
-      it "should have an Atom::Link as the alternate" do
-        @entry.alternate.should be_an_instance_of(Atom::Link)
-      end
-      
-      it "should have the correct href on the alternate" do
-        @entry.alternate.href.should == 'http://example.org/2003/12/13/atom03'
-      end
-      
-      it "should parse id" do
-        @entry.id.should == 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a'
-      end
-      
-      it "should parse updated" do
-        @entry.updated.should == Time.parse('2003-12-13T18:30:02Z')
-      end
-      
-      it "should parse summary" do
-        @entry.summary.should == 'Some text.'
-      end
-      
-      it "should parse content" do
-        @entry.content.should == 'This <em>is</em> html.'
-      end
-      
-      it "should parse content type" do
-        @entry.content.type.should == 'html'
-      end
-    end
+    it_should_behave_like "simple_single_entry.atom attributes"
   end
   
   describe 'ComplexFeed' do
@@ -906,6 +903,39 @@ describe Atom do
         entry_count.should == 1
       end
     end
+    
+    describe "entry_with_simple_extensions.atom" do
+      before(:each) do
+        @feed = Atom::Feed.load_feed(File.open('spec/fixtures/entry_with_simple_extensions.atom'))
+        @entry = @feed.entries.first
+      end
+      
+      it "should load simple extension for feed" do
+        @feed["http://example.org/example", 'simple1'].should == 'Simple1 Value'
+      end
+      
+      it "should load empty simple extension for feed" do
+        @feed["http://example.org/example", 'simple-empty'].should == ''
+      end
+      
+      it "should load simple extension 1 for entry" do
+        @entry["http://example.org/example", 'simple1'].should == 'Simple1 Entry Value'
+      end
+      
+      it "should load simple extension 2 for entry" do 
+        @entry["http://example.org/example", 'simple2'].should == 'Simple2' 
+      end
+      
+      it "should find a simple extension in another namespace" do
+        @entry["http://example2.org/example2", 'simple1'].should == 'Simple Entry Value (NS2)'
+      end
+      
+      it "should read an extension with the same local name as an Atom element" do
+        @feed['http://example.org/example', 'title'].should == 'Extension Title'
+      end
+      
+      it_should_behave_like 'simple_single_entry.atom attributes'
+    end
   end
   
   describe Atom::Link do
@@ -976,7 +1006,7 @@ describe Atom do
     
     it "should raise error when to_xml'ing non-utf8 content" do
       lambda {
-        puts (Atom::Entry.new do |entry|
+        puts(Atom::Entry.new do |entry|
           entry.title = "My entry"
           entry.id = "urn:entry:1"
           entry.content = Atom::Content::Html.new("this is not \227 utf8")

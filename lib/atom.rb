@@ -16,7 +16,35 @@ module Atom # :nodoc:
   class ParseError < StandardError; end
   # Raised when a Serialization Error occurs.
   class SerializationError < StandardError; end
-      
+  
+  # Provides support for reading and writing simple extensions as defined by the Atom Syndication Format.
+  #
+  # A Simple extension is an element from a non-atom namespace that has no attributes and only contains
+  # text content. It is interpreted as a key-value pair when the namespace and the localname of the
+  # extension make up the key.    
+  module SimpleExtensions
+    attr_reader :simple_extensions
+    
+    # Gets a simple extension value for a given namespace and local name.
+    #
+    # +ns+:: The namespace.
+    # +localname+:: The local name of the extension element.
+    #
+    def [](ns, localname)
+      @simple_extensions["{#{ns},#{localname}}"]
+    end
+
+    # Sets a simple extension value for a given namespace and local name.
+    #
+    # +ns+:: The namespace.
+    # +localname+:: The local name of the extension element.
+    # +value+:: The value to set.
+    #
+    def []=(ns, localname, value)
+      @simple_extensions["{#{ns},#{localname}}"] = value
+    end
+  end
+  
   # Represents a Generator as defined by the Atom Syndication Format specification.
   #
   # The generator identifies an agent or engine used to a produce a feed.
@@ -253,9 +281,10 @@ module Atom # :nodoc:
   # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.feed
   class Feed
     include Xml::Parseable
+    include SimpleExtensions
     extend Forwardable
     def_delegators :@links, :alternate, :self, :via, :first_page, :last_page, :next_page, :prev_page
-        
+
     loadable! 
     
     element :id, :rights
@@ -276,6 +305,7 @@ module Atom # :nodoc:
     #
     def initialize(o = {})
       @links, @entries = Links.new, []
+      @simple_extensions = {}
       
       case o
       when XML::Reader
@@ -341,7 +371,7 @@ module Atom # :nodoc:
       else
         self.entries.each(&block)
       end
-    end
+    end   
   end
   
   # Represents an Entry as defined by the Atom Syndication Format specification.
@@ -369,6 +399,7 @@ module Atom # :nodoc:
   # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.entry
   class Entry
     include Xml::Parseable
+    include SimpleExtensions
     extend Forwardable
     def_delegators :@links, :alternate, :self, :alternates, :enclosures, :edit_link, :via
     
@@ -394,6 +425,7 @@ module Atom # :nodoc:
       @links = Links.new
       @authors = []
       @contributors = []
+      @simple_extensions = {}
       
       case o
       when XML::Reader

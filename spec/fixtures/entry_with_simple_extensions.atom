@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:ex="http://example.org/example" xmlns:ex2="http://example2.org/example2">
+
+  <title>Example Feed</title> 
+  <link href="http://example.org/"/>
+  <updated>2003-12-13T18:30:02Z</updated>
+  <author> 
+    <name>John Doe</name>
+  </author> 
+  <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
+  <ex:simple1>Simple1 Value</ex:simple1>
+  <ex:simple-empty/>
+  <ex:title>Extension Title</ex:title>
+  
+  <entry>
+    <title>Atom-Powered Robots Run Amok</title>
+    <link href="http://example.org/2003/12/13/atom03"/>
+    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+    <content type="html">This &lt;em&gt;is&lt;/em&gt; html.</content>
+    <updated>2003-12-13T18:30:02Z</updated>
+    <summary>Some text.</summary>
+    <ex:simple1>Simple1 Entry Value</ex:simple1>
+    <ex:simple2>Simple2</ex:simple2>
+    <ex2:simple1>Simple Entry Value (NS2)</ex2:simple1>
+  </entry>
+
+</feed>

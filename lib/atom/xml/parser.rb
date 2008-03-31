@@ -6,6 +6,7 @@
 #
 
 require 'net/http'
+require 'time'
 
 # Just a couple methods form transforming strings
 unless defined?(ActiveSupport)
@@ -36,7 +37,7 @@ module Atom
         loop do
           case xml.node_type
           when XML::Reader::TYPE_ELEMENT
-            if element_specs.include?(xml.local_name)
+            if element_specs.include?(xml.local_name) && [Atom::NAMESPACE, Atom::Pub::NAMESPACE].include?(xml.namespace_uri)
               element_specs[xml.local_name].parse(self, xml)
             elsif attributes.any?
               while (xml.move_to_next_attribute == 1)
@@ -45,6 +46,8 @@ module Atom
                   self.send("#{xml.name.sub(/:/, '_')}=", xml.value)
                 end
               end
+            elsif self.respond_to?(:simple_extensions)
+              self[xml.namespace_uri, xml.local_name] = xml.read_string
             end
           end
           break unless !options[:once] && xml.next == 1 && xml.depth >= starting_depth
