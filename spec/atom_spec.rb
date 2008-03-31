@@ -973,6 +973,16 @@ describe Atom do
       other = Atom::Entry.load_entry(@entry.to_xml)
       @entry.should == other
     end
+    
+    it "should raise error when to_xml'ing non-utf8 content" do
+      lambda {
+        puts (Atom::Entry.new do |entry|
+          entry.title = "My entry"
+          entry.id = "urn:entry:1"
+          entry.content = Atom::Content::Html.new("this is not \227 utf8")
+        end.to_xml)  
+      }.should raise_error(Atom::SerializationError)      
+    end
   end
   
   describe 'Atom::Feed initializer' do

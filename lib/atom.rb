@@ -14,6 +14,8 @@ module Atom # :nodoc:
   
   # Raised when a Parsing Error occurs.
   class ParseError < StandardError; end
+  # Raised when a Serialization Error occurs.
+  class SerializationError < StandardError; end
       
   # Represents a Generator as defined by the Atom Syndication Format specification.
   #
@@ -138,11 +140,23 @@ module Atom # :nodoc:
       end
       
       def to_xml(nodeonly = true, name = 'content') # :nodoc:
-        node = XML::Node.new(name)
-        node << self.to_s
-        node['type'] = 'html'
-        node['xml:lang'] = self.xml_lang        
-        node
+        require 'iconv'
+        # Convert from utf-8 to utf-8 as a way of making sure the content is UTF-8.
+        #
+        # This is a pretty crappy way to do it but if we don't check libxml just
+        # fails silently and outputs the content element without any content. At
+        # least checking here and raising an exception gives the caller a chance
+        # to try and recitfy the situation.
+        #
+        begin
+          node = XML::Node.new(name)
+          node << Iconv.iconv('utf-8', 'utf-8', self.to_s)
+          node['type'] = 'html'
+          node['xml:lang'] = self.xml_lang        
+          node
+        rescue Iconv::IllegalSequence => e
+          raise SerializationError, "Content must be converted to UTF-8 before attempting to serialize to XML: #{e.message}."
+        end
       end
     end
     
