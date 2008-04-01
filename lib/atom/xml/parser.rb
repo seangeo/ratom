@@ -47,7 +47,7 @@ module Atom
                 end
               end
             elsif self.respond_to?(:simple_extensions)
-              self[xml.namespace_uri, xml.local_name] = xml.read_string
+              self[xml.namespace_uri, xml.local_name] << xml.read_string
             end
           end
           break unless !options[:once] && xml.next == 1 && xml.depth >= starting_depth
@@ -113,6 +113,21 @@ module Atom
           if value = self.send("#{attribute.sub(/:/, '_')}")
             if value != 0
               node[attribute] = value.to_s
+            end
+          end
+        end
+        
+        if self.respond_to?(:simple_extensions) && self.simple_extensions
+          self.simple_extensions.each do |name, value_array|
+            if name =~ /\{(.*),(.*)\}/
+              value_array.each do |value|
+                ext = XML::Node.new($2)
+                ext['xmlns'] = $1
+                ext << value
+                node << ext
+              end
+            else
+              STDERR.print "Couldn't split #{name}"
             end
           end
         end

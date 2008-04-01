@@ -11,7 +11,9 @@ require 'atom/xml/parser.rb'
 
 module Atom # :nodoc:
   NAMESPACE = 'http://www.w3.org/2005/Atom' unless defined?(NAMESPACE)
-  
+  module Pub
+    NAMESPACE = 'http://www.w3.org/2007/app'
+  end
   # Raised when a Parsing Error occurs.
   class ParseError < StandardError; end
   # Raised when a Serialization Error occurs.
@@ -21,7 +23,10 @@ module Atom # :nodoc:
   #
   # A Simple extension is an element from a non-atom namespace that has no attributes and only contains
   # text content. It is interpreted as a key-value pair when the namespace and the localname of the
-  # extension make up the key.    
+  # extension make up the key. Since in XML you can have many instances of an element, the values are
+  # represented as an array of strings, so to manipulate the values manipulate the array returned by
+  # +[ns, localname]+.
+  #
   module SimpleExtensions
     attr_reader :simple_extensions
     
@@ -31,17 +36,12 @@ module Atom # :nodoc:
     # +localname+:: The local name of the extension element.
     #
     def [](ns, localname)
-      @simple_extensions["{#{ns},#{localname}}"]
-    end
-
-    # Sets a simple extension value for a given namespace and local name.
-    #
-    # +ns+:: The namespace.
-    # +localname+:: The local name of the extension element.
-    # +value+:: The value to set.
-    #
-    def []=(ns, localname, value)
-      @simple_extensions["{#{ns},#{localname}}"] = value
+      if @simple_extensions.nil?
+        @simple_extensions = {}
+      end
+      
+      key = "{#{ns},#{localname}}"
+      (@simple_extensions[key] or @simple_extensions[key] = [])
     end
   end
   
@@ -305,7 +305,6 @@ module Atom # :nodoc:
     #
     def initialize(o = {})
       @links, @entries = Links.new, []
-      @simple_extensions = {}
       
       case o
       when XML::Reader
@@ -425,7 +424,6 @@ module Atom # :nodoc:
       @links = Links.new
       @authors = []
       @contributors = []
-      @simple_extensions = {}
       
       case o
       when XML::Reader

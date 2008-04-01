@@ -911,30 +911,44 @@ describe Atom do
       end
       
       it "should load simple extension for feed" do
-        @feed["http://example.org/example", 'simple1'].should == 'Simple1 Value'
+        @feed["http://example.org/example", 'simple1'].should == ['Simple1 Value']
       end
       
       it "should load empty simple extension for feed" do
-        @feed["http://example.org/example", 'simple-empty'].should == ''
+        @feed["http://example.org/example", 'simple-empty'].should == ['']
       end
       
       it "should load simple extension 1 for entry" do
-        @entry["http://example.org/example", 'simple1'].should == 'Simple1 Entry Value'
+        @entry["http://example.org/example", 'simple1'].should == ['Simple1 Entry Value']
       end
       
       it "should load simple extension 2 for entry" do 
-        @entry["http://example.org/example", 'simple2'].should == 'Simple2' 
+        @entry["http://example.org/example", 'simple2'].should == ['Simple2', 'Simple2a']
       end
       
       it "should find a simple extension in another namespace" do
-        @entry["http://example2.org/example2", 'simple1'].should == 'Simple Entry Value (NS2)'
+        @entry["http://example2.org/example2", 'simple1'].should == ['Simple Entry Value (NS2)']
       end
       
       it "should read an extension with the same local name as an Atom element" do
-        @feed['http://example.org/example', 'title'].should == 'Extension Title'
+        @feed['http://example.org/example', 'title'].should == ['Extension Title']
       end
       
       it_should_behave_like 'simple_single_entry.atom attributes'
+    end
+    
+    describe 'writing simple extensions' do
+      it "should recode and re-read a simple extension element" do
+        entry = Atom::Entry.new do |entry|
+          entry.id = 'urn:test'
+          entry.title = 'Simple Ext. Test'
+          entry.updated = Time.now
+          entry['http://example.org', 'title'] << 'Example title'
+        end
+        
+        entry2 = Atom::Entry.load_entry(entry.to_xml)
+        entry2['http://example.org', 'title'].should == ['Example title']
+      end
     end
   end
   

@@ -21,7 +21,6 @@ module Atom
         @response = response
       end
     end
-    NAMESPACE = 'http://www.w3.org/2007/app'
     
     class Service
       include Atom::Xml::Parseable

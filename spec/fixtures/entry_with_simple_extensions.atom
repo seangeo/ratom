@@ -21,6 +21,7 @@
     <summary>Some text.</summary>
     <ex:simple1>Simple1 Entry Value</ex:simple1>
     <ex:simple2>Simple2</ex:simple2>
+    <ex:simple2>Simple2a</ex:simple2>
     <ex2:simple1>Simple Entry Value (NS2)</ex2:simple1>
   </entry>
 
