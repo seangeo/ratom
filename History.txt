@@ -1,8 +1,8 @@
 == Current 2008-03-31
 
 * Raise Atom::Serialization error when you try and serialize non-utf8 content.
-* Support reading simple extension elements.
-* Support writing simple extension elements.
+* Support reading simple extension elements, see README.txt.
+* Support writing simple extension elements, see README.txt.
 
 == 0.2.2 2008-02-10
 

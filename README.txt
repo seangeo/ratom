@@ -97,6 +97,45 @@ required to let us update to the entry.  For example, lets change the content an
   
 You can also delete an entry using the <tt>destroy!</tt> method, but we won't do that will we?.
     
+=== Extension elements
+
+As of version 0.3.0, rAtom support simple extension elements on feeds and entries.  As defined in the Atom Syndication Format,
+simple extension elements consist of XML elements from a non-Atom namespace that have no attributes or child elements, i.e.
+they are empty or only contain text content.  These elements are treated as a name value pair where the element namespace
+and local name make up the key and the content of the element is the value, empty elements will be treated as an empty string.
+
+To access extension elements use the [] method on the Feed or Entry. For example, if we are parsing the follow Atom document
+with extensions:
+
+  <?xml version="1.0"?>
+  <feed xmlns="http://www.w3.org/2005/Atom" xmlns:ex="http://example.org">
+    <title>Feed with extensions</title>
+    <ex:myelement>Something important</ex:myelement>
+  </feed>
+  
+We could then access the extension element on the feed using:
+
+  > feed["http://example.org", "myelement"]
+  => ["Something important"]
+  
+Note that the return value is an array. This is because XML allows multiple instances of the element. 
+
+To set an extension element you append to the array:
+
+  > feed['http://example.org', 'myelement'] << 'Something less important'
+  => ["Something important", "Something less important"]
+  
+You can then call to_xml and rAtom will serialize the extension elements into xml.
+
+  > puts feed.to_xml
+  <?xml version="1.0"?>
+  <feed xmlns="http://www.w3.org/2005/Atom">
+    <myelement xmlns="http://example.org">Something important</myelement>
+    <myelement xmlns="http://example.org">Something less important</myelement>
+  </feed>
+  
+Notice that the output repeats the xmlns attribute for each of the extensions, this is semantically the same the input XML, just a bit
+ugly.  It seems to be a limitation of the libxml-Ruby API. But if anyone knows a work around I'd gladly accept a patch (or even advice).
 
 == TODO
 
@@ -105,7 +144,6 @@ You can also delete an entry using the <tt>destroy!</tt> method, but we won't do
 * Examples of editing existing entries.
 * All my tests have been against internal systems, I'd really like feedback from those who have tried rAtom using existing blog software that supports APP.
 * Handle all base uri tests.
-* What to do with extension elements?
 * Add slug support.
 * Handle HTTP basic authentication.
 
