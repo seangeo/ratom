@@ -1,3 +1,8 @@
+== 0.3.1 2008-04-02
+
+* Bunch of fixes to the Atom::Pub classes to make them work like the Atom classes
+  with respect to initializers and to_xml.
+
 == 0.3.0 2008-04-02
 
 * Raise Atom::Serialization error when you try and serialize non-utf8 content.
