@@ -46,7 +46,9 @@ module Atom
           ensure
             xml.close
           end
-        end        
+        end
+        
+        yield(self) if block_given?        
       end
     end
     

@@ -107,6 +107,15 @@ describe Atom::Pub do
     it "should be able to be created without xml" do
       lambda { Atom::Pub::Service.new }.should_not raise_error
     end
+    
+    it "should yield in the initializer" do
+      yielded = false
+      Atom::Pub::Service.new do
+        yielded = true
+      end
+      
+      yielded.should be_true
+    end
 
     it "should parse it's output" do
       orig = File.read('spec/app/service.xml')
