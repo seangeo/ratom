@@ -1,4 +1,4 @@
-== Current 2008-03-31
+== 0.3.0 2008-04-02
 
 * Raise Atom::Serialization error when you try and serialize non-utf8 content.
 * Support reading simple extension elements, see README.txt.
