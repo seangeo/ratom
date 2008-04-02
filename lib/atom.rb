@@ -147,6 +147,12 @@ module Atom # :nodoc:
         super(xml.read_string)
         parse(xml, :once => true)
       end
+      
+      def to_xml(nodeonly = true, name = 'content')
+        node = XML::Node.new(name)
+        node << self.to_s
+        node
+      end
     end
     
     # Html content within an Atom document.
@@ -287,6 +293,7 @@ module Atom # :nodoc:
 
     loadable! 
     
+    namespace Atom::NAMESPACE
     element :id, :rights
     element :generator, :class => Generator
     element :title, :subtitle, :class => Content
@@ -403,6 +410,7 @@ module Atom # :nodoc:
     def_delegators :@links, :alternate, :self, :alternates, :enclosures, :edit_link, :via
     
     loadable!
+    namespace Atom::NAMESPACE
     element :title, :id, :summary
     element :updated, :published, :class => Time, :content_only => true
     element :content, :class => Content

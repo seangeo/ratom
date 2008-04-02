@@ -24,6 +24,7 @@ module Atom
     
     class Service
       include Atom::Xml::Parseable
+      namespace Atom::Pub::NAMESPACE
       elements :workspaces
       loadable! do |reader, message, severity, base, line|
         if severity == XML::Reader::SEVERITY_ERROR
@@ -31,29 +32,43 @@ module Atom
         end
       end
       
-      def initialize(xml)
+      def initialize(xml = nil)
         @workspaces = []
-        begin
-          if next_node_is?(xml, 'service', Atom::Pub::NAMESPACE)
-            xml.read
-            parse(xml)
-          else
-            raise ArgumentError, "XML document was missing atom:feed"        
+
+        if xml
+          begin
+            if next_node_is?(xml, 'service', Atom::Pub::NAMESPACE)
+              xml.read
+              parse(xml)
+            else
+              raise ArgumentError, "XML document was missing atom:service"        
+            end
+          ensure
+            xml.close
           end
-        ensure
-          xml.close
-        end
+        end        
       end
     end
     
-    class Categories
+    class Category
       include Atom::Xml::Parseable
+      def initialize(o)
+        o.read
+        parse(o, :once => true)
+      end
+    end
+    
+    class Categories < DelegateClass(Array)
+      include Atom::Xml::Parseable
+      elements :categories, :class => Category
       
       def initialize(o)
+        super([])
         o.read
         parse(o)
       end
-      
+
+      def categories; self; end
     end
     
     class Workspace
@@ -61,21 +76,31 @@ module Atom
       element :title, :class => Content
       elements :collections
       
-      def initialize(o)
+      def initialize(o = nil)
         @collections = []
-        o.read
-        parse(o)
+        
+        case o
+        when XML::Reader
+          o.read
+          parse(o)
+        when Hash
+          o.each do |k, v|
+            self.send("#{k}=".to_sym, v)
+          end
+        end
+        
+        yield(self) if block_given?
       end
     end
     
     class Collection
       include Atom::Xml::Parseable
       attribute :href
-      element :categories, :class => Categories
       element :title, :class => Content
+      element :categories, :class => Categories
       elements :accepts, :content_only => true
       
-      def initialize(o)
+      def initialize(o = nil)
         @accepts = []
         case o
         when XML::Reader
@@ -89,6 +114,8 @@ module Atom
             self.send("#{k}=", v)
           end  
         end
+        
+        yield(self) if block_given?
       end
       
       def feed

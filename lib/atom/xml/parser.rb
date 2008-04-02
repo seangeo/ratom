@@ -68,6 +68,7 @@ module Atom
           def o.attributes; @attributes ||= []; end
           def element_specs; self.class.element_specs; end
           def attributes; self.class.attributes; end
+          def o.namespace(ns = @namespace); @namespace = ns; end
         end
         o.send(:extend, DeclarationMethods)
       end
@@ -84,27 +85,32 @@ module Atom
         end
       end
       
-      def to_xml(nodeonly = false, root_name = self.class.name.demodulize.downcase)
-        
+      def to_xml(nodeonly = false, root_name = self.class.name.demodulize.downcase)        
         node = XML::Node.new(root_name)
-        node['xmlns'] = Atom::NAMESPACE unless nodeonly
+        node['xmlns'] = self.class.namespace unless nodeonly || !self.class.respond_to?(:namespace)
         
-        self.class.element_specs.values.each do |spec|
-          if spec.single?
-            if attribute = self.send(spec.attribute)
-              if attribute.is_a?(Time)
-                node << XML::Node.new(spec.name, attribute.xmlschema)
-              elsif attribute.respond_to?(:to_xml)
-                node << attribute.to_xml(true)
-              else
-                n =  XML::Node.new(spec.name)
-                n << attribute
-                node << n
-              end
+        self.class.element_specs.values.select {|s| s.single? }.each do |spec|
+          if attribute = self.send(spec.attribute)
+            if attribute.is_a?(Time)
+              node << XML::Node.new(spec.name, attribute.xmlschema)
+            elsif attribute.respond_to?(:to_xml)
+              node << attribute.to_xml(true, spec.name)
+            else
+              n =  XML::Node.new(spec.name)
+              n << attribute
+              node << n
             end
-          else
-            self.send(spec.attribute).each do |attribute|
+          end
+        end  
+        
+        self.class.element_specs.values.select {|s| !s.single? }.each do |spec|
+          self.send(spec.attribute).each do |attribute|
+            if attribute.respond_to?(:to_xml)
               node << attribute.to_xml(true, spec.name.singularize)
+            else
+              n = XML::Node.new(spec.name.singularize)
+              n << attribute
+              node << n
             end
           end
         end

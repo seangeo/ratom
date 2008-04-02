@@ -12,119 +12,85 @@ require 'atom/version'
 require 'uri'
 require 'net/http'
 
-describe Atom::Pub do  
-  describe Atom::Pub::Service do
-    before(:all) do
-      @service = Atom::Pub::Service.load_service(File.open('spec/app/service.xml'))
-    end
-      
-    it "should have 2 workspaces" do
-      @service.should have(2).workspaces
-    end
-  
-    describe 'workspace 1' do
-      before(:each) do
-        @workspace = @service.workspaces.first
-      end
+shared_examples_for 'parser of spec/app/service.xml' do
+  it "should have 2 workspaces" do
+    @service.should have(2).workspaces
+  end
     
-      it "should have a title" do
-        @workspace.title.should == "Main Site"
-      end
-    
-      it "should have 2 collections" do
-        @workspace.should have(2).collections
-      end
-    
-      describe 'first collection' do
-        before(:each) do
-          @collection = @workspace.collections.first
-        end
-      
-        it "should have the right href" do
-          @collection.href.should == 'http://example.org/blog/main'
-        end
-      
-        it "should have categories" do
-          @collection.categories.should_not be_nil
-        end
-      
-        it "should have a title" do
-          @collection.title.should == 'My Blog Entries'
-        end
-      end
-    
-      describe 'second collection' do
-        before(:each) do
-          @collection = @workspace.collections[1]
-        end
-      
-        it "should have a title" do
-          @collection.title.should == 'Pictures'
-        end
-      
-        it "should have the right href" do
-          @collection.href.should == 'http://example.org/blog/pic'
-        end
-      
-        it "should not have categories" do
-          @collection.categories.should be_nil
-        end
-      
-        it "should have 3 accepts" do
-          @collection.should have(3).accepts
-        end
-      
-        it "should accept 'image/png'" do
-          @collection.accepts.should include('image/png')
-        end
-      
-        it "should accept 'image/jpeg'" do
-          @collection.accepts.should include('image/jpeg')
-        end
-      
-        it "should accept 'image/gif'" do
-          @collection.accepts.should include('image/gif')
-        end
-      end
-    end
-  
-    describe 'workspace 2' do
-      before(:each) do
-        @workspace = @service.workspaces[1]
-      end
-    
-      it "should have a title" do
-        @workspace.title.should == 'Sidebar Blog'
-      end
-    
-      it "should have 1 collection" do
-        @workspace.should have(1).collections
-      end
-    
-      describe 'collection' do
-        before(:each) do
-          @collection = @workspace.collections.first
-        end
-      
-        it "should have a title" do
-          @collection.title.should == 'Remaindered Links'
-        end
-      
-        it "should have 1 accept" do
-          @collection.should have(1).accepts
-        end
-      
-        it "should accept 'application/atom+xml;type=entry'" do
-          @collection.accepts.should include('application/atom+xml;type=entry')
-        end
-      
-        it "should have categories" do
-          @collection.categories.should_not be_nil
-        end
-      end
-    end
+  it "should have a title" do
+    @workspace.title.should == "Main Site"
+  end
+
+  it "should have 2 collections" do
+    @workspace.should have(2).collections
+  end
+
+  it "should have the right href" do
+    @collection1.href.should == 'http://example.org/blog/main'
+  end
+
+  it "should have categories" do
+    @collection1.categories.should_not be_nil
+  end
+
+  it "should have a title" do
+    @collection1.title.should == 'My Blog Entries'
   end
   
+  it "should have a title" do
+    @collection2.title.should == 'Pictures'
+  end
+
+  it "should have the right href" do
+    @collection2.href.should == 'http://example.org/blog/pic'
+  end
+
+  it "should not have categories" do
+    @collection2.categories.should be_nil
+  end
+
+  it "should have 3 accepts" do
+    @collection2.should have(3).accepts
+  end
+
+  it "should accept 'image/png'" do
+    @collection2.accepts.should include('image/png')
+  end
+
+  it "should accept 'image/jpeg'" do
+    @collection2.accepts.should include('image/jpeg')
+  end
+
+  it "should accept 'image/gif'" do
+    @collection2.accepts.should include('image/gif')
+  end
+  
+  it "should have a title on workspace 2" do
+    @workspace2.title.should == 'Sidebar Blog'
+  end
+
+  it "should have 1 collection on workspace 2" do
+    @workspace2.should have(1).collections
+  end
+
+  it "should have a title on collection 3" do
+    @collection3.title.should == 'Remaindered Links'
+  end
+
+  it "should have 1 accept on collection 3" do
+    @collection3.should have(1).accepts
+  end
+
+  it "should accept 'application/atom+xml;type=entry'" do
+    @collection3.accepts.should include('application/atom+xml;type=entry')
+  end
+
+  it "should have categories" do
+    @collection3.categories.should_not be_nil
+  end
+end
+
+describe Atom::Pub do  
   describe Atom::Pub::Service do
     it "should load from a URL" do
       uri = URI.parse('http://example.com/service.xml')
@@ -137,90 +103,165 @@ describe Atom::Pub do
     it "should raise ArgumentError with a non-http URL" do
       lambda { Atom::Pub::Service.load_service(URI.parse('file:/tmp')) }.should raise_error(ArgumentError)
     end
+    
+    it "should be able to be created without xml" do
+      lambda { Atom::Pub::Service.new }.should_not raise_error
+    end
+
+    it "should parse it's output" do
+      orig = File.read('spec/app/service.xml')
+      puts orig
+      svc = Atom::Pub::Service.load_service(orig)
+      xml = svc.to_xml
+      puts xml
+      lambda do
+        Atom::Pub::Service.load_service(xml)
+      end.should_not raise_error
+    end
+        
+    describe "load_service" do
+      before(:all) do
+        @service = Atom::Pub::Service.load_service(File.open('spec/app/service.xml'))
+        @workspace = @service.workspaces.first
+        @workspace2 = @service.workspaces[1]
+        @collection1 = @workspace.collections.first
+        @collection2 = @workspace.collections[1]
+        @collection3 = @workspace2.collections.first
+      end
+      
+      it_should_behave_like 'parser of spec/app/service.xml'
+    end
+    
+    describe "#to_xml" do
+      before(:each) do
+        @svc = Atom::Pub::Service.load_service(File.read('spec/app/service.xml'))
+        @xml = @svc.to_xml
+        @service = Atom::Pub::Service.load_service(@xml)
+        @workspace = @service.workspaces.first
+        @workspace2 = @service.workspaces[1]
+        @collection1 = @workspace.collections.first
+        @collection2 = @workspace.collections[1]
+        @collection3 = @workspace2.collections.first
+      end
+    
+      xit "should put title in Atom namespace" do
+        # TODO fix this to use a prefix?
+        @xml.should match(%r{title xmlns="#{Atom::NAMESPACE}"})
+      end
+      
+      it_should_behave_like 'parser of spec/app/service.xml'
+    end
   end
   
-  describe Atom::Pub::Collection do
-    before(:each) do
-      @collection = Atom::Pub::Collection.new(:href => 'http://example.org/blog')
-      @request_headers = {'Accept' => 'application/atom+xml', 
-                 'Content-Type' => 'application/atom+xml;type=entry',
-                 'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
-                 }
-    end
-    
-    it "should set the href from the hash" do
-      @collection.href.should == 'http://example.org/blog'
-    end
+  describe Atom::Pub::Collection do    
+    describe '.new' do    
+      it "should set the href from the hash" do
+        collection = Atom::Pub::Collection.new(:href => 'http://example.org/blog')
+        collection.href.should == 'http://example.org/blog'
+      end
       
-    it "should return the feed" do
-      response = Net::HTTPSuccess.new(nil, nil, nil)
-      response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
-      Net::HTTP.should_receive(:get_response).with(URI.parse(@collection.href)).and_return(response)
-      @collection.feed.should be_an_instance_of(Atom::Feed)
+      it "should set the href from a block" do
+        collection = Atom::Pub::Collection.new do |c|
+          c.href = "http://example.org/blog"
+        end
+        collection.href.should == 'http://example.org/blog'
+      end
     end
+     
+    describe '#publish' do 
+      before(:each) do
+        @collection = Atom::Pub::Collection.new(:href => 'http://example.org/blog')
+        @request_headers = {'Accept' => 'application/atom+xml', 
+                   'Content-Type' => 'application/atom+xml;type=entry',
+                   'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
+                   }
+      end
+      
+      it "should return the feed" do
+        response = Net::HTTPSuccess.new(nil, nil, nil)
+        response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
+        Net::HTTP.should_receive(:get_response).with(URI.parse(@collection.href)).and_return(response)
+        @collection.feed.should be_an_instance_of(Atom::Feed)
+      end
     
-    it "should send a POST request when an entry is published" do      
-      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
+      it "should send a POST request when an entry is published" do      
+        entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
                  
-      response = mock_response(Net::HTTPCreated, entry.to_xml.to_s)
+        response = mock_response(Net::HTTPCreated, entry.to_xml.to_s)
       
-      http = mock('http')
-      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
-      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+        http = mock('http')
+        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
-      created = @collection.publish(entry)
-      created.should == entry
-    end
+        created = @collection.publish(entry)
+        created.should == entry
+      end
     
-    it "should behave well when no content is returned" do      
-      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
+      it "should behave well when no content is returned" do      
+        entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
                  
-      response = mock_response(Net::HTTPCreated, " ")
+        response = mock_response(Net::HTTPCreated, " ")
       
-      http = mock('http')
-      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
-      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+        http = mock('http')
+        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
-      created = @collection.publish(entry)
-      created.should == entry
-    end
+        created = @collection.publish(entry)
+        created.should == entry
+      end
     
-    it "should raise error when response is not HTTPCreated" do
-      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
-      response = mock_response(Net::HTTPPreconditionFailed, "")
+      it "should raise error when response is not HTTPCreated" do
+        entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
+        response = mock_response(Net::HTTPPreconditionFailed, "")
       
-      http = mock('http')
-      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
-      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+        http = mock('http')
+        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
-      lambda { @collection.publish(entry) }.should raise_error(Atom::Pub::ProtocolError)
-    end
+        lambda { @collection.publish(entry) }.should raise_error(Atom::Pub::ProtocolError)
+      end
     
-    it "should copy Location into edit link of entry" do
-      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
+      it "should copy Location into edit link of entry" do
+        entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
                  
-      response = mock_response(Net::HTTPCreated, entry.to_xml.to_s, 'Location' => 'http://example.org/edit/entry1.atom')
+        response = mock_response(Net::HTTPCreated, entry.to_xml.to_s, 'Location' => 'http://example.org/edit/entry1.atom')
       
-      http = mock('http')
-      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
-      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+        http = mock('http')
+        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
-      created = @collection.publish(entry)
-      created.edit_link.should_not be_nil
-      created.edit_link.href.should == 'http://example.org/edit/entry1.atom'
+        created = @collection.publish(entry)
+        created.edit_link.should_not be_nil
+        created.edit_link.href.should == 'http://example.org/edit/entry1.atom'
+      end
+    
+      it "should update the entry when response is different" do
+        entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
+        response = mock_response(Net::HTTPCreated, File.read('spec/fixtures/created_entry.atom'),
+                                 'Location' => 'http://example.org/edit/atom')
+      
+        http = mock('http')
+        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+        created = @collection.publish(entry)
+        created.should == Atom::Entry.load_entry(File.open('spec/fixtures/created_entry.atom'))
+      end
+    end
+  end
+  
+  describe Atom::Pub::Workspace do
+    it "should do the block initialization thing" do
+      workspace = Atom::Pub::Workspace.new do |w|
+        w.title = "Title"
+      end
+      
+      workspace.title.should == "Title"
     end
     
-    it "should update the entry when response is different" do
-      entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
-      response = mock_response(Net::HTTPCreated, File.read('spec/fixtures/created_entry.atom'),
-                               'Location' => 'http://example.org/edit/atom')
-      
-      http = mock('http')
-      http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
-      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
-      
-      created = @collection.publish(entry)
-      created.should == Atom::Entry.load_entry(File.open('spec/fixtures/created_entry.atom'))
+    it "should do the hash initialization thing" do
+      workspace = Atom::Pub::Workspace.new(:title => 'Title')      
+      workspace.title.should == "Title"
     end
   end
   
