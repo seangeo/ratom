@@ -91,16 +91,12 @@ module Atom
         
         self.class.element_specs.values.select {|s| s.single? }.each do |spec|
           if attribute = self.send(spec.attribute)
-            if attribute.is_a?(Time)
-              node << XML::Node.new(spec.name, attribute.xmlschema)
-            elsif attribute.respond_to?(:to_xml)
+            if attribute.respond_to?(:to_xml)
               node << attribute.to_xml(true, spec.name, spec.options[:namespace])
             else
               n =  XML::Node.new(spec.name)
-              if (spec.options[:namespace])
-                n['xmlns'] = spec.options[:namespace]
-              end
-              n << attribute
+              n['xmlns'] = spec.options[:namespace]              
+              n << (attribute.is_a?(Time)? attribute.xmlschema : attribute.to_s)
               node << n
             end
           end
@@ -112,10 +108,8 @@ module Atom
               node << attribute.to_xml(true, spec.name.singularize)
             else
               n = XML::Node.new(spec.name.singularize)
-              if (spec.options[:namespace])
-                n['xmlns'] = spec.options[:namespace]
-              end
-              n << attribute
+              n['xmlns'] = spec.options[:namespace]
+              n << attribute.to_s
               node << n
             end
           end
