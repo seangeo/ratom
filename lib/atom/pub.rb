@@ -73,7 +73,7 @@ module Atom
     
     class Workspace
       include Atom::Xml::Parseable
-      element :title, :class => Content
+      element :title, :class => Content, :namespace => Atom::NAMESPACE
       elements :collections
       
       def initialize(o = nil)
@@ -96,7 +96,7 @@ module Atom
     class Collection
       include Atom::Xml::Parseable
       attribute :href
-      element :title, :class => Content
+      element :title, :class => Content, :namespace => Atom::NAMESPACE
       element :categories, :class => Categories
       elements :accepts, :content_only => true
       

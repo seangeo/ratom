@@ -85,7 +85,7 @@ module Atom
         end
       end
       
-      def to_xml(nodeonly = false, root_name = self.class.name.demodulize.downcase)        
+      def to_xml(nodeonly = false, root_name = self.class.name.demodulize.downcase, namespace = nil)        
         node = XML::Node.new(root_name)
         node['xmlns'] = self.class.namespace unless nodeonly || !self.class.respond_to?(:namespace)
         
@@ -94,9 +94,12 @@ module Atom
             if attribute.is_a?(Time)
               node << XML::Node.new(spec.name, attribute.xmlschema)
             elsif attribute.respond_to?(:to_xml)
-              node << attribute.to_xml(true, spec.name)
+              node << attribute.to_xml(true, spec.name, spec.options[:namespace])
             else
               n =  XML::Node.new(spec.name)
+              if (spec.options[:namespace])
+                n['xmlns'] = spec.options[:namespace]
+              end
               n << attribute
               node << n
             end
@@ -109,6 +112,9 @@ module Atom
               node << attribute.to_xml(true, spec.name.singularize)
             else
               n = XML::Node.new(spec.name.singularize)
+              if (spec.options[:namespace])
+                n['xmlns'] = spec.options[:namespace]
+              end
               n << attribute
               node << n
             end

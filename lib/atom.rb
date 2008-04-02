@@ -148,8 +148,9 @@ module Atom # :nodoc:
         parse(xml, :once => true)
       end
       
-      def to_xml(nodeonly = true, name = 'content')
+      def to_xml(nodeonly = true, name = 'content', namespace = nil)
         node = XML::Node.new(name)
+        node['xmlns'] = namespace
         node << self.to_s
         node
       end
@@ -173,7 +174,7 @@ module Atom # :nodoc:
         end        
       end
       
-      def to_xml(nodeonly = true, name = 'content') # :nodoc:
+      def to_xml(nodeonly = true, name = 'content', namespace = nil) # :nodoc:
         require 'iconv'
         # Convert from utf-8 to utf-8 as a way of making sure the content is UTF-8.
         #
@@ -186,6 +187,7 @@ module Atom # :nodoc:
           node = XML::Node.new(name)
           node << Iconv.iconv('utf-8', 'utf-8', self.to_s)
           node['type'] = 'html'
+          node['xmlns'] = namespace
           node['xml:lang'] = self.xml_lang        
           node
         rescue Iconv::IllegalSequence => e
@@ -216,10 +218,11 @@ module Atom # :nodoc:
         while xml.read == 1 && xml.depth > starting_depth; end
       end
       
-      def to_xml(nodeonly = true, name = 'content')
+      def to_xml(nodeonly = true, name = 'content', namespace = nil)
         node = XML::Node.new(name)
         node['type'] = 'xhtml'
         node['xml:lang'] = self.xml_lang
+        node['xmlns'] = namespace
         
         div = XML::Node.new('div')        
         div['xmlns'] = XHTML

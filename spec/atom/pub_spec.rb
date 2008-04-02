@@ -110,10 +110,8 @@ describe Atom::Pub do
 
     it "should parse it's output" do
       orig = File.read('spec/app/service.xml')
-      puts orig
       svc = Atom::Pub::Service.load_service(orig)
       xml = svc.to_xml
-      puts xml
       lambda do
         Atom::Pub::Service.load_service(xml)
       end.should_not raise_error
@@ -144,7 +142,7 @@ describe Atom::Pub do
         @collection3 = @workspace2.collections.first
       end
     
-      xit "should put title in Atom namespace" do
+      it "should put title in Atom namespace" do
         # TODO fix this to use a prefix?
         @xml.should match(%r{title xmlns="#{Atom::NAMESPACE}"})
       end
