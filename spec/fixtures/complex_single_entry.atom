@@ -35,6 +35,8 @@
     <contributor>
       <name>Joe Gregorio</name>
     </contributor>
+    <category term="atom" scheme="http://example.org" label="Atom" />
+    <category term="drafts" scheme="http://example2.org" label="Drafts" />
     <content type="xhtml" xml:lang="en" 
      xml:base="http://diveintomark.org/">
       <div xmlns="http://www.w3.org/1999/xhtml">

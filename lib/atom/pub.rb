@@ -52,17 +52,9 @@ module Atom
       end
     end
     
-    class Category
-      include Atom::Xml::Parseable
-      def initialize(o)
-        o.read
-        parse(o, :once => true)
-      end
-    end
-    
     class Categories < DelegateClass(Array)
       include Atom::Xml::Parseable
-      elements :categories, :class => Category
+      elements :categories, :class => Atom::Category
       
       def initialize(o)
         super([])

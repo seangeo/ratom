@@ -271,6 +271,48 @@ describe Atom do
       it "should have content" do
         @entry.content.should_not be_nil
       end
+      
+      it "should have 2 categories" do
+        @entry.should have(2).categories
+      end
+    end
+    
+    describe Atom::Category do
+      describe 'atom category' do
+        before(:each) do
+          @category = @feed.entries.first.categories.first
+        end
+        
+        it "should have a term" do
+          @category.term.should == "atom"
+        end
+        
+        it "should have a scheme" do
+          @category.scheme.should == "http://example.org"
+        end
+        
+        it "should have a label" do
+          @category.label.should == "Atom"
+        end
+      end
+      
+      describe 'draft category' do
+        before(:each) do
+          @category = @feed.entries.first.categories.last
+        end
+        
+        it "should have a term" do
+          @category.term.should == "drafts"
+        end
+        
+        it "should have a scheme" do
+          @category.scheme.should == "http://example2.org"
+        end
+        
+        it "should have a label" do
+          @category.label.should == "Drafts"
+        end
+      end
     end
     
     describe Atom::Link do
@@ -859,8 +901,6 @@ describe Atom do
     describe 'pagination using each_entries' do
       before(:each) do
         @feed = Atom::Feed.load_feed(File.open('spec/paging/first_paged_feed.atom'))
-        
-       
       end
       
       it "should paginate through each entry" do
@@ -1062,6 +1102,27 @@ describe Atom do
   describe Atom::Content::Html do
     it "should escape ampersands in entities" do
       Atom::Content::Html.new("&nbsp;").to_xml.to_s.should == "<content type=\"html\">&amp;nbsp;</content>"
+    end
+  end
+  
+  describe 'Atom::Category initializer' do
+    it "should create a empty category" do
+      lambda { Atom::Category.new }.should_not raise_error
+    end
+    
+    it "should create from a hash" do
+      category = Atom::Category.new(:term => 'term', :scheme => 'scheme', :label => 'label')
+      category.term.should == 'term'
+      category.scheme.should == 'scheme'
+      category.label.should == 'label'
+    end
+    
+    it "should create from a block" do
+      category = Atom::Category.new do |cat|
+        cat.term = 'term'
+      end
+      
+      category.term.should == 'term'
     end
   end
 end

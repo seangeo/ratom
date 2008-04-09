@@ -66,6 +66,27 @@ module Atom # :nodoc:
     end
   end
     
+  # Represents a Category as defined by the Atom Syndication Format specification.
+  #
+  #   
+  class Category
+    include Atom::Xml::Parseable
+    attribute :label, :scheme, :term
+    
+    def initialize(o = nil)
+      case o
+      when XML::Reader
+        parse(o, :once => true)
+      when Hash
+        o.each do |k, v|
+          self.send("#{k.to_s}=", v)
+        end
+      end
+      
+      yield(self) if block_given?
+    end
+  end
+  
   # Represents a Person as defined by the Atom Syndication Format specification.
   #
   # A Person is used for all author and contributor attributes.
@@ -420,6 +441,7 @@ module Atom # :nodoc:
     element :source, :class => Source
     elements :links
     elements :authors, :contributors, :class => Person
+    elements :categories, :class => Category
         
     # Initialize an Entry.
     #
@@ -435,6 +457,7 @@ module Atom # :nodoc:
       @links = Links.new
       @authors = []
       @contributors = []
+      @categories = []
       
       case o
       when XML::Reader
