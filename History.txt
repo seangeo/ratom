@@ -1,3 +1,8 @@
+== Current
+
+* Add support for atom:category.
+* Support extension attributes using the same mechanism as extension elements.
+
 == 0.3.1 2008-04-02
 
 * Bunch of fixes to the Atom::Pub classes to make them work like the Atom classes
