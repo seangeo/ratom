@@ -1,4 +1,4 @@
-== Current
+== 0.3.2 2008-04-09
 
 * Add support for atom:category.
 * Support extension attributes using the same mechanism as extension elements.
