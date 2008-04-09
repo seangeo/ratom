@@ -40,10 +40,6 @@ module Atom # :nodoc:
         @simple_extensions = {}
       end
       
-      if @simple_extension_attributes.nil?
-        @simple_extension_attributes = {}
-      end
-      
       key = "{#{ns},#{localname}}"
       (@simple_extensions[key] or @simple_extensions[key] = ValueProxy.new)
     end
