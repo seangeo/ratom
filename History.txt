@@ -1,4 +1,11 @@
-== 0.3.2 2008-04-09
+== 0.3.3 2008-04-09
+
+* Better serialization of namespaced elements. ratom will now generate prefixes for namespaces and write them as
+  attributes on the root element.
+* Extensions read as attributes are now written as attributes.
+* When programmatically setting an extension value you can tell ratom to write it as an attribute using:
+  
+  entry['http://example.org', 'extattr'].as_attribute = true  
 
 * Add support for atom:category.
 * Support extension attributes using the same mechanism as extension elements.

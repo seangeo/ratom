@@ -40,8 +40,20 @@ module Atom # :nodoc:
         @simple_extensions = {}
       end
       
+      if @simple_extension_attributes.nil?
+        @simple_extension_attributes = {}
+      end
+      
       key = "{#{ns},#{localname}}"
-      (@simple_extensions[key] or @simple_extensions[key] = [])
+      (@simple_extensions[key] or @simple_extensions[key] = ValueProxy.new)
+    end
+    
+    class ValueProxy < DelegateClass(Array)
+      attr_accessor :as_attribute
+      def initialize
+        super([])
+        @as_attribute = false
+      end
     end
   end
   
@@ -170,9 +182,8 @@ module Atom # :nodoc:
         parse(xml, :once => true)
       end
       
-      def to_xml(nodeonly = true, name = 'content', namespace = nil)
-        node = XML::Node.new(name)
-        node['xmlns'] = namespace
+      def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
+        node = XML::Node.new("#{namespace_map.get(Atom::NAMESPACE)}:#{name}")
         node << self.to_s
         node
       end
@@ -196,7 +207,7 @@ module Atom # :nodoc:
         end        
       end
       
-      def to_xml(nodeonly = true, name = 'content', namespace = nil) # :nodoc:
+      def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new) # :nodoc:
         require 'iconv'
         # Convert from utf-8 to utf-8 as a way of making sure the content is UTF-8.
         #
@@ -206,10 +217,9 @@ module Atom # :nodoc:
         # to try and recitfy the situation.
         #
         begin
-          node = XML::Node.new(name)
-          node << Iconv.iconv('utf-8', 'utf-8', self.to_s)
+          node = XML::Node.new("#{namespace_map.get(Atom::NAMESPACE)}:#{name}")
+          node << Iconv.iconv('utf-8', 'utf-8', self.to_s, namespace_map = nil)
           node['type'] = 'html'
-          node['xmlns'] = namespace
           node['xml:lang'] = self.xml_lang        
           node
         rescue Iconv::IllegalSequence => e
@@ -240,13 +250,12 @@ module Atom # :nodoc:
         while xml.read == 1 && xml.depth > starting_depth; end
       end
       
-      def to_xml(nodeonly = true, name = 'content', namespace = nil)
-        node = XML::Node.new(name)
+      def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
+        node = XML::Node.new("#{namespace_map.get(Atom::NAMESPACE)}:#{name}")
         node['type'] = 'xhtml'
         node['xml:lang'] = self.xml_lang
-        node['xmlns'] = namespace
         
-        div = XML::Node.new('div')        
+        div = XML::Node.new('div')
         div['xmlns'] = XHTML
         div
         

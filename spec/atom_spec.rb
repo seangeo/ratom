@@ -974,6 +974,10 @@ describe Atom do
         @entry.categories.first["http://example.org/example", "attribute"].first.should == "extension"
       end
       
+      it "should write a simple extension attribute as an attribute" do
+        @entry.categories.first.to_xml(true)['ns1:attribute'].should == 'extension'
+      end
+      
       it "should read an extension with the same local name as an Atom element" do
         @feed['http://example.org/example', 'title'].should == ['Extension Title']
       end
@@ -1105,7 +1109,7 @@ describe Atom do
   
   describe Atom::Content::Html do
     it "should escape ampersands in entities" do
-      Atom::Content::Html.new("&nbsp;").to_xml.to_s.should == "<content type=\"html\">&amp;nbsp;</content>"
+      Atom::Content::Html.new("&nbsp;").to_xml.to_s.should == "<atom:content type=\"html\">&amp;nbsp;</atom:content>"
     end
   end
   

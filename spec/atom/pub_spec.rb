@@ -152,8 +152,7 @@ describe Atom::Pub do
       end
     
       it "should put title in Atom namespace" do
-        # TODO fix this to use a prefix?
-        @xml.should match(%r{title xmlns="#{Atom::NAMESPACE}"})
+        @xml.should match(%r{atom:title})
       end
       
       it_should_behave_like 'parser of spec/app/service.xml'

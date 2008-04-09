@@ -31,6 +31,27 @@ end
 
 module Atom
   module Xml # :nodoc:
+   class NamespaceMap
+      def initialize
+        @i = 0
+        @map = {}
+      end
+      
+      def get(ns)
+        if ns == Atom::NAMESPACE
+          @map[ns] = "atom"
+        elsif ns == Atom::Pub::NAMESPACE
+          @map[ns] = "app"
+        else
+          @map[ns] or @map[ns] = "ns#{@i += 1}"
+        end
+      end
+      
+      def each(&block)
+        @map.each(&block)
+      end
+    end
+    
     module Parseable # :nodoc:
       def parse(xml, options = {})
         starting_depth = xml.depth
@@ -45,6 +66,7 @@ module Atom
                   # Support attribute names with namespace prefixes
                   self.send("#{xml.name.sub(/:/, '_')}=", xml.value)
                 elsif self.respond_to?(:simple_extensions)
+                  self[xml.namespace_uri, xml.local_name].as_attribute = true
                   self[xml.namespace_uri, xml.local_name] << xml.value
                 end
               end
@@ -87,14 +109,15 @@ module Atom
         end
       end
       
-      def to_xml(nodeonly = false, root_name = self.class.name.demodulize.downcase, namespace = nil)        
+      def to_xml(nodeonly = false, root_name = self.class.name.demodulize.downcase, namespace = nil, namespace_map = nil)
+        namespace_map = NamespaceMap.new if namespace_map.nil?
         node = XML::Node.new(root_name)
         node['xmlns'] = self.class.namespace unless nodeonly || !self.class.respond_to?(:namespace)
         
         self.class.element_specs.values.select {|s| s.single? }.each do |spec|
           if attribute = self.send(spec.attribute)
             if attribute.respond_to?(:to_xml)
-              node << attribute.to_xml(true, spec.name, spec.options[:namespace])
+              node << attribute.to_xml(true, spec.name, spec.options[:namespace], namespace_map)
             else
               n =  XML::Node.new(spec.name)
               n['xmlns'] = spec.options[:namespace]              
@@ -107,7 +130,7 @@ module Atom
         self.class.element_specs.values.select {|s| !s.single? }.each do |spec|
           self.send(spec.attribute).each do |attribute|
             if attribute.respond_to?(:to_xml)
-              node << attribute.to_xml(true, spec.name.singularize)
+              node << attribute.to_xml(true, spec.name.singularize, nil, namespace_map)
             else
               n = XML::Node.new(spec.name.singularize)
               n['xmlns'] = spec.options[:namespace]
@@ -129,10 +152,13 @@ module Atom
           self.simple_extensions.each do |name, value_array|
             if name =~ /\{(.*),(.*)\}/
               value_array.each do |value|
-                ext = XML::Node.new($2)
-                ext['xmlns'] = $1
-                ext << value
-                node << ext
+                if value_array.as_attribute
+                  node["#{namespace_map.get($1)}:#{$2}"] = value
+                else
+                  ext = XML::Node.new("#{namespace_map.get($1)}:#{$2}")
+                  ext << value
+                  node << ext
+                end
               end
             else
               STDERR.print "Couldn't split #{name}"
@@ -141,6 +167,10 @@ module Atom
         end
         
         unless nodeonly
+          namespace_map.each do |ns, prefix|
+            node["xmlns:#{prefix}"] = ns
+          end
+          
           doc = XML::Document.new
           doc.root = node
           doc.to_s
