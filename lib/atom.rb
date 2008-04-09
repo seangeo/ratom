@@ -71,6 +71,7 @@ module Atom # :nodoc:
   #   
   class Category
     include Atom::Xml::Parseable
+    include SimpleExtensions
     attribute :label, :scheme, :term
     
     def initialize(o = nil)

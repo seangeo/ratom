@@ -970,6 +970,10 @@ describe Atom do
         @entry["http://example2.org/example2", 'simple1'].should == ['Simple Entry Value (NS2)']
       end
       
+      it "should load simple extension attribute on a category" do
+        @entry.categories.first["http://example.org/example", "attribute"].first.should == "extension"
+      end
+      
       it "should read an extension with the same local name as an Atom element" do
         @feed['http://example.org/example', 'title'].should == ['Extension Title']
       end

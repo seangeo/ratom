@@ -44,6 +44,8 @@ module Atom
                 if attributes.include?(xml.name)
                   # Support attribute names with namespace prefixes
                   self.send("#{xml.name.sub(/:/, '_')}=", xml.value)
+                elsif self.respond_to?(:simple_extensions)
+                  self[xml.namespace_uri, xml.local_name] << xml.value
                 end
               end
             elsif self.respond_to?(:simple_extensions)

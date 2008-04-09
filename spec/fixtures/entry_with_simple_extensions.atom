@@ -23,6 +23,7 @@
     <ex:simple2>Simple2</ex:simple2>
     <ex:simple2>Simple2a</ex:simple2>
     <ex2:simple1>Simple Entry Value (NS2)</ex2:simple1>
+    <category term="atom" scheme="http://example.org" label="Atom" ex:attribute="extension" />
   </entry>
 
 </feed>
