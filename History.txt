@@ -1,4 +1,4 @@
-== Current
+== 0.3.4 2008-04-21
 
 * Remove useless variable warning.  (Sam Roberts)
 * Support initialization of Atom::Source from Hash and block.
