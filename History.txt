@@ -2,6 +2,7 @@
 
 * Remove useless variable warning.  (Sam Roberts)
 * Support initialization of Atom::Source from Hash and block.
+* Support initialization of Atom::Generator from Hash and block.
 
 == 0.3.3 2008-04-09
 

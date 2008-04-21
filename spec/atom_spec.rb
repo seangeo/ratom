@@ -1153,5 +1153,26 @@ describe Atom do
       source.title.should == 'title'
       source.id.should == 'sourceid'
     end      
-  end  
+  end
+  
+  describe Atom::Generator do
+    it "should create an empty generator" do
+      lambda { Atom::Generator.new }.should_not raise_error
+    end
+    
+    it "should create from a hash" do
+      source = Atom::Generator.new(:name => 'generator', :uri => 'http://generator')
+      source.name.should == 'generator'
+      source.uri.should == 'http://generator'
+    end
+    
+    it "should create from a block" do
+      source = Atom::Generator.new do |source|
+        source.name = 'generator'
+        source.uri = 'http://generator'
+      end
+      source.name.should == 'generator'
+      source.uri.should == 'http://generator'
+    end
+  end
 end

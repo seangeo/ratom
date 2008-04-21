@@ -61,16 +61,25 @@ module Atom # :nodoc:
   class Generator
     include Xml::Parseable
     
-    attr_reader :name
+    attr_accessor :name
     attribute :uri, :version
     
     # Initialize a new Generator.
     #
     # +xml+:: An XML::Reader object.
     #
-    def initialize(xml)
-      @name = xml.read_string.strip
-      parse(xml, :once => true)
+    def initialize(o = nil)
+      case o
+      when XML::Reader
+        @name = o.read_string.strip
+        parse(o, :once => true)
+      when Hash
+        o.each do |k, v|
+          self.send("#{k.to_s}=", v)
+        end
+      end
+      
+      yield(self) if block_given?
     end
   end
     
