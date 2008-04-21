@@ -1,3 +1,7 @@
+== Current
+
+* Remove useless variable warning.  (Sam Roberts)
+
 == 0.3.3 2008-04-09
 
 * Better serialization of namespaced elements. ratom will now generate prefixes for namespaces and write them as

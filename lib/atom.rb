@@ -253,7 +253,6 @@ module Atom # :nodoc:
         
         div = XML::Node.new('div')
         div['xmlns'] = XHTML
-        div
         
         p = XML::Parser.string(to_s)
         content = p.parse.root.copy(true)
