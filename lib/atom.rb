@@ -278,15 +278,24 @@ module Atom # :nodoc:
     elements :authors, :contributors, :class => Person
     elements :links
     
-    def initialize(xml)
-      unless current_node_is?(xml, 'source', NAMESPACE)
-        raise ArgumentError, "Invalid node for atom:source - #{xml.name}(#{xml.namespace})"
+    def initialize(o = nil)
+      @authors, @contributors, @links = [], [], Links.new
+
+      case o
+      when XML::Reader
+        unless current_node_is?(o, 'source', NAMESPACE)
+          raise ArgumentError, "Invalid node for atom:source - #{o.name}(#{o.namespace})"
+        end
+
+        o.read
+        parse(o)
+      when Hash
+        o.each do |k, v|
+          self.send("#{k.to_s}=", v)
+        end
       end
       
-      @authors, @contributors, @links = [], [], Links.new
-      
-      xml.read
-      parse(xml)
+      yield(self) if block_given?   
     end
   end
   

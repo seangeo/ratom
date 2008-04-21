@@ -1133,4 +1133,25 @@ describe Atom do
       category.term.should == 'term'
     end
   end
+  
+  describe Atom::Source do
+    it "should create an empty source" do
+      lambda { Atom::Source.new }.should_not raise_error
+    end
+    
+    it "should create from a hash" do
+      source = Atom::Source.new(:title => 'title', :id => 'sourceid')
+      source.title.should == 'title'
+      source.id.should == 'sourceid'
+    end
+    
+    it "should create from a block" do
+      source = Atom::Source.new do |source|
+        source.title = 'title'
+        source.id = 'sourceid'
+      end
+      source.title.should == 'title'
+      source.id.should == 'sourceid'
+    end      
+  end  
 end
