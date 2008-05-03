@@ -42,6 +42,14 @@ shared_examples_for 'simple_single_entry.atom attributes' do
     @feed.alternate.href.should == 'http://example.org/'
   end
   
+  it "should have 1 author" do
+    @feed.should have(1).authors
+  end
+  
+  it "should have 'John Doe' as the author's name" do
+    @feed.authors.first.name.should == "John Doe"
+  end
+  
   it "should parse title" do
     @entry.title.should == 'Atom-Powered Robots Run Amok'
   end
