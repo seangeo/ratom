@@ -361,9 +361,10 @@ module Atom # :nodoc:
     element :id, :rights
     element :generator, :class => Generator
     element :title, :subtitle, :class => Content
-    element :updated, :published, :class => Time, :content_only => true
-    elements :links, :entries
+    element :updated, :class => Time, :content_only => true
+    elements :links
     elements :authors, :contributors, :class => Person
+    elements :entries
     
     # Initialize a Feed.
     #
