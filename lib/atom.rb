@@ -633,6 +633,7 @@ module Atom # :nodoc:
       end        
     end
     
+    remove_method :length=
     def length=(v)
       @length = v.to_i
     end
