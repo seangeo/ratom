@@ -331,8 +331,24 @@ module Atom # :nodoc:
   #
   # A feed can be converted to XML using, the to_xml method that returns a valid atom document in a String.
   #
+  # == Attributes
+  #
+  # A feed has the following attributes:
+  #
+  # +id+:: A unique id for the feed.
+  # +updated+:: The Time the feed was updated.
+  # +title+:: The title of the feed.
+  # +subtitle+:: The subtitle of the feed.
+  # +authors+:: An array of Atom::Person objects that are authors of this feed.
+  # +contributors+:: An array of Atom::Person objects that are contributors to this feed.
+  # +generator+:: A Atom::Generator.
+  # +rights+:: A string describing the rights associated with this feed.
+  # +entries+:: An array of Atom::Entry objects.
+  # +links+:: An array of Atom:Link objects. (This is actually an Atom::Links array which is an Array with some sugar).
+  #
   # == References
   # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.feed
+  #
   class Feed
     include Xml::Parseable
     include SimpleExtensions
@@ -450,8 +466,27 @@ module Atom # :nodoc:
   #
   # A Entry can be converted to XML using, the to_xml method that returns a valid atom entry document in a String.
   #
+  # == Attributes
+  #
+  # An entry has the following attributes:
+  #
+  # +id+:: A unique id for the entry.
+  # +updated+:: The Time the entry was updated.
+  # +published+:: The Time the entry was published.
+  # +title+:: The title of the entry.
+  # +summary+:: A short textual summary of the item.
+  # +authors+:: An array of Atom::Person objects that are authors of this entry.
+  # +contributors+:: An array of Atom::Person objects that are contributors to this entry.
+  # +rights+:: A string describing the rights associated with this entry.
+  # +links+:: An array of Atom:Link objects. (This is actually an Atom::Links array which is an Array with some sugar).
+  # +source+:: Metadata of a feed that was the source of this item, for feed aggregators, etc.
+  # +categories+:: Array of Atom::Categories.
+  # +content+:: The content of the entry. This will be one of Atom::Content::Text, Atom::Content:Html or Atom::Content::Xhtml.
+  #
   # == References
-  # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.entry
+  # See also http://www.atomenabled.org/developers/syndication/atom-format-spec.php#element.entry for more detailed
+  # definitions of the attributes.
+  #
   class Entry
     include Xml::Parseable
     include SimpleExtensions
