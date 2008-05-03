@@ -1,3 +1,10 @@
+== 0.3.5 2008-05-03
+
+* Make sure atom:entries appears last.
+* Better examples in the documentation. Docs for Feed and Entry list attributes.
+* Gave Feeds authors and contributors.
+* Fixed a couple warnings.
+
 == 0.3.4 2008-04-21
 
 * Remove useless variable warning.  (Sam Roberts)
