@@ -238,7 +238,8 @@ module Atom # :nodoc:
       XHTML = 'http://www.w3.org/1999/xhtml'      
       attribute :type, :'xml:lang'
       
-      def initialize(xml)        
+      def initialize(xml)     
+        super("")   
         parse(xml, :once => true)
         starting_depth = xml.depth
         
@@ -246,9 +247,9 @@ module Atom # :nodoc:
         while xml.read == 1 && xml.node_type != XML::Reader::TYPE_ELEMENT; end
         
         if xml.local_name == 'div' && xml.namespace_uri == XHTML
-          super(xml.read_inner_xml.strip.gsub(/\s+/, ' '))
+          set_content(xml.read_inner_xml.strip.gsub(/\s+/, ' '))
         else
-          super(xml.read_outer_xml)
+          set_content(xml.read_outer_xml)
         end
         
         # get back to the end of the element we were created with
