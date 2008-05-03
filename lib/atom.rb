@@ -36,7 +36,7 @@ module Atom # :nodoc:
     # +localname+:: The local name of the extension element.
     #
     def [](ns, localname)
-      if @simple_extensions.nil?
+      if !defined?(@simple_extensions) || @simple_extensions.nil?
         @simple_extensions = {}
       end
       
