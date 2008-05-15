@@ -15,6 +15,7 @@
   <generator uri="http://www.example.com/" version="1.0">
     Example Toolkit
   </generator>
+  <category term="atom" scheme="http://example.org" label="Atom" />
   <entry>
     <title>Atom draft-07 snapshot</title>
     <link rel="alternate" type="text/html" 

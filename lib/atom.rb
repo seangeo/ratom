@@ -342,6 +342,7 @@ module Atom # :nodoc:
   # +authors+:: An array of Atom::Person objects that are authors of this feed.
   # +contributors+:: An array of Atom::Person objects that are contributors to this feed.
   # +generator+:: A Atom::Generator.
+  # +categories+:: A list of Atom:Category objects for the feed.
   # +rights+:: A string describing the rights associated with this feed.
   # +entries+:: An array of Atom::Entry objects.
   # +links+:: An array of Atom:Link objects. (This is actually an Atom::Links array which is an Array with some sugar).
@@ -364,6 +365,7 @@ module Atom # :nodoc:
     element :updated, :class => Time, :content_only => true
     elements :links
     elements :authors, :contributors, :class => Person
+    elements :categories
     elements :entries
     
     # Initialize a Feed.
@@ -377,7 +379,7 @@ module Atom # :nodoc:
     # +o+:: An XML Reader or a Hash of attributes.
     #
     def initialize(o = {})
-      @links, @entries, @authors, @contributors = Links.new, [], [], []
+      @links, @entries, @authors, @contributors, @categories = Links.new, [], [], [], []
       
       case o
       when XML::Reader
