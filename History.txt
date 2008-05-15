@@ -1,3 +1,9 @@
+== 0.3.6 2008-05-15
+
+* Added categories to feeds.
+* Make sure atom:content appears at the end of a atom:entry.
+* Don't use namespace prefixes on content unless we really have to.
+
 == 0.3.5 2008-05-03
 
 * Make sure atom:entries appears last.
