@@ -188,7 +188,7 @@ module Atom # :nodoc:
       end
       
       def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
-        node = XML::Node.new("#{namespace_map.get(Atom::NAMESPACE)}:#{name}")
+        node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
         node << self.to_s
         node
       end
@@ -222,7 +222,7 @@ module Atom # :nodoc:
         # to try and recitfy the situation.
         #
         begin
-          node = XML::Node.new("#{namespace_map.get(Atom::NAMESPACE)}:#{name}")
+          node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
           node << Iconv.iconv('utf-8', 'utf-8', self.to_s, namespace_map = nil)
           node['type'] = 'html'
           node['xml:lang'] = self.xml_lang        
@@ -257,7 +257,7 @@ module Atom # :nodoc:
       end
       
       def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
-        node = XML::Node.new("#{namespace_map.get(Atom::NAMESPACE)}:#{name}")
+        node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
         node['type'] = 'xhtml'
         node['xml:lang'] = self.xml_lang
         

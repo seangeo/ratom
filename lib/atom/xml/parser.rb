@@ -32,9 +32,18 @@ end
 module Atom
   module Xml # :nodoc:
    class NamespaceMap
-      def initialize
+      def initialize(default = Atom::NAMESPACE)
+        @default = default
         @i = 0
         @map = {}
+      end
+      
+      def prefix(ns, element)
+        if ns == @default
+          element
+        else
+          "#{get(ns)}:#{element}"
+        end
       end
       
       def get(ns)
@@ -111,8 +120,12 @@ module Atom
         end
       end
       
+      # There doesn't seem to be a way to set namespaces using libxml-ruby,
+      # so ratom has to manage namespace to URI prefixing itself, which
+      # makes this method more complicated that it needs to be.
+      #
       def to_xml(nodeonly = false, root_name = self.class.name.demodulize.downcase, namespace = nil, namespace_map = nil)
-        namespace_map = NamespaceMap.new if namespace_map.nil?
+        namespace_map = NamespaceMap.new(self.class.namespace) if namespace_map.nil?
         node = XML::Node.new(root_name)
         node['xmlns'] = self.class.namespace unless nodeonly || !self.class.respond_to?(:namespace)
 

@@ -1121,7 +1121,7 @@ describe Atom do
   
   describe Atom::Content::Html do
     it "should escape ampersands in entities" do
-      Atom::Content::Html.new("&nbsp;").to_xml.to_s.should == "<atom:content type=\"html\">&amp;nbsp;</atom:content>"
+      Atom::Content::Html.new("&nbsp;").to_xml.to_s.should == "<content type=\"html\">&amp;nbsp;</content>"
     end
   end
   
