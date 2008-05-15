@@ -364,6 +364,7 @@ module Atom # :nodoc:
     element :updated, :class => Time, :content_only => true
     elements :links
     elements :authors, :contributors, :class => Person
+    elements :categories
     elements :entries
     
     # Initialize a Feed.
@@ -377,7 +378,7 @@ module Atom # :nodoc:
     # +o+:: An XML Reader or a Hash of attributes.
     #
     def initialize(o = {})
-      @links, @entries, @authors, @contributors = Links.new, [], [], []
+      @links, @entries, @authors, @contributors, @categories = Links.new, [], [], [], []
       
       case o
       when XML::Reader

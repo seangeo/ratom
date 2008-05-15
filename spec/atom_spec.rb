@@ -228,6 +228,10 @@ describe Atom do
       it "should have an entry" do
         @feed.should have(1).entries
       end
+      
+      it "should have a category" do
+        @feed.should have(1).categories
+      end
     end
     
     describe Atom::Entry do
