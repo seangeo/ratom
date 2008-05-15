@@ -500,11 +500,11 @@ module Atom # :nodoc:
     namespace Atom::NAMESPACE
     element :title, :id, :summary
     element :updated, :published, :class => Time, :content_only => true
-    element :content, :class => Content
     element :source, :class => Source
     elements :links
     elements :authors, :contributors, :class => Person
     elements :categories, :class => Category
+    element :content, :class => Content
         
     # Initialize an Entry.
     #
