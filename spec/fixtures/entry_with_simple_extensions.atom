@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xmlns:ex="http://example.org/example" xmlns:ex2="http://example2.org/example2">
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:ex="http://example.org/example" xmlns:ex2="http://example2.org/example2" xmlns:ex3="http://example.org/example3">
 
   <title>Example Feed</title> 
   <link href="http://example.org/"/>
@@ -23,6 +23,7 @@
     <ex:simple2>Simple2</ex:simple2>
     <ex:simple2>Simple2a</ex:simple2>
     <ex2:simple1>Simple Entry Value (NS2)</ex2:simple1>
+    <ex3:simple3><ContinuityOfCareRecord xmlns="urn:astm-org:CCR">Simple Entry Value (NS2)</ContinuityOfCareRecord></ex3:simple3>
     <category term="atom" scheme="http://example.org" label="Atom" ex:attribute="extension" />
   </entry>
 

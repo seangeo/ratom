@@ -995,6 +995,10 @@ describe Atom do
       end
       
       it_should_behave_like 'simple_single_entry.atom attributes'
+      
+      it "should load simple extension 3 xml for entry" do
+        @entry["http://example.org/example3", 'simple3'].should == ['<ContinuityOfCareRecord xmlns="urn:astm-org:CCR">Simple Entry Value (NS2)</ContinuityOfCareRecord>']
+      end
     end
     
     describe 'writing simple extensions' do

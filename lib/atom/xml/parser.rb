@@ -80,7 +80,7 @@ module Atom
                 end
               end
             elsif self.respond_to?(:simple_extensions)
-              self[xml.namespace_uri, xml.local_name] << xml.read_string
+              self[xml.namespace_uri, xml.local_name] << xml.read_inner_xml
             end
           end
           break unless !options[:once] && xml.next == 1 && xml.depth >= starting_depth
