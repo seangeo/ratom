@@ -1,3 +1,7 @@
+== 0.3.7 2008-06-05
+
+* Support XML in extension elements. (Min Kim)
+
 == 0.3.6 2008-05-15
 
 * Added categories to feeds.
