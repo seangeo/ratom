@@ -421,6 +421,8 @@ module Atom # :nodoc:
     #
     # +paginate+::  If true and the feed supports pagination this will fetch each page of the feed.
     # +since+::     If a Time object is provided each_entry will iterate over all entries that were updated since that time.
+    # +user+::      User name for HTTP Basic Authentication.
+    # +pass+::      Password for HTTP Basic Authentication.
     #
     def each_entry(options = {}, &block)
       if options[:paginate]
@@ -439,7 +441,7 @@ module Atom # :nodoc:
           if since_reached || feed.next_page.nil?
             break
           else feed.next_page
-            feed = feed.next_page.fetch 
+            feed = feed.next_page.fetch(options)
           end
         end
       else
@@ -692,13 +694,11 @@ module Atom # :nodoc:
     #
     # TODO: Handle redirects.
     #
-    def fetch
-      content = Net::HTTP.get_response(URI.parse(self.href)).body
-      
+    def fetch(options = {})
       begin
-        Atom::Feed.load_feed(content)
+        Atom::Feed.load_feed(URI.parse(self.href), options)
       rescue ArgumentError, ParseError => ae
-        content
+        Net::HTTP.get_response(URI.parse(self.href)).body
       end
     end
     

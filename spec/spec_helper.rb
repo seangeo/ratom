@@ -24,7 +24,7 @@ Spec::Runner.configure do |config|
   
   def mock_http_get(url, response, user = nil, pass = nil)
     req = mock('request')
-    Net::HTTP::Get.should_receive(:new).with(url.path).and_return(req)
+    Net::HTTP::Get.should_receive(:new).with(url.request_uri).and_return(req)
     
     if user && pass
       req.should_receive(:basic_auth).with(user, pass)

@@ -251,7 +251,7 @@ module Atom
                   raise ArgumentError, "#{class_name}.load only handles http URIs" if o.scheme != 'http'
                   response = nil
                   Net::HTTP.start(o.host, o.port) do |http|
-                    request = Net::HTTP::Get.new(o.path)
+                    request = Net::HTTP::Get.new(o.request_uri)
                     if opts[:user] && opts[:pass]
                       request.basic_auth(opts[:user], opts[:pass])
                     end

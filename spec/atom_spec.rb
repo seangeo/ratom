@@ -110,6 +110,15 @@ describe Atom do
       Atom::Feed.load_feed(uri).should be_an_instance_of(Atom::Feed)
     end
     
+    it "should accept a URI with query parameters" do
+      uri = URI.parse('http://example.com/feed.atom?page=2')
+      response = Net::HTTPSuccess.new(nil, nil, nil)
+      response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
+      mock_http_get(uri, response)
+      
+      Atom::Feed.load_feed(uri).should be_an_instance_of(Atom::Feed)
+    end
+    
     it "should raise ArgumentError with non-http uri" do
       uri = URI.parse('file:/tmp')
       lambda { Atom::Feed.load_feed(uri) }.should raise_error(ArgumentError)
@@ -929,20 +938,22 @@ describe Atom do
       end
     end
     
-    describe 'pagination using each_entries' do
+    describe 'pagination using each_entry' do
       before(:each) do
         @feed = Atom::Feed.load_feed(File.open('spec/paging/first_paged_feed.atom'))
       end
       
       it "should paginate through each entry" do
-        response1 = Net::HTTPSuccess.new(nil, nil, nil)
-        response1.stub!(:body).and_return(File.read('spec/paging/middle_paged_feed.atom'))
-        Net::HTTP.should_receive(:get_response).with(URI.parse('http://example.org/index.atom?page=2')).and_return(response1)
-
-        response2 = Net::HTTPSuccess.new(nil, nil, nil)
-        response2.stub!(:body).and_return(File.read('spec/paging/last_paged_feed.atom'))
-        Net::HTTP.should_receive(:get_response).with(URI.parse('http://example.org/index.atom?page=4')).and_return(response2)
-          
+        feed1 = Atom::Feed.load_feed(File.read('spec/paging/middle_paged_feed.atom'))
+        feed2 = Atom::Feed.load_feed(File.read('spec/paging/last_paged_feed.atom'))
+        
+        Atom::Feed.should_receive(:load_feed).
+                  with(URI.parse('http://example.org/index.atom?page=2'), an_instance_of(Hash)).
+                  and_return(feed1)
+        Atom::Feed.should_receive(:load_feed).
+                  with(URI.parse('http://example.org/index.atom?page=4'), an_instance_of(Hash)).
+                  and_return(feed2)
+                  
         entry_count = 0
         @feed.each_entry(:paginate => true) do |entry|
           entry_count += 1
@@ -963,8 +974,7 @@ describe Atom do
       it "should only paginate up to since" do
         response1 = Net::HTTPSuccess.new(nil, nil, nil)
         response1.stub!(:body).and_return(File.read('spec/paging/middle_paged_feed.atom'))
-        Net::HTTP.should_receive(:get_response).with(URI.parse('http://example.org/index.atom?page=2')).and_return(response1)
-        Net::HTTP.should_receive(:get_response).with(URI.parse('http://example.org/index.atom?page=4')).never
+        mock_http_get(URI.parse('http://example.org/index.atom?page=2'), response1)
         
         entry_count = 0
         @feed.each_entry(:paginate => true, :since => Time.parse('2003-11-19T18:30:02Z')) do |entry|
@@ -1042,30 +1052,16 @@ describe Atom do
     end    
     
     it "should fetch feed for fetch_next" do
-      response = Net::HTTPSuccess.new(nil, nil, nil)
-      response.stub!(:body).and_return(File.read('spec/paging/middle_paged_feed.atom'))
-      Net::HTTP.should_receive(:get_response).with(URI.parse(@href)).and_return(response)
-      @link.fetch.should be_an_instance_of(Atom::Feed)
+      Atom::Feed.should_receive(:load_feed).with(URI.parse(@href), an_instance_of(Hash))
+      @link.fetch
     end
     
     it "should fetch content when response is not xml" do
+      Atom::Feed.should_receive(:load_feed).and_raise(Atom::LoadError)
       response = Net::HTTPSuccess.new(nil, nil, nil)
       response.stub!(:body).and_return('some text.')
       Net::HTTP.should_receive(:get_response).with(URI.parse(@href)).and_return(response)
       @link.fetch.should == 'some text.'
-    end
-    
-    it "should fetch content when response is not atom" do
-      content = <<-END
-      <?xml version="1.0" ?>
-      <foo>
-        <bar>text</bar>
-      </foo>        
-      END
-      response = Net::HTTPSuccess.new(nil, nil, nil)
-      response.stub!(:body).and_return(content)
-      Net::HTTP.should_receive(:get_response).with(URI.parse(@href)).and_return(response)
-      @link.fetch.should == content
     end
   end
   
