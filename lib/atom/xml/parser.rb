@@ -30,6 +30,17 @@ unless defined?(ActiveSupport)
 end
 
 module Atom
+  class LoadError < StandardError
+    attr_reader :response
+    def initialize(response)
+      @response = response
+    end
+    
+    def to_s
+      "Atom::LoadError: #{response.code} #{response.message}"
+    end
+  end
+  
   module Xml # :nodoc:
    class NamespaceMap
       def initialize(default = Atom::NAMESPACE)
@@ -225,16 +236,34 @@ module Atom
         def loadable!(&error_handler)
           class_name = self.name
           (class << self; self; end).instance_eval do
-            define_method "load_#{class_name.demodulize.downcase}" do |o|
-               xml = nil
+            define_method "load_#{class_name.demodulize.downcase}" do |*args|
+               o = args.first
+               opts = args.size > 1 ? args.last : {}
+               
+               xml = 
                 case o
                 when String
-                  xml = XML::Reader.new(o)
+                  XML::Reader.new(o)
                 when IO
-                  xml = XML::Reader.new(o.read)
+                  XML::Reader.new(o.read)
                 when URI
                   raise ArgumentError, "#{class_name}.load only handles http URIs" if o.scheme != 'http'
-                  xml = XML::Reader.new(Net::HTTP.get_response(o).body)
+                  response = nil
+                  Net::HTTP.start(o.host, o.port) do |http|
+                    request = Net::HTTP::Get.new(o.path)
+                    if opts[:user] && opts[:pass]
+                      request.basic_auth(opts[:user], opts[:pass])
+                    end
+                    response = http.request(request)
+                  end
+                  case response
+                  when Net::HTTPSuccess
+                    XML::Reader.new(response.body)
+                  when nil
+                    raise ArgumentError.new("nil response to #{o}")
+                  else
+                    raise Atom::LoadError.new(response)
+                  end
                 else
                   raise ArgumentError, "#{class_name}.load needs String, URI or IO, got #{o.class.name}"
                 end
@@ -244,7 +273,7 @@ module Atom
                 else
                   xml.set_error_handler do |reader, message, severity, base, line|
                     if severity == XML::Reader::SEVERITY_ERROR
-                      raise ParseError, "#{message} at #{line}"
+                      raise ParseError, "#{message} at #{line} in #{o}"
                     end
                   end
                 end

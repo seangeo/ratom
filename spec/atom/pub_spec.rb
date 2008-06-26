@@ -96,7 +96,8 @@ describe Atom::Pub do
       uri = URI.parse('http://example.com/service.xml')
       response = Net::HTTPSuccess.new(nil, nil, nil)
       response.stub!(:body).and_return(File.read('spec/app/service.xml'))
-      Net::HTTP.should_receive(:get_response).with(uri).and_return(response)
+      mock_http(uri, response)
+      
       Atom::Pub::Service.load_service(uri).should be_an_instance_of(Atom::Pub::Service)
     end
     
@@ -186,7 +187,7 @@ describe Atom::Pub do
       it "should return the feed" do
         response = Net::HTTPSuccess.new(nil, nil, nil)
         response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
-        Net::HTTP.should_receive(:get_response).with(URI.parse(@collection.href)).and_return(response)
+        mock_http(URI.parse(@collection.href), response)
         @collection.feed.should be_an_instance_of(Atom::Feed)
       end
     

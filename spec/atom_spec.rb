@@ -105,7 +105,8 @@ describe Atom do
       uri = URI.parse('http://example.com/feed.atom')
       response = Net::HTTPSuccess.new(nil, nil, nil)
       response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
-      Net::HTTP.should_receive(:get_response).with(uri).and_return(response)
+      mock_http(uri, response)
+      
       Atom::Feed.load_feed(uri).should be_an_instance_of(Atom::Feed)
     end
     
@@ -118,6 +119,23 @@ describe Atom do
       feed = Atom::Feed.load_feed(File.open('spec/fixtures/simple_single_entry.atom'))
       feed.should be_an_instance_of(Atom::Feed)
     end
+    
+    it "should not raise an error with a String and basic-auth credentials" do
+      lambda { Atom::Feed.load_feed(File.read('spec/fixtures/simple_single_entry.atom'), :user => 'user', :pass => 'pass') }.should_not raise_error
+    end
+    
+    it "should not raise an error with a URI with basic-auth credentials" do
+      uri = URI.parse('http://example.com/feed.atom')
+      
+      response = Net::HTTPSuccess.new(nil, nil, nil)
+      response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
+      mock_http(uri, response, 'user', 'pass')
+
+      lambda { Atom::Feed.load_feed(uri, :user => 'user', :pass => 'pass') }.should_not raise_error
+    end
+    
+    it "should pass basic-auth credentials on the request" do
+    end
   end
   
   describe 'Atom::Entry.load_entry' do
@@ -126,10 +144,11 @@ describe Atom do
     end
     
     it "should accept a URI" do
-      uri = URI.parse('http://example.org/')
+      uri = URI.parse('http://example.org/entry.atom')
       response = Net::HTTPSuccess.new(nil, nil, nil)
-      response.stub!(:body).and_return(File.read('spec/fixtures/entry.atom'))
-      Net::HTTP.should_receive(:get_response).with(uri).and_return(response)
+      response.stub!(:body).and_return(File.read('spec/fixtures/entry.atom'))      
+      mock_http(uri, response)
+      
       Atom::Entry.load_entry(uri).should be_an_instance_of(Atom::Entry)
     end
     

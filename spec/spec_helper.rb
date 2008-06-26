@@ -21,4 +21,17 @@ Spec::Runner.configure do |config|
     
     response
   end
+  
+  def mock_http(url, response, user = nil, pass = nil)
+    req = mock('request')
+    Net::HTTP::Get.should_receive(:new).with(url.path).and_return(req)
+    
+    if user && pass
+      req.should_receive(:basic_auth).with(user, pass)
+    end
+    
+    http = mock('http')
+    http.should_receive(:request).with(req).and_return(response)
+    Net::HTTP.should_receive(:start).with(url.host, url.port).and_yield(http)
+  end
 end
