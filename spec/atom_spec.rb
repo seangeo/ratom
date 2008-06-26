@@ -105,7 +105,7 @@ describe Atom do
       uri = URI.parse('http://example.com/feed.atom')
       response = Net::HTTPSuccess.new(nil, nil, nil)
       response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
-      mock_http(uri, response)
+      mock_http_get(uri, response)
       
       Atom::Feed.load_feed(uri).should be_an_instance_of(Atom::Feed)
     end
@@ -129,7 +129,7 @@ describe Atom do
       
       response = Net::HTTPSuccess.new(nil, nil, nil)
       response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
-      mock_http(uri, response, 'user', 'pass')
+      mock_http_get(uri, response, 'user', 'pass')
 
       lambda { Atom::Feed.load_feed(uri, :user => 'user', :pass => 'pass') }.should_not raise_error
     end
@@ -147,7 +147,7 @@ describe Atom do
       uri = URI.parse('http://example.org/entry.atom')
       response = Net::HTTPSuccess.new(nil, nil, nil)
       response.stub!(:body).and_return(File.read('spec/fixtures/entry.atom'))      
-      mock_http(uri, response)
+      mock_http_get(uri, response)
       
       Atom::Entry.load_entry(uri).should be_an_instance_of(Atom::Entry)
     end

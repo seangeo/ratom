@@ -96,7 +96,7 @@ describe Atom::Pub do
       uri = URI.parse('http://example.com/service.xml')
       response = Net::HTTPSuccess.new(nil, nil, nil)
       response.stub!(:body).and_return(File.read('spec/app/service.xml'))
-      mock_http(uri, response)
+      mock_http_get(uri, response)
       
       Atom::Pub::Service.load_service(uri).should be_an_instance_of(Atom::Pub::Service)
     end
@@ -140,6 +140,30 @@ describe Atom::Pub do
       it_should_behave_like 'parser of spec/app/service.xml'
     end
     
+    describe "load_service with authentication" do
+      it "should pass credentials to the server" do
+        uri = URI.parse('http://example.com/service.xml')
+        response = Net::HTTPSuccess.new(nil, nil, nil)
+        response.stub!(:body).and_return(File.read('spec/app/service.xml'))
+        mock_http_get(uri, response, 'user', 'pass')
+        Atom::Pub::Service.load_service(uri, :user => 'user', :pass => 'pass')
+      end
+      
+      it "should pass credentials on to the collections" do
+        uri = URI.parse('http://example.com/service.xml')
+        response = Net::HTTPSuccess.new(nil, nil, nil)
+        response.stub!(:body).and_return(File.read('spec/app/service.xml'))
+        mock_http_get(uri, response, 'user', 'pass')
+        pub = Atom::Pub::Service.load_service(uri, :user => 'user', :pass => 'pass')
+                
+        uri2 = URI.parse('http://example.org/blog/main')
+        response2 = Net::HTTPSuccess.new(nil, nil, nil)
+        response2.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
+        mock_http_get(uri2, response2, 'user', 'pass')
+        pub.workspaces.first.collections.first.feed(:user => 'user', :pass => 'pass')
+      end      
+    end
+    
     describe "#to_xml" do
       before(:each) do
         @svc = Atom::Pub::Service.load_service(File.read('spec/app/service.xml'))
@@ -174,6 +198,14 @@ describe Atom::Pub do
         collection.href.should == 'http://example.org/blog'
       end
     end
+    
+    it "should return the feed" do
+      collection = Atom::Pub::Collection.new(:href => 'http://example.org/blog')
+      response = Net::HTTPSuccess.new(nil, nil, nil)
+      response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
+      mock_http_get(URI.parse(collection.href), response)
+      collection.feed.should be_an_instance_of(Atom::Feed)
+    end
      
     describe '#publish' do 
       before(:each) do
@@ -183,24 +215,37 @@ describe Atom::Pub do
                    'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
                    }
       end
-      
-      it "should return the feed" do
-        response = Net::HTTPSuccess.new(nil, nil, nil)
-        response.stub!(:body).and_return(File.read('spec/fixtures/simple_single_entry.atom'))
-        mock_http(URI.parse(@collection.href), response)
-        @collection.feed.should be_an_instance_of(Atom::Feed)
-      end
-    
+          
       it "should send a POST request when an entry is published" do      
         entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
                  
         response = mock_response(Net::HTTPCreated, entry.to_xml.to_s)
       
+        request = mock('request')
+        Net::HTTP::Post.should_receive(:new).with('/blog', @request_headers).and_return(request)
+        
         http = mock('http')
-        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        http.should_receive(:request).with(request, entry.to_xml.to_s).and_return(response)
         Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
         created = @collection.publish(entry)
+        created.should == entry
+      end
+      
+      it "should send a POST with basic auth request when an entry is published" do      
+        entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
+                 
+        response = mock_response(Net::HTTPCreated, entry.to_xml.to_s)
+      
+        request = mock('request')
+        request.should_receive(:basic_auth).with('user', 'pass')
+        Net::HTTP::Post.should_receive(:new).with('/blog', @request_headers).and_return(request)
+        
+        http = mock('http')
+        http.should_receive(:request).with(request, entry.to_xml.to_s).and_return(response)
+        Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+        created = @collection.publish(entry, :user => 'user', :pass => 'pass')
         created.should == entry
       end
     
@@ -209,8 +254,11 @@ describe Atom::Pub do
                  
         response = mock_response(Net::HTTPCreated, " ")
       
+        request = mock('request')
+        Net::HTTP::Post.should_receive(:new).with('/blog', @request_headers).and_return(request)
+        
         http = mock('http')
-        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        http.should_receive(:request).with(request, entry.to_xml.to_s).and_return(response)
         Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
         created = @collection.publish(entry)
@@ -221,8 +269,11 @@ describe Atom::Pub do
         entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
         response = mock_response(Net::HTTPPreconditionFailed, "")
       
+        request = mock('request')
+        Net::HTTP::Post.should_receive(:new).with('/blog', @request_headers).and_return(request)
+        
         http = mock('http')
-        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        http.should_receive(:request).with(request, entry.to_xml.to_s).and_return(response)
         Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
         lambda { @collection.publish(entry) }.should raise_error(Atom::Pub::ProtocolError)
@@ -233,8 +284,11 @@ describe Atom::Pub do
                  
         response = mock_response(Net::HTTPCreated, entry.to_xml.to_s, 'Location' => 'http://example.org/edit/entry1.atom')
       
+        request = mock('request')
+        Net::HTTP::Post.should_receive(:new).with('/blog', @request_headers).and_return(request)
+        
         http = mock('http')
-        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        http.should_receive(:request).with(request, entry.to_xml.to_s).and_return(response)
         Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
         created = @collection.publish(entry)
@@ -247,8 +301,11 @@ describe Atom::Pub do
         response = mock_response(Net::HTTPCreated, File.read('spec/fixtures/created_entry.atom'),
                                  'Location' => 'http://example.org/edit/atom')
       
+        request = mock('request')
+        Net::HTTP::Post.should_receive(:new).with('/blog', @request_headers).and_return(request)
+
         http = mock('http')
-        http.should_receive(:post).with('/blog', entry.to_xml.to_s, @request_headers).and_return(response)
+        http.should_receive(:request).with(request, entry.to_xml.to_s).and_return(response)
         Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
         created = @collection.publish(entry)
@@ -284,23 +341,59 @@ describe Atom::Pub do
       entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
       response = mock_response(Net::HTTPSuccess, nil)
       
+      request = mock('request')
+      Net::HTTP::Put.should_receive(:new).with('/member_entry.atom', @request_headers).and_return(request)
+
       http = mock('http')
-      http.should_receive(:put).with('/member_entry.atom', entry.to_xml, @request_headers).and_return(response)
+      http.should_receive(:request).with(request, entry.to_xml.to_s).and_return(response)
       Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
-      
+            
       entry.save!
+    end
+    
+    it "should send a PUT with auth to the edit link on save!" do
+      entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
+      response = mock_response(Net::HTTPSuccess, nil)
+      
+      request = mock('request')
+      request.should_receive(:basic_auth).with('user', 'pass')
+      Net::HTTP::Put.should_receive(:new).with('/member_entry.atom', @request_headers).and_return(request)
+
+      http = mock('http')
+      http.should_receive(:request).with(request, entry.to_xml.to_s).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+            
+      entry.save!(:user => 'user', :pass => 'pass')
     end
     
     it "should send a DELETE to the edit link on delete!" do
       entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
       response = mock_response(Net::HTTPSuccess, nil)
       
+      request = mock('request')
+      Net::HTTP::Delete.should_receive(:new).with('/member_entry.atom', an_instance_of(Hash)).and_return(request)
+
       http = mock('http')
-      http.should_receive(:delete).with('/member_entry.atom', an_instance_of(Hash)).and_return(response)
+      http.should_receive(:request).with(request).and_return(response)
       Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
       entry.destroy!
     end
+    
+     it "should send a DELETE to the edit link on delete!" do
+        entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
+        response = mock_response(Net::HTTPSuccess, nil)
+
+        request = mock('request')
+        request.should_receive(:basic_auth).with('user', 'pass')
+        Net::HTTP::Delete.should_receive(:new).with('/member_entry.atom', an_instance_of(Hash)).and_return(request)
+
+        http = mock('http')
+        http.should_receive(:request).with(request).and_return(response)
+        Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+
+        entry.destroy!(:user => 'user', :pass => 'pass')
+      end
     
     it "should raise exception on save! without an edit link" do
       entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
@@ -311,8 +404,11 @@ describe Atom::Pub do
       entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
       response = mock_response(Net::HTTPClientError, nil)
       
+      request = mock('request')
+      Net::HTTP::Put.should_receive(:new).with('/member_entry.atom', @request_headers).and_return(request)
+
       http = mock('http')
-      http.should_receive(:put).with('/member_entry.atom', entry.to_xml, @request_headers).and_return(response)
+      http.should_receive(:request).with(request, entry.to_xml.to_s).and_return(response)
       Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
       lambda { entry.save! }.should raise_error(Atom::Pub::ProtocolError)
@@ -327,8 +423,11 @@ describe Atom::Pub do
       entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
       response = mock_response(Net::HTTPClientError, nil)
       
+      request = mock('request')
+      Net::HTTP::Delete.should_receive(:new).with('/member_entry.atom', an_instance_of(Hash)).and_return(request)
+
       http = mock('http')
-      http.should_receive(:delete).with('/member_entry.atom', an_instance_of(Hash)).and_return(response)
+      http.should_receive(:request).with(request).and_return(response)
       Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
       
       lambda { entry.destroy! }.should raise_error(Atom::Pub::ProtocolError)

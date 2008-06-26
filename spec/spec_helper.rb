@@ -22,7 +22,7 @@ Spec::Runner.configure do |config|
     response
   end
   
-  def mock_http(url, response, user = nil, pass = nil)
+  def mock_http_get(url, response, user = nil, pass = nil)
     req = mock('request')
     Net::HTTP::Get.should_receive(:new).with(url.path).and_return(req)
     

@@ -236,6 +236,7 @@ module Atom
         def loadable!(&error_handler)
           class_name = self.name
           (class << self; self; end).instance_eval do
+            
             define_method "load_#{class_name.demodulize.downcase}" do |*args|
                o = args.first
                opts = args.size > 1 ? args.last : {}
