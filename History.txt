@@ -1,3 +1,7 @@
+== 0.4.0 2008-06-26
+
+* Support for HTTP Basic Authentication.
+
 == 0.3.7 2008-06-05
 
 * Support XML in extension elements. (Min Kim)

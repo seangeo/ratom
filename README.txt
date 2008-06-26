@@ -181,6 +181,27 @@ You can then call to_xml and rAtom will serialize the extension elements into xm
 Notice that the output repeats the xmlns attribute for each of the extensions, this is semantically the same the input XML, just a bit
 ugly.  It seems to be a limitation of the libxml-Ruby API. But if anyone knows a work around I'd gladly accept a patch (or even advice).
 
+=== Basic Authentication
+
+All methods that involve HTTP requests now support HTTP Basic Authentication.  Authentication credentials are passed
+as :user and :pass parameters to the methods that invoke the request. For example you can load a feed with HTTP Basic Authentication using:
+
+  Atom::Feed.load_entry(URI.parse("http://example.org/feed.atom"), :user => 'username', :pass => 'password')
+
+Likewise all the Atom Pub methods support similar parameters, for example you can publish an Entry to a Feed with authentication
+using:
+
+  feed.publish(entry, :user => 'username', :pass => 'password')
+
+Or destroy an entry with:
+
+  entry.destroy!(:user => 'username', :pass => 'password')
+
+rAtom doesn't store these credentials anywhere within the object model so you will need to pass them as arguments to every
+method call that requires them.  This might be a bit of a pain but it does make things simpler and it means that I'm not responsible
+for protecting your credentials, although if you are using HTTP Basic Authentication there is a good chance your credentials aren't
+very well protected anyway.
+
 == TODO
 
 * Support partial content responses from the server.
@@ -189,7 +210,6 @@ ugly.  It seems to be a limitation of the libxml-Ruby API. But if anyone knows a
 * All my tests have been against internal systems, I'd really like feedback from those who have tried rAtom using existing blog software that supports APP.
 * Handle all base uri tests.
 * Add slug support.
-* Handle HTTP basic authentication.
 
 == Source Code
 
