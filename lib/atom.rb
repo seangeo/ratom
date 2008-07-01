@@ -2,6 +2,8 @@
 #
 # For licensing information see LICENSE.txt.
 #
+# Please visit http://www.peerworks.org/contact for further information.
+#
 
 require 'forwardable'
 require 'delegate'

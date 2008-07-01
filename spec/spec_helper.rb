@@ -1,3 +1,9 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
+# For licensing information see LICENSE.txt.
+#
+# Please visit http://www.peerworks.org/contact for further information.
+#
 begin
   require 'spec'
 rescue LoadError
