@@ -1,7 +1,7 @@
 require 'atom/version'
 
-AUTHOR = 'Peerworks'  # can also be an array of Authors
-EMAIL = "info@peerworks.org"
+AUTHOR = ['Peerworks', 'Sean Geoghegan']  # can also be an array of Authors
+EMAIL = "sean@peerworks.org"
 DESCRIPTION = "Atom Syndication and Publication API"
 GEM_NAME = 'ratom' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'ratom' # The unix name for your project
@@ -60,7 +60,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   # == Optional
   p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
   # An array of rubygem dependencies [name, version], e.g. [ ['active_support', '>= 1.3.1'] ]
-  p.extra_deps = [['libxml-ruby', '= 0.5.2.0']]     
+  p.extra_deps = [['libxml-ruby', '= 0.6.0.0']]     
   
   #p.spec_extras = {}    # A hash of extra values to set in the gemspec.
   

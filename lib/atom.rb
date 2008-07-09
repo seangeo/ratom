@@ -8,6 +8,7 @@
 require 'forwardable'
 require 'delegate'
 require 'rubygems'
+gem 'libxml-ruby', '= 0.6.0.0'
 require 'xml/libxml'
 require 'atom/xml/parser.rb'
 
