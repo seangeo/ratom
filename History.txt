@@ -1,3 +1,7 @@
+== 0.4.2 2008-07-09
+
+* Update to libxml-ruby version 0.8.x
+
 == 0.4.1 2008-07-09
 
 * Update to libxml-ruby version 0.6.0.

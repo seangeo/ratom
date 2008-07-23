@@ -146,7 +146,7 @@ module Atom
                 node << attribute.to_xml(true, spec.name, spec.options[:namespace], namespace_map)
               else
                 n =  XML::Node.new(spec.name)
-                n['xmlns'] = spec.options[:namespace]              
+                n['xmlns'] = spec.options[:namespace] if spec.options[:namespace]
                 n << (attribute.is_a?(Time)? attribute.xmlschema : attribute.to_s)
                 node << n
               end
@@ -157,7 +157,7 @@ module Atom
                 node << attribute.to_xml(true, spec.name.singularize, nil, namespace_map)
               else
                 n = XML::Node.new(spec.name.singularize)
-                n['xmlns'] = spec.options[:namespace]
+                n['xmlns'] = spec.options[:namespace] if spec.options[:namespace]
                 n << attribute.to_s
                 node << n
               end

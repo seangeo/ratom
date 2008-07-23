@@ -8,7 +8,7 @@
 require 'forwardable'
 require 'delegate'
 require 'rubygems'
-gem 'libxml-ruby', '= 0.6.0.0'
+gem 'libxml-ruby', '>= 0.8.0'
 require 'xml/libxml'
 require 'atom/xml/parser.rb'
 
@@ -228,7 +228,7 @@ module Atom # :nodoc:
           node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
           node << Iconv.iconv('utf-8', 'utf-8', self.to_s)
           node['type'] = 'html'
-          node['xml:lang'] = self.xml_lang        
+          node['xml:lang'] = self.xml_lang if self.xml_lang
           node
         rescue Iconv::IllegalSequence => e
           raise SerializationError, "Content must be converted to UTF-8 before attempting to serialize to XML: #{e.message}."
