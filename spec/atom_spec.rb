@@ -8,6 +8,7 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'net/http'
 require 'time'
+require 'spec/property'
 
 shared_examples_for 'simple_single_entry.atom attributes' do
   it "should parse title" do
@@ -1042,6 +1043,26 @@ describe Atom do
         entry2 = Atom::Entry.load_entry(entry.to_xml)
         entry2['http://example.org', 'title'].should == ['Example title']
       end
+    end
+  end
+  
+  describe 'custom_extensions' do
+    before(:all) do
+      Atom::Entry.add_extension_namespace :ns_alias, "http://custom.namespace"
+      Atom::Entry.elements "ns_alias:property", :class => Atom::Extensions::Property
+      @entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry_with_custom_extensions.atom'))
+    end
+    
+    it "should_load_custom_extensions_for_entry" do
+      @entry.ns_alias_property.should_not == []
+    end
+    
+    it "should_load_2_custom_extensions_for_entry" do
+      @entry.ns_alias_property.size.should == 2
+    end
+    
+    it "should_load_correct_data_for_custom_extensions_for_entry" do
+      @entry.ns_alias_property.map { |x| [x.name, x.value] }.should == [['foo', 'bar'], ['baz', 'bat']]
     end
   end
   
