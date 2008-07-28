@@ -219,9 +219,9 @@ module Atom
         
           names.each do |name|
             attr_accessor name.to_s.sub(/:/, '_').to_sym
-            ns = name.to_s[/(.*):.*/,1]
+            ns, local_name = name.to_s[/(.*):(.*)/,1], $2 || name
             self.known_namespaces << self.extensions_namespaces[ns] if ns
-            self.ordered_element_specs << self.element_specs[name.to_s] = ParseSpec.new(name, options)
+            self.ordered_element_specs << self.element_specs[local_name.to_s] = ParseSpec.new(name, options)
           end
         end
             

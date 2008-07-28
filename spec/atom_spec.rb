@@ -1067,10 +1067,27 @@ describe Atom do
       @entry.ns_alias_property.size.should == 2
     end
     
-    it "should_load_correct_data_for_custom_extensions_for_entry" do
+    it "should load correct_data_for_custom_extensions_for_entry" do
       @entry.ns_alias_property.map { |x| [x.name, x.value] }.should == [['foo', 'bar'], ['baz', 'bat']]
     end
   end
+  
+  describe 'single custom_extensions' do
+     before(:all) do
+       Atom::Entry.add_extension_namespace :custom, "http://custom.namespace"
+       Atom::Entry.element "custom:property", :class => Atom::Extensions::Property
+       @entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry_with_single_custom_extension.atom'))
+     end
+
+     it "should load single custom extensions for entry" do
+       @entry.custom_property.should_not be_nil
+     end
+
+     it "should load correct data for custom extensions for entry" do
+       @entry.custom_property.name.should == 'foo'
+       @entry.custom_property.value.should == 'bar'
+     end
+   end
   
   describe Atom::Link do
     before(:each) do
