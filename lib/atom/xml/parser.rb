@@ -77,7 +77,7 @@ module Atom
         loop do
           case xml.node_type
           when XML::Reader::TYPE_ELEMENT
-            if element_specs.include?(xml.local_name) && [Atom::NAMESPACE, Atom::Pub::NAMESPACE].include?(xml.namespace_uri)
+            if element_specs.include?(xml.local_name) && (self.class.known_namespaces + [Atom::NAMESPACE, Atom::Pub::NAMESPACE]).include?(xml.namespace_uri)
               element_specs[xml.local_name].parse(self, xml)
             elsif attributes.any?
               while (xml.move_to_next_attribute == 1)
@@ -116,6 +116,9 @@ module Atom
           def ordered_element_specs; self.class.ordered_element_specs; end
           def attributes; self.class.attributes; end
           def o.namespace(ns = @namespace); @namespace = ns; end
+          def o.add_extension_namespace(ns, url); self.extensions_namespaces[ns.to_s] = url; end
+          def o.extensions_namespaces; @extensions_namespaces ||= {} end
+          def o.known_namespaces; @known_namespaces ||= [] end
         end
         o.send(:extend, DeclarationMethods)
       end
@@ -140,6 +143,9 @@ module Atom
         namespace_map = NamespaceMap.new(self.class.namespace) if namespace_map.nil?
         node = XML::Node.new(root_name)
         node['xmlns'] = self.class.namespace unless nodeonly || !self.class.respond_to?(:namespace)
+        self.class.extensions_namespaces.each do |ns_alias,uri|
+          node["xmlns:#{ns_alias}"] = uri
+        end
 
         self.class.ordered_element_specs.each do |spec|
           if spec.single?
@@ -212,7 +218,9 @@ module Atom
           options.merge!(names.pop) if names.last.is_a?(Hash) 
         
           names.each do |name|
-            attr_accessor name          
+            attr_accessor name.to_s.sub(/:/, '_').to_sym
+            ns = name.to_s[/(.*):.*/,1]
+            self.known_namespaces << self.extensions_namespaces[ns] if ns
             self.ordered_element_specs << self.element_specs[name.to_s] = ParseSpec.new(name, options)
           end
         end
@@ -222,8 +230,16 @@ module Atom
           options.merge!(names.pop) if names.last.is_a?(Hash)
         
           names.each do |name|
-            attr_accessor name
-            self.ordered_element_specs << self.element_specs[name.to_s.singularize] = ParseSpec.new(name, options)
+            name_sym = name.to_s.sub(/:/, '_').to_sym
+            attr_writer name_sym
+            define_method name_sym do 
+              ivar = :"@#{name_sym}"
+              self.instance_variable_set ivar, [] unless self.instance_variable_defined? ivar
+              self.instance_variable_get ivar
+            end
+            ns, local_name = name.to_s[/(.*):(.*)/,1], $2 || name
+            self.known_namespaces << self.extensions_namespaces[ns] if ns
+            self.ordered_element_specs << self.element_specs[local_name.to_s.singularize] = ParseSpec.new(name, options)
           end
         end
       
@@ -316,7 +332,9 @@ module Atom
           when :single
             target.send("#{@attribute}=".to_sym, build(target, xml))
           when :collection
-            target.send("#{@attribute}") << build(target, xml)
+            collection = target.send(@attribute.to_s)
+            element    = build(target, xml)
+            collection << element
           end
         end
       
