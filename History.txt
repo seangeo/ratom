@@ -1,6 +1,7 @@
-== HEAD 2008-07-28
+== 0.5.0 2008-07-28
 
 * Fix bug where processing instructions break parsing.
+* Added Custom extension element classes. (Ignacio Carrera)
 
 == 0.4.2 2008-07-09
 
