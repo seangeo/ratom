@@ -36,6 +36,7 @@ spec/fixtures/created_entry.atom
 spec/fixtures/entry.atom
 spec/fixtures/multiple_entry.atom
 spec/fixtures/simple_single_entry.atom
+spec/fixtures/with_stylesheet.atom
 spec/paging/first_paged_feed.atom
 spec/paging/last_paged_feed.atom
 spec/paging/middle_paged_feed.atom

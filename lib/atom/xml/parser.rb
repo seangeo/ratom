@@ -98,7 +98,9 @@ module Atom
       end
     
       def next_node_is?(xml, element, ns = nil)
-        xml.next == 1 && current_node_is?(xml, element, ns)
+        # Get to the next element
+        while xml.next == 1 && xml.node_type != XML::Reader::TYPE_ELEMENT; end
+        current_node_is?(xml, element, ns)
       end
       
       def current_node_is?(xml, element, ns = nil)

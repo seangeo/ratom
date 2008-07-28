@@ -183,6 +183,12 @@ describe Atom do
     it_should_behave_like "simple_single_entry.atom attributes"
   end
   
+  describe 'FeedWithStyleSheet' do
+    it "should load without failure" do
+      lambda { feed = Atom::Feed.load_feed(File.open('spec/fixtures/with_stylesheet.atom')) }.should_not raise_error
+    end
+  end
+  
   describe 'ComplexFeed' do
     before(:all) do
       @feed = Atom::Feed.load_feed(File.open('spec/fixtures/complex_single_entry.atom'))

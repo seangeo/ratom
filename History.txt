@@ -1,3 +1,7 @@
+== HEAD 2008-07-28
+
+* Fix bug where processing instructions break parsing.
+
 == 0.4.2 2008-07-09
 
 * Update to libxml-ruby version 0.8.x
