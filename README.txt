@@ -215,7 +215,8 @@ We can tell rAtom about our custom namespace and custom class using the followin
 The first method call registers an alias for the "http://custom.namespace" namespace and the second method call
 tell rAtom that when it encounters a custom:property element within a Feed it should create an instance of Custom::Property
 and pass the XML Reader to the constructor of the instance.  It is then up to the constructor to populate the objects attributes 
-from the XML.  
+from the XML. Note that the alias you create using +add_extension_namespace+ can be anything you want, it doesn't need
+to match the alias in the actual XML itself.
 
 The custom property will then be available as a method on the rAtom class.  In the above example:
 
@@ -223,6 +224,11 @@ The custom property will then be available as a method on the rAtom class.  In t
   @feed.custom_property.first.name == 'foo'
   @feed.custom_property.first.value == 'bar'
 	
+There is one caveat to this.  By using this type of extension support you are permanently modifying the rAtom classes.
+So if your application process one type of atom extension and you are happy with permanently modified rAtom classes,
+the extra extensibility might work for you.  If on the other hand you process lots of different types of extension you might
+want to stick with simpler extension mechanism using the [namespace, element] method described above.
+ 
 (Thanks to nachokb for this feature!!)
 
 === Basic Authentication
