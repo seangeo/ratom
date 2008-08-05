@@ -6,6 +6,7 @@
 #
 
 require 'atom'
+require 'atom/configuration'
 require 'atom/xml/parser'
 require 'atom/version'
 require 'xml/libxml'
@@ -126,6 +127,12 @@ module Atom
           request = Net::HTTP::Post.new(uri.path, headers)
           if opts[:user] && opts[:pass]
             request.basic_auth(opts[:user], opts[:pass])
+          elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
+            if Atom::Configuration.auth_hmac_enabled?
+              AuthHMAC.sign!(request, opts[:hmac_access_id], opts[:hmac_secret_key])
+            else
+              raise ArgumentError, "AuthHMAC credentials provides by auth-hmac gem is not installed"
+            end
           end
           response = http.request(request, entry.to_xml.to_s)
         end
@@ -171,7 +178,14 @@ module Atom
           request = Net::HTTP::Put.new(uri.path, headers)
           if opts[:user] && opts[:pass]
             request.basic_auth(opts[:user], opts[:pass])
+          elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
+            if Atom::Configuration.auth_hmac_enabled?
+              AuthHMAC.sign!(request, opts[:hmac_access_id], opts[:hmac_secret_key])
+            else
+              raise ArgumentError, "AuthHMAC credentials provides by auth-hmac gem is not installed"
+            end
           end
+          
           response = http.request(request, self.to_xml)
         end
         
@@ -193,7 +207,14 @@ module Atom
           request = Net::HTTP::Delete.new(uri.path, {'Accept' => 'application/atom+xml', 'User-Agent' => "rAtom #{Atom::VERSION::STRING}"})
           if opts[:user] && opts[:pass]
             request.basic_auth(opts[:user], opts[:pass])
+          elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
+            if Atom::Configuration.auth_hmac_enabled?
+              AuthHMAC.sign!(request, opts[:hmac_access_id], opts[:hmac_secret_key])
+            else
+              raise ArgumentError, "AuthHMAC credentials provides by auth-hmac gem is not installed"
+            end
           end
+          
           response = http.request(request)
         end
         

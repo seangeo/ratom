@@ -9,6 +9,7 @@ lib/atom.rb
 lib/atom/pub.rb
 lib/atom/version.rb
 lib/atom/xml/parser.rb
+lib/atom/configuration.rb
 setup.rb
 spec/app/member_entry.atom
 spec/app/service.xml

@@ -143,9 +143,6 @@ describe Atom do
 
       lambda { Atom::Feed.load_feed(uri, :user => 'user', :pass => 'pass') }.should_not raise_error
     end
-    
-    it "should pass basic-auth credentials on the request" do
-    end
   end
   
   describe 'Atom::Entry.load_entry' do

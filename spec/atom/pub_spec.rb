@@ -248,6 +248,27 @@ describe Atom::Pub do
         created = @collection.publish(entry, :user => 'user', :pass => 'pass')
         created.should == entry
       end
+      
+      if Atom::Configuration.auth_hmac_enabled?
+        it "should send a POST with hmac authentication when an entry is published" do  
+          entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
+                 
+          response = mock_response(Net::HTTPCreated, entry.to_xml.to_s)
+              
+          http = mock('http')
+          http.should_receive(:request) do |request, entry_xml|
+            request['Authorization'].should match(/^AuthHMAC access_id:[a-zA-Z0-9\/+]+=*/)
+            response
+          end
+            
+          Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+      
+          created = @collection.publish(entry, :hmac_access_id => 'access_id', :hmac_secret_key => 'secret')
+          created.should == entry
+        end
+      else
+        xit "should send a POST with hmac authentication when an entry is published"
+      end
     
       it "should behave well when no content is returned" do      
         entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))      
@@ -366,6 +387,23 @@ describe Atom::Pub do
       entry.save!(:user => 'user', :pass => 'pass')
     end
     
+    if Atom::Configuration.auth_hmac_enabled?
+      it "should send a PUT with hmac auth to the edit link on save!" do
+        entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
+        response = mock_response(Net::HTTPSuccess, nil)
+      
+        http = mock('http')
+        http.should_receive(:request) do |request, entry_xml|
+          request['Authorization'].should match(/^AuthHMAC access_id:[a-zA-Z0-9\/+]+=*$/)
+          response
+        end
+        
+        Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+            
+        entry.save!(:hmac_access_id => 'access_id', :hmac_secret_key => 'secret')
+      end
+    end
+    
     it "should send a DELETE to the edit link on delete!" do
       entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
       response = mock_response(Net::HTTPSuccess, nil)
@@ -380,20 +418,37 @@ describe Atom::Pub do
       entry.destroy!
     end
     
-     it "should send a DELETE to the edit link on delete!" do
+    it "should send a DELETE with basic auth to the edit link on delete!" do
+      entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
+      response = mock_response(Net::HTTPSuccess, nil)
+
+      request = mock('request')
+      request.should_receive(:basic_auth).with('user', 'pass')
+      Net::HTTP::Delete.should_receive(:new).with('/member_entry.atom', an_instance_of(Hash)).and_return(request)
+
+      http = mock('http')
+      http.should_receive(:request).with(request).and_return(response)
+      Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
+
+      entry.destroy!(:user => 'user', :pass => 'pass')
+    end
+    
+    if Atom::Configuration.auth_hmac_enabled?
+      it "should send a DELETE with hmac auth to the edit link on delete!" do
         entry = Atom::Entry.load_entry(File.open('spec/app/member_entry.atom'))
         response = mock_response(Net::HTTPSuccess, nil)
 
-        request = mock('request')
-        request.should_receive(:basic_auth).with('user', 'pass')
-        Net::HTTP::Delete.should_receive(:new).with('/member_entry.atom', an_instance_of(Hash)).and_return(request)
-
         http = mock('http')
-        http.should_receive(:request).with(request).and_return(response)
+        http.should_receive(:request) do |request|
+          request['Authorization'].should match(/^AuthHMAC access_id:[a-zA-Z0-9\/+]+=*$/)
+          response
+        end
+        
         Net::HTTP.should_receive(:start).with('example.org', 80).and_yield(http)
 
-        entry.destroy!(:user => 'user', :pass => 'pass')
+        entry.destroy!(:hmac_access_id => 'access_id', :hmac_secret_key => 'secret')
       end
+    end
     
     it "should raise exception on save! without an edit link" do
       entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry.atom'))
