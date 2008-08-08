@@ -412,9 +412,9 @@ module Atom # :nodoc:
     end
     
     # Reloads the feed by fetching the self uri.
-    def reload!
+    def reload!(opts = {})
       if links.self
-        Feed.load_feed(URI.parse(links.self.href))
+        Feed.load_feed(URI.parse(links.self.href), opts)
       end
     end
     
@@ -545,9 +545,9 @@ module Atom # :nodoc:
     end   
     
     # Reload the Entry by fetching the self link.
-    def reload!
+    def reload!(opts = {})
       if links.self
-        Entry.load_entry(URI.parse(links.self.href))
+        Entry.load_entry(URI.parse(links.self.href), opts)
       end
     end
   end
