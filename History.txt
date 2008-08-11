@@ -1,6 +1,6 @@
 == 0.5.1 2008-08-05
 
-* Added AuthHMAC support
+* Added optional AuthHMAC support
 
 == 0.5.0 2008-07-28
 

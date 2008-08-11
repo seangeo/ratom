@@ -252,6 +252,10 @@ method call that requires them.  This might be a bit of a pain but it does make 
 for protecting your credentials, although if you are using HTTP Basic Authentication there is a good chance your credentials aren't
 very well protected anyway.
 
+=== AuthHMAC authentication
+
+As of version 0.5.1 rAtom also support authentication via HMAC request signing using the AuthHMAC[http://auth-hmac.rubyforge.org] gem.  This is made available using the :hmac_access_id and :hmac_secret_key parameters which can be passed to the same methods as the HTTP Basic credentials support.
+
 == TODO
 
 * Support partial content responses from the server.
