@@ -654,6 +654,20 @@ describe Atom do
           @entry.links.map{|l| l.href }.should include('http://www.snellspace.com/public/linktests/example')
         end
       end
+
+      describe 'linktest9' do
+        before(:all) do
+          @entry = @entries[8]
+        end
+        
+        it "should parse all links" do
+          @entry.should have(3).links
+        end
+        
+        it "should pick the alternate without hreflang" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+      end
     end
     
     describe 'ordertest.atom' do
