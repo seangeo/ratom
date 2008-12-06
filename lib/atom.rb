@@ -207,7 +207,7 @@ module Atom # :nodoc:
       def initialize(o)
         case o
         when XML::Reader
-          super(o.read_string.gsub(/\s+/, ' ').strip)
+          super(o.read_string)
           parse(o, :once => true)
         when String
           super(o)
