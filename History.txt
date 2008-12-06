@@ -1,3 +1,7 @@
+== 0.5.2 2008-12-06
+
+* Remove whitespace modification in content. (dlisboa)
+
 == 0.5.1 2008-08-05
 
 * Added optional AuthHMAC support
