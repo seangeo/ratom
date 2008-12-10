@@ -1071,21 +1071,40 @@ describe Atom do
   
   describe 'single custom_extensions' do
      before(:all) do
-       Atom::Entry.add_extension_namespace :custom, "http://custom.namespace"
-       Atom::Entry.element "custom:property", :class => Atom::Extensions::Property
+       Atom::Entry.add_extension_namespace :custom, "http://single.custom.namespace"
+       Atom::Entry.element "custom:singleproperty", :class => Atom::Extensions::Property
        @entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry_with_single_custom_extension.atom'))
      end
 
      it "should load single custom extensions for entry" do
-       @entry.custom_property.should_not be_nil
+       @entry.custom_singleproperty.should_not be_nil
      end
 
      it "should load correct data for custom extensions for entry" do
-       @entry.custom_property.name.should == 'foo'
-       @entry.custom_property.value.should == 'bar'
+       @entry.custom_singleproperty.name.should == 'foo'
+       @entry.custom_singleproperty.value.should == 'bar'
      end
    end
-  
+
+  describe 'write_support' do
+    # FIXME this example depends on "custom_extensions" for configuring Atom::Entry
+    before(:all) do
+      @entry = Atom::Entry.new
+      @entry.ns_alias_property << Atom::Extensions::Property.new('ratom', 'rocks')
+      @entry.ns_alias_property << Atom::Extensions::Property.new('custom extensions', 'also rock')
+      @node = @entry.to_xml(true)
+    end
+
+    it "should_write_custom_extensions_on_to_xml" do
+      @node.children.size.should == 2
+      ratom, custom_extensions = @node.children
+      ratom.attributes["name"].should == "ratom"
+      ratom.attributes["value"].should == "rocks"
+      custom_extensions.attributes["name"].should == "custom extensions"
+      custom_extensions.attributes["value"].should == "also rock"
+    end
+  end
+
   describe Atom::Link do
     before(:each) do
       @href = 'http://example.org/next'
