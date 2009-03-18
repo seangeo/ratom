@@ -90,4 +90,14 @@
     <link href="http://www.snellspace.com/public/linktests/alternate" />
   </entry>
   
+  <entry>
+    <id>tag:snellspace.com,2006:/atom/conformance/linktest/8</id>
+    <title>Entry with links in different languages</title>
+    <updated>2005-01-18T15:00:06Z</updated>
+    <summary>The aggregator should pick the second link as alternate.</summary>
+    <link rel="alternate" hreflang="es" href="http://www.snellspace.com/es/public/linktests/alternate" />
+    <link rel="alternate" href="http://www.snellspace.com/public/linktests/alternate" />
+    <link rel="alternate" hreflang="cat" href="http://www.snellspace.com/cat/public/linktests/alternate" />
+  </entry>
+  
 </feed>

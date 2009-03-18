@@ -573,7 +573,11 @@ module Atom # :nodoc:
     #
     # Returns the first link with rel == 'alternate' that matches the given type.
     def alternate(type = nil)
-      detect { |link| (link.rel.nil? || link.rel == Link::Rel::ALTERNATE) && (type.nil? || type == link.type) }
+      detect { |link| 
+        (link.rel.nil? || link.rel == Link::Rel::ALTERNATE) && (type.nil? || type == link.type) && (link.hreflang.nil?) 
+      } || detect { |link| 
+        (link.rel.nil? || link.rel == Link::Rel::ALTERNATE) && (type.nil? || type == link.type) 
+      }
     end
     
     # Get all alternates.
@@ -654,7 +658,7 @@ module Atom # :nodoc:
     end    
     
     include Xml::Parseable
-    attribute :href, :rel, :type, :length
+    attribute :href, :rel, :type, :length, :hreflang
         
     # Create a link.
     #
@@ -669,7 +673,7 @@ module Atom # :nodoc:
           raise ArgumentError, "Link created with node other than atom:link: #{o.name}"
         end
       when Hash
-        [:href, :rel, :type, :length].each do |attr|
+        [:href, :rel, :type, :length, :hreflang].each do |attr|
           self.send("#{attr}=", o[attr])
         end
       else
