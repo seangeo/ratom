@@ -261,9 +261,9 @@ module Atom
                xml = 
                 case o
                 when String
-                  XML::Reader.new(o)
+                  XML::Reader.string(o)
                 when IO
-                  XML::Reader.new(o.read)
+                  XML::Reader.io(o.read)
                 when URI
                   raise ArgumentError, "#{class_name}.load only handles http URIs" if o.scheme != 'http'
                   response = nil
@@ -283,7 +283,7 @@ module Atom
                   end
                   case response
                   when Net::HTTPSuccess
-                    XML::Reader.new(response.body)
+                    XML::Reader.string(response.body)
                   when nil
                     raise ArgumentError.new("nil response to #{o}")
                   else
@@ -294,9 +294,9 @@ module Atom
                 end
 
                 if error_handler
-                  xml.set_error_handler(&error_handler)
+                  XML::Error.set_handler(&error_handler)
                 else
-                  xml.set_error_handler do |reader, message, severity, base, line|
+                  XML::Error.set_handler do |reader, message, severity, base, line|
                     if severity == XML::Reader::SEVERITY_ERROR
                       raise ParseError, "#{message} at #{line} in #{o}"
                     end
