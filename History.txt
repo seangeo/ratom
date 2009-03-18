@@ -1,6 +1,7 @@
 == Current 2009-19-03
 
 * Added support for hreflang on links. (David Arango)
+* Update to work with latest version of libxml-ruby. (oortle & me)
 
 == 0.5.2 2008-12-06
 
