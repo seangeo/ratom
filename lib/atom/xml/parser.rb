@@ -263,7 +263,7 @@ module Atom
                 when String
                   XML::Reader.string(o)
                 when IO
-                  XML::Reader.io(o.read)
+                  XML::Reader.io(o)
                 when URI
                   raise ArgumentError, "#{class_name}.load only handles http URIs" if o.scheme != 'http'
                   response = nil

@@ -8,7 +8,7 @@
 require 'forwardable'
 require 'delegate'
 require 'rubygems'
-gem 'libxml-ruby', '>= 0.8.0'
+gem 'libxml-ruby', '>= 1.1.2'
 require 'xml/libxml'
 require 'atom/xml/parser.rb'
 
@@ -247,9 +247,9 @@ module Atom # :nodoc:
         starting_depth = xml.depth
         
         # Get the next element - should be a div according to the atom spec
-        while xml.read == 1 && xml.node_type != XML::Reader::TYPE_ELEMENT; end
+        while xml.read && xml.node_type != XML::Reader::TYPE_ELEMENT; end        
         
-        if xml.local_name == 'div' && xml.namespace_uri == XHTML
+        if xml.local_name == 'div' && xml.namespace_uri == XHTML        
           set_content(xml.read_inner_xml.strip.gsub(/\s+/, ' '))
         else
           set_content(xml.read_outer_xml)
@@ -533,7 +533,7 @@ module Atom # :nodoc:
           o.read
           parse(o)
         else
-          raise ArgumentError, "Entry created with node other than atom:entry: #{o.name}"
+          raise ParseError, "Entry created with node other than atom:entry: #{o.name}"
         end
       when Hash
         o.each do |k,v|
