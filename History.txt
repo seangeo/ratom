@@ -3,6 +3,7 @@
 * Added support for hreflang on links. (David Arango)
 * Update to work with latest version of libxml-ruby. (oortle & me)
 * Content::Text and Content::Xhtml can now be created with String's like Content::Html.
+* Make sure Atom::Generator outputs the generator name as the text of the element.
 
 == 0.5.2 2008-12-06
 

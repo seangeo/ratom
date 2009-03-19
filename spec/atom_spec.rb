@@ -1282,18 +1282,23 @@ describe Atom do
     end
     
     it "should create from a hash" do
-      source = Atom::Generator.new(:name => 'generator', :uri => 'http://generator')
-      source.name.should == 'generator'
-      source.uri.should == 'http://generator'
+      generator = Atom::Generator.new(:name => 'generator', :uri => 'http://generator')
+      generator.name.should == 'generator'
+      generator.uri.should == 'http://generator'
     end
     
     it "should create from a block" do
-      source = Atom::Generator.new do |source|
-        source.name = 'generator'
-        source.uri = 'http://generator'
+      generator = Atom::Generator.new do |generator|
+        generator.name = 'generator'
+        generator.uri = 'http://generator'
       end
-      source.name.should == 'generator'
-      source.uri.should == 'http://generator'
+      generator.name.should == 'generator'
+      generator.uri.should == 'http://generator'
+    end
+    
+    it "should output the name as the text of the generator element" do
+      generator = Atom::Generator.new({:name => "My Generator"})
+      generator.to_xml(true).to_s.should == "<generator>My Generator</generator>"      
     end
   end
 end

@@ -84,6 +84,14 @@ module Atom # :nodoc:
       
       yield(self) if block_given?
     end
+    
+    def to_xml(nodeonly = true, name = 'generator', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
+      node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
+      node << @name if @name
+      node['uri'] = @uri if @uri
+      node['version'] = @version if @version
+      node
+    end
   end
     
   # Represents a Category as defined by the Atom Syndication Format specification.
