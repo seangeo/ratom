@@ -1218,6 +1218,22 @@ describe Atom do
     end
   end
   
+  describe Atom::Content::Text do
+    it "should be createable from a string" do
+      txt = Atom::Content::Text.new("This is some text")
+      txt.should == "This is some text"
+      txt.type.should == "text"
+    end
+  end
+  
+  describe Atom::Content::Xhtml do
+    it "should be createable from a string" do
+      txt = Atom::Content::Xhtml.new("<p>This is some text</p>")
+      txt.should == "<p>This is some text</p>"
+      txt.type.should == "xhtml"
+    end
+  end
+    
   describe 'Atom::Category initializer' do
     it "should create a empty category" do
       lambda { Atom::Category.new }.should_not raise_error

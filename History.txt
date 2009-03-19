@@ -2,6 +2,7 @@
 
 * Added support for hreflang on links. (David Arango)
 * Update to work with latest version of libxml-ruby. (oortle & me)
+* Content::Text and Content::Xhtml can now be created with String's like Content::Html.
 
 == 0.5.2 2008-12-06
 
