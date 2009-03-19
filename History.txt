@@ -1,5 +1,6 @@
-== Current 2009-19-03
+== 0.6.0 2009-19-03
 
+* Now depends on libxml-ruby 1.1.2.
 * Added support for hreflang on links. (David Arango)
 * Update to work with latest version of libxml-ruby. (oortle & me)
 * Content::Text and Content::Xhtml can now be created with String's like Content::Html.
