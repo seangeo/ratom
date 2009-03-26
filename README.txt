@@ -14,7 +14,7 @@ and can be used to access Atom feeds or to script publishing entries to a blog s
 
 == Prerequisites
 
-* libxml-ruby, = 0.5.2.0
+* libxml-ruby, >= 1.1.2
 * rspec (Only required for tests)
 
 libxml-ruby in turn requires the libxml2 library to be installed. libxml2 can be downloaded
