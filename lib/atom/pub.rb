@@ -21,6 +21,10 @@ module Atom
       def initialize(response)
         @response = response
       end
+      
+      def to_s
+        "Invalid response: #{@response}"
+      end
     end
     
     class Service
