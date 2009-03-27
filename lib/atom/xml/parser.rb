@@ -298,7 +298,7 @@ module Atom
                 else
                   XML::Error.set_handler do |reader, message, severity, base, line|
                     if severity == XML::Reader::SEVERITY_ERROR
-                      raise ParseError, "#{message} at #{line} in #{o}"
+                      raise ArgumentError, "#{message} at #{line} in #{o}"
                     end
                   end
                 end

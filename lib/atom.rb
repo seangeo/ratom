@@ -17,8 +17,7 @@ module Atom # :nodoc:
   module Pub
     NAMESPACE = 'http://www.w3.org/2007/app'
   end
-  # Raised when a Parsing Error occurs.
-  class ParseError < StandardError; end
+  
   # Raised when a Serialization Error occurs.
   class SerializationError < StandardError; end
   
@@ -554,7 +553,7 @@ module Atom # :nodoc:
           o.read
           parse(o)
         else
-          raise ParseError, "Entry created with node other than atom:entry: #{o.name}"
+          raise ArgumentError, "Entry created with node other than atom:entry: #{o.name}"
         end
       when Hash
         o.each do |k,v|
@@ -725,7 +724,7 @@ module Atom # :nodoc:
     def fetch(options = {})
       begin
         Atom::Feed.load_feed(URI.parse(self.href), options)
-      rescue ArgumentError, ParseError => ae
+      rescue ArgumentError
         Net::HTTP.get_response(URI.parse(self.href)).body
       end
     end
