@@ -1,8 +1,11 @@
-== Current
+== 0.6.1 2009-03-27
+
+Some minor exception fixes.
 
 * Removed Atom::ParseError. Parse errors now will only throw ArgumentError.
+* ProtocolError has a to string method.
 
-== 0.6.0 2009-19-03
+== 0.6.0 2009-03-19
 
 * Now depends on libxml-ruby 1.1.2.
 * Added support for hreflang on links. (David Arango)
