@@ -32,7 +32,12 @@ shared_examples_for 'parser of spec/app/service.xml' do
   it "should have categories" do
     @collection1.categories.should_not be_nil
   end
-
+  
+  it "should have a href on categories" do 
+    @collection1.categories.href.should == "http://example.com/cats/forMain.cats"
+    @collection1.categories.fixed?.should be_false
+  end
+  
   it "should have a title" do
     @collection1.title.should == 'My Blog Entries'
   end
@@ -87,6 +92,14 @@ shared_examples_for 'parser of spec/app/service.xml' do
 
   it "should have categories" do
     @collection3.categories.should_not be_nil
+  end
+  
+  it "should have fixed == 'yes' on categories" do
+    @collection3.categories.fixed.should == "yes"
+  end
+  
+  it "should have fixed? == true on categories" do
+    @collection3.categories.fixed?.should be_true
   end
 end
 

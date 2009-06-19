@@ -60,15 +60,22 @@ module Atom
     class Categories < DelegateClass(Array)
       include Atom::Xml::Parseable
       elements :categories, :class => Atom::Category
+      attribute :href, :fixed
       
       def initialize(o)
         super([])
+        parse(o, :once => true)
         o.read
         parse(o)
       end
 
       remove_method :categories
       def categories; self; end
+      
+      # True true if fixed was 'yes' or 'true'
+      def fixed?
+        !self.fixed.nil? && %w(yes true).include?(self.fixed.downcase)
+      end
     end
     
     class Workspace
