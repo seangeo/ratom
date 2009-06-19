@@ -138,7 +138,15 @@ required to let us update to the entry.  For example, lets change the content an
   published_entry.content =  Atom::Content::Html.new("<p>rAtom lets me post to and edit my blog using Ruby, how cool!</p>")
   published_entry.updated = Time.now
   published_entry.save!
-  
+
+To update an existing Entry:
+
+  existing_entry = Entry.load_entry(URI.parse("http://example.org/afeedentry.atom"))
+
+  existing_entry.title = "I have discovered rAtom"
+  existing_entry.updated = Time.now
+  existing_entry.save!
+
 You can also delete an entry using the <tt>destroy!</tt> method, but we won't do that will we?.
     
 === Extension elements
@@ -260,7 +268,6 @@ As of version 0.5.1 rAtom also support authentication via HMAC request signing u
 
 * Support partial content responses from the server.
 * Support batching of protocol operations.
-* Examples of editing existing entries.
 * All my tests have been against internal systems, I'd really like feedback from those who have tried rAtom using existing blog software that supports APP.
 * Handle all base uri tests.
 * Add slug support.
