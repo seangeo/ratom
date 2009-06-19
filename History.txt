@@ -1,3 +1,9 @@
+== 0.6.2 2009-06-19
+
+* Handle href and fixed on service doc categories.
+* Use request_uri instead of path so that we get any query parameters too. [Wybo Wiersma]
+* Doc Patches.
+
 == 0.6.1 2009-03-27
 
 Some minor exception fixes.
