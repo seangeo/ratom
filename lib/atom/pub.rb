@@ -128,7 +128,7 @@ module Atom
         uri = URI.parse(href)
         response = nil
         Net::HTTP.start(uri.host, uri.port) do |http|
-          request = Net::HTTP::Post.new(uri.path, headers)
+          request = Net::HTTP::Post.new(uri.request_uri, headers)
           if opts[:user] && opts[:pass]
             request.basic_auth(opts[:user], opts[:pass])
           elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
@@ -179,7 +179,7 @@ module Atom
         uri = URI.parse(edit.href)
         response = nil
         Net::HTTP.start(uri.host, uri.port) do |http|
-          request = Net::HTTP::Put.new(uri.path, headers)
+          request = Net::HTTP::Put.new(uri.request_uri, headers)
           if opts[:user] && opts[:pass]
             request.basic_auth(opts[:user], opts[:pass])
           elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
@@ -208,7 +208,7 @@ module Atom
         uri = URI.parse(edit.href)
         response = nil
         Net::HTTP.start(uri.host, uri.port) do |http|
-          request = Net::HTTP::Delete.new(uri.path, {'Accept' => 'application/atom+xml', 'User-Agent' => "rAtom #{Atom::VERSION::STRING}"})
+          request = Net::HTTP::Delete.new(uri.request_uri, {'Accept' => 'application/atom+xml', 'User-Agent' => "rAtom #{Atom::VERSION::STRING}"})
           if opts[:user] && opts[:pass]
             request.basic_auth(opts[:user], opts[:pass])
           elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
