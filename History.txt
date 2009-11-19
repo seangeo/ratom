@@ -1,3 +1,7 @@
+== 0.6.3 2009-11-19
+
+* Removed extraneous logging.
+
 == 0.6.2 2009-06-19
 
 * Handle href and fixed on service doc categories.

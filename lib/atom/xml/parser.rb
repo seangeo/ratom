@@ -273,7 +273,6 @@ module Atom
                       request.basic_auth(opts[:user], opts[:pass])
                     elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
                       if Atom::Configuration.auth_hmac_enabled?
-                        puts "Signing with HMAC"
                         AuthHMAC.sign!(request, opts[:hmac_access_id], opts[:hmac_secret_key])
                       else
                         raise ArgumentError, "AuthHMAC credentials provides by auth-hmac gem is not installed"
