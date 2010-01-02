@@ -31,19 +31,34 @@ module Atom # :nodoc:
   #
   module SimpleExtensions
     attr_reader :simple_extensions
-    
+
     # Gets a simple extension value for a given namespace and local name.
     #
     # +ns+:: The namespace.
     # +localname+:: The local name of the extension element.
     #
-    def [](ns, localname)
-      if !defined?(@simple_extensions) || @simple_extensions.nil?
-        @simple_extensions = {}
+    def [](namespace, localname=nil)
+      @simple_extensions ||= {}
+
+      localname.nil? ? namespace_hash(namespace) : element_values(namespace, localname)
+    end
+
+  protected
+
+    def namespace_hash(namespace)
+      namespace_keys = @simple_extensions.keys.select { |key| key =~ /^\{#{namespace},/ }
+
+      elements = {}
+      namespace_keys.each do |key|
+        attribute_name = key.match(/\{.*,(.*)\}/)[1]
+        elements[attribute_name] = @simple_extensions[key]
       end
-      
-      key = "{#{ns},#{localname}}"
-      (@simple_extensions[key] or @simple_extensions[key] = ValueProxy.new)
+      elements
+    end
+
+    def element_values(namespace, localname)
+      key = "{#{namespace},#{localname}}"
+      @simple_extensions[key] ||= ValueProxy.new
     end
     
     class ValueProxy < DelegateClass(Array)

@@ -1046,6 +1046,29 @@ describe Atom do
       it "should load simple extension 3 xml for entry" do
         @entry["http://example.org/example3", 'simple3'].should == ['<ContinuityOfCareRecord xmlns="urn:astm-org:CCR">Simple Entry Value (NS2)</ContinuityOfCareRecord>']
       end
+
+      describe "when only namespace is provided" do
+        before :each do
+          @example_elements = @entry["http://example.org/example"]
+          @example2_elements = @entry['http://example2.org/example2']
+          @example3_elements = @entry['http://example.org/example3']
+        end
+
+        it "should return namespace elements as a hash" do
+          @example_elements.should == {
+            'simple1' => ['Simple1 Entry Value'],
+            'simple2' => ['Simple2', 'Simple2a']
+          }
+
+          @example2_elements.should == {
+            'simple1' => ['Simple Entry Value (NS2)']
+          }
+
+          @example3_elements.should == {
+            'simple3' => ['<ContinuityOfCareRecord xmlns="urn:astm-org:CCR">Simple Entry Value (NS2)</ContinuityOfCareRecord>']
+          }
+        end
+      end
     end
     
     describe 'writing simple extensions' do
