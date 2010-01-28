@@ -1232,6 +1232,11 @@ describe Atom do
       txt.should == "<p>This is some text</p>"
       txt.type.should == "xhtml"
     end
+    
+    it "should be renderable to xml" do
+      txt = Atom::Content::Xhtml.new("<p>This is some text</p>")
+      txt.to_xml.should_not raise_error("TypeError")
+    end
   end
     
   describe 'Atom::Category initializer' do
