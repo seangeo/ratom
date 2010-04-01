@@ -678,7 +678,7 @@ module Atom # :nodoc:
     end    
     
     include Xml::Parseable
-    attribute :href, :rel, :type, :length, :hreflang
+    attribute :href, :rel, :type, :length, :hreflang, :title
         
     # Create a link.
     #
@@ -693,7 +693,7 @@ module Atom # :nodoc:
           raise ArgumentError, "Link created with node other than atom:link: #{o.name}"
         end
       when Hash
-        [:href, :rel, :type, :length, :hreflang].each do |attr|
+        [:href, :rel, :type, :length, :hreflang, :title].each do |attr|
           self.send("#{attr}=", o[attr])
         end
       else

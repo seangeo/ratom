@@ -15,7 +15,7 @@
   <category term="atom" scheme="http://example.org" label="Atom" />
   <entry>
     <title>Atom draft-07 snapshot</title>
-    <link rel="alternate" type="text/html" 
+    <link rel="alternate" type="text/html" title="Alternate link"
      href="http://example.org/2005/04/02/atom"/>
     <link rel="enclosure" type="audio/mpeg" length="1337"
      href="http://example.org/audio/ph34r_my_podcast.mp3"/>

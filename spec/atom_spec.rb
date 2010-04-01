@@ -381,6 +381,10 @@ describe Atom do
         it "should have 'http://example.org/2005/04/02/atom' string representation" do
           @link.to_s.should == 'http://example.org/2005/04/02/atom'
         end
+        
+        it "should have title 'Alternate link'" do
+          @link.title.should == "Alternate link"
+        end
       end
       
       describe 'enclosure link' do
