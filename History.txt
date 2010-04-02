@@ -1,5 +1,6 @@
-== Current version
+== 0.6.4
 
+* Remove Hoe dependency and converted to a Jeweler based project build.
 * Fixed error when assigning nil to node['xml:lang'] [George Guimarães].
 * Handle link@title. [Brian Dewey]
 * SimpleExtensions#[] returns a namespace hash if localname is not given. [Daniel Vartanov]
