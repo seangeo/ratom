@@ -280,7 +280,7 @@ The source repository is accessible via GitHub:
 
 == Contact Information
 
-The project page is at http://rubyforge.org/projects/ratom. Please file any bugs or feedback
+The project page is at http://github.com/seangeo/ratom. Please file any bugs or feedback
 using the trackers and forums there.
 
 == Authors and Contributors
