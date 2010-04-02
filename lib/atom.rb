@@ -94,6 +94,7 @@ module Atom # :nodoc:
         o.each do |k, v|
           self.send("#{k.to_s}=", v)
         end
+      else
       end
       
       yield(self) if block_given?
@@ -124,6 +125,7 @@ module Atom # :nodoc:
         o.each do |k, v|
           self.send("#{k.to_s}=", v)
         end
+      else
       end
       
       yield(self) if block_given?
@@ -152,6 +154,7 @@ module Atom # :nodoc:
         o.each do |k, v|
           self.send("#{k.to_s}=", v)
         end
+      else
       end
     end
     
@@ -214,7 +217,9 @@ module Atom # :nodoc:
           @type = "text"
         when XML::Reader
           super(o.read_string)
-          parse(o, :once => true)  
+          parse(o, :once => true)
+        else
+          raise ArgumentError, "Got #{o} which isn't a String or XML::Reader"
         end        
       end
       
@@ -240,6 +245,8 @@ module Atom # :nodoc:
         when String
           super(o)
           @type = 'html'
+        else
+          raise ArgumentError, "Got #{o} which isn't a String or XML::Reader"
         end        
       end
       
@@ -290,7 +297,9 @@ module Atom # :nodoc:
           end
 
           # get back to the end of the element we were created with
-          while xml.read == 1 && xml.depth > starting_depth; end          
+          while xml.read == 1 && xml.depth > starting_depth; end
+        else
+          raise ArgumentError, "Got #{o} which isn't a String or XML::Reader" 
         end
       end
       
@@ -341,6 +350,7 @@ module Atom # :nodoc:
         o.each do |k, v|
           self.send("#{k.to_s}=", v)
         end
+      else
       end
       
       yield(self) if block_given?   
@@ -431,6 +441,7 @@ module Atom # :nodoc:
         o.each do |k, v|
           self.send("#{k.to_s}=", v)
         end
+      else
       end
       
       yield(self) if block_given?
@@ -574,6 +585,7 @@ module Atom # :nodoc:
         o.each do |k,v|
           send("#{k.to_s}=", v)
         end
+      else
       end
 
       yield(self) if block_given?
