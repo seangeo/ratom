@@ -85,7 +85,7 @@ module Atom # :nodoc:
     #
     # +xml+:: An XML::Reader object.
     #
-    def initialize(o = nil)
+    def initialize(o = {})
       case o
       when XML::Reader
         @name = o.read_string.strip
@@ -95,6 +95,7 @@ module Atom # :nodoc:
           self.send("#{k.to_s}=", v)
         end
       else
+        raise ArgumentError, "Got #{o.class} but expected a Hash or XML::Reader"
       end
       
       yield(self) if block_given?
@@ -117,7 +118,7 @@ module Atom # :nodoc:
     include SimpleExtensions
     attribute :label, :scheme, :term
     
-    def initialize(o = nil)
+    def initialize(o = {})
       case o
       when XML::Reader
         parse(o, :once => true)
@@ -126,6 +127,7 @@ module Atom # :nodoc:
           self.send("#{k.to_s}=", v)
         end
       else
+        raise ArgumentError, "Got #{o.class} but expected a Hash or XML::Reader"
       end
       
       yield(self) if block_given?
@@ -155,7 +157,10 @@ module Atom # :nodoc:
           self.send("#{k.to_s}=", v)
         end
       else
+        raise ArgumentError, "Got #{o.class} but expected a Hash or XML::Reader"
       end
+      
+      yield(self) if block_given?
     end
     
     def inspect
@@ -335,7 +340,7 @@ module Atom # :nodoc:
     elements :authors, :contributors, :class => Person
     elements :links
     
-    def initialize(o = nil)
+    def initialize(o = {})
       @authors, @contributors, @links = [], [], Links.new
 
       case o
@@ -351,6 +356,7 @@ module Atom # :nodoc:
           self.send("#{k.to_s}=", v)
         end
       else
+        raise ArgumentError, "Got #{o.class} but expected a Hash or XML::Reader"
       end
       
       yield(self) if block_given?   
@@ -442,6 +448,7 @@ module Atom # :nodoc:
           self.send("#{k.to_s}=", v)
         end
       else
+        raise ArgumentError, "Got #{o.class} but expected a Hash or XML::Reader"
       end
       
       yield(self) if block_given?
@@ -586,6 +593,7 @@ module Atom # :nodoc:
           send("#{k.to_s}=", v)
         end
       else
+        raise ArgumentError, "Got #{o.class} but expected a Hash or XML::Reader"
       end
 
       yield(self) if block_given?
