@@ -18,6 +18,7 @@ begin
   Jeweler::GemcutterTasks.new
   Jeweler::RubyforgeTasks.new do |rf|
     rf.doc_task = 'rdoc'
+    rf.remote_doc_path = ''
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
