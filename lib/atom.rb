@@ -282,7 +282,7 @@ module Atom # :nodoc:
       def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
         node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
         node['type'] = 'xhtml'
-        node['xml:lang'] = self.xml_lang
+        node['xml:lang'] = self.xml_lang.to_s
         
         div = XML::Node.new('div')
         div['xmlns'] = XHTML
