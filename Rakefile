@@ -6,15 +6,19 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "ratom"
     gem.summary = %Q{Atom Syndication and Publication API}
-    gem.description = %Q{Atom Syndication and Publication API}
+    gem.description = %Q{A fast Atom Syndication and Publication API based on libxml}
     gem.email = "seangeo@gmail.com"
     gem.homepage = "http://github.com/seangeo/ratom"
+    gem.rubyforge_project = 'ratom'
     gem.authors = ["Peerworks", "Sean Geoghegan"]
     gem.add_development_dependency "rspec"
     gem.add_dependency 'libxml-ruby', '>= 1.1.2'
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
+  Jeweler::RubyforgeTasks.new do |rf|
+    rf.doc_task = 'rdoc'
+  end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
