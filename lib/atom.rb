@@ -1,6 +1,6 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
-# For licensing information see LICENSE.txt.
+# For licensing information see LICENSE.
 #
 # Please visit http://www.peerworks.org/contact for further information.
 #
