@@ -1,3 +1,7 @@
+== 0.6.5
+
+* Fixed missing version.rb, now loads version.yml. [Greg Campbell]
+
 == 0.6.4
 
 * Remove Hoe dependency and converted to a Jeweler based project build.
