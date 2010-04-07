@@ -102,7 +102,7 @@ module Atom
     
     class Collection
       include Atom::Xml::Parseable
-      attribute :href
+      uri_attribute :href
       element :title, :class => Content, :namespace => Atom::NAMESPACE
       element :categories, :class => Categories
       elements :accepts, :content_only => true

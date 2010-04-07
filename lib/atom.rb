@@ -713,7 +713,8 @@ module Atom # :nodoc:
     end    
     
     include Xml::Parseable
-    attribute :href, :rel, :type, :length, :hreflang, :title
+    attribute :rel, :type, :length, :hreflang, :title
+    uri_attribute :href
         
     # Create a link.
     #

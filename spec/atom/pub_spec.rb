@@ -152,6 +152,19 @@ describe Atom::Pub do
       
       it_should_behave_like 'parser of spec/app/service.xml'
     end
+
+    describe "load service with xml:base" do
+      before(:all) do
+        @service = Atom::Pub::Service.load_service(File.open('spec/app/service_xml_base.xml'))
+        @workspace = @service.workspaces.first
+        @workspace2 = @service.workspaces[1]
+        @collection1 = @workspace.collections.first
+        @collection2 = @workspace.collections[1]
+        @collection3 = @workspace2.collections.first
+      end
+
+      it_should_behave_like 'parser of spec/app/service.xml'
+    end
     
     describe "load_service with authentication" do
       it "should pass credentials to the server" do

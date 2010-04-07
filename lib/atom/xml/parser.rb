@@ -79,11 +79,20 @@ module Atom
           when XML::Reader::TYPE_ELEMENT
             if element_specs.include?(xml.local_name) && (self.class.known_namespaces + [Atom::NAMESPACE, Atom::Pub::NAMESPACE]).include?(xml.namespace_uri)
               element_specs[xml.local_name].parse(self, xml)
-            elsif attributes.any?
+            elsif attributes.any? || uri_attributes.any?
               while (xml.move_to_next_attribute == 1)
                 if attributes.include?(xml.name)
                   # Support attribute names with namespace prefixes
-                  self.send("#{xml.name.sub(/:/, '_')}=", xml.value)
+                  self.send("#{accessor_name(xml.name)}=", xml.value)
+                elsif uri_attributes.include?(xml.name)
+                  value = if xml.base_uri
+                    @base_uri = xml.base_uri
+                    raw_uri = URI.parse(xml.value)
+                    (raw_uri.relative? ? URI.parse(xml.base_uri) + raw_uri : raw_uri).to_s
+                  else
+                    xml.value
+                  end
+                  self.send("#{accessor_name(xml.name)}=", value)
                 elsif self.respond_to?(:simple_extensions)
                   self[xml.namespace_uri, xml.local_name].as_attribute = true
                   self[xml.namespace_uri, xml.local_name] << xml.value
@@ -106,15 +115,21 @@ module Atom
       def current_node_is?(xml, element, ns = nil)
         xml.node_type == XML::Reader::TYPE_ELEMENT && xml.local_name == element && (ns.nil? || ns == xml.namespace_uri)
       end
+
+      def accessor_name(name)
+        name.to_s.sub(/:/, '_').to_sym
+      end
   
       def Parseable.included(o)
         o.class_eval do
           def o.ordered_element_specs;  @ordered_element_specs ||= []; end
           def o.element_specs;  @element_specs ||= {}; end
           def o.attributes; @attributes ||= []; end
+          def o.uri_attributes; @uri_attributes ||= []; end
           def element_specs; self.class.element_specs; end
           def ordered_element_specs; self.class.ordered_element_specs; end
           def attributes; self.class.attributes; end
+          def uri_attributes; self.class.uri_attributes; end
           def o.namespace(ns = @namespace); @namespace = ns; end
           def o.add_extension_namespace(ns, url); self.extensions_namespaces[ns.to_s] = url; end
           def o.extensions_namespaces; @extensions_namespaces ||= {} end
@@ -173,8 +188,8 @@ module Atom
           end
         end
         
-        self.class.attributes.each do |attribute|
-          if value = self.send("#{attribute.sub(/:/, '_')}")
+        (self.class.attributes + self.class.uri_attributes).each do |attribute|
+          if value = self.send(accessor_name(attribute))
             if value != 0
               node[attribute] = value.to_s
             end
@@ -247,6 +262,14 @@ module Atom
           names.each do |name|
             attr_accessor name.to_s.sub(/:/, '_').to_sym
             self.attributes << name.to_s
+          end
+        end
+
+        def uri_attribute(*names)
+          attr_accessor :base_uri
+          names.each do |name|
+            attr_accessor name.to_s.sub(/:/, '_').to_sym
+            self.uri_attributes << name.to_s
           end
         end
       

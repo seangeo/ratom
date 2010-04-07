@@ -265,7 +265,28 @@ describe Atom do
         @feed.should have(1).categories
       end
     end
-    
+
+    describe "FeedWithXmlBase" do
+      before(:all) do
+        @feed = Atom::Feed.load_feed(File.open('spec/conformance/xmlbase.atom'))
+      end
+
+      subject { @feed }
+
+      its(:title) { should == "xml:base support tests" }
+      it { should have(16).entries }
+
+      it "should resolve all alternate links to the same location" do
+        @feed.entries.each do |entry|
+          entry.links.first.href.should == "http://example.org/tests/base/result.html"
+        end
+      end
+
+      it "should resolve all links in content to what their label says" do
+        pending "support xml:base in content XHTML"
+      end
+    end
+
     describe Atom::Entry do
       before(:each) do
         @entry = @feed.entries.first
