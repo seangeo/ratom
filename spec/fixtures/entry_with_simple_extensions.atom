@@ -22,6 +22,7 @@
     <ex:simple1>Simple1 Entry Value</ex:simple1>
     <ex:simple2>Simple2</ex:simple2>
     <ex:simple2>Simple2a</ex:simple2>
+		<ex:simple-with-dash>Simple with dash Value</ex:simple-with-dash>
     <ex2:simple1>Simple Entry Value (NS2)</ex2:simple1>
     <ex3:simple3><ContinuityOfCareRecord xmlns="urn:astm-org:CCR">Simple Entry Value (NS2)</ContinuityOfCareRecord></ex3:simple3>
     <category term="atom" scheme="http://example.org" label="Atom" ex:attribute="extension" />

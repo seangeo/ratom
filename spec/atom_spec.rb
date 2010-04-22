@@ -1066,6 +1066,10 @@ describe Atom do
         @feed['http://example.org/example', 'title'].should == ['Extension Title']
       end
       
+      it "should find simple extension with dashes in the name" do
+        @entry["http://example.org/example", 'simple-with-dash'].should == ['Simple with dash Value']
+      end
+      
       it_should_behave_like 'simple_single_entry.atom attributes'
       
       it "should load simple extension 3 xml for entry" do
@@ -1082,7 +1086,8 @@ describe Atom do
         it "should return namespace elements as a hash" do
           @example_elements.should == {
             'simple1' => ['Simple1 Entry Value'],
-            'simple2' => ['Simple2', 'Simple2a']
+            'simple2' => ['Simple2', 'Simple2a'],
+            'simple-with-dash' => ["Simple with dash Value"]
           }
 
           @example2_elements.should == {
@@ -1115,6 +1120,7 @@ describe Atom do
     before(:all) do
       Atom::Entry.add_extension_namespace :ns_alias, "http://custom.namespace"
       Atom::Entry.elements "ns_alias:property", :class => Atom::Extensions::Property
+      Atom::Entry.elements "ns_alias:property-with-dash", :class => Atom::Extensions::Property
       @entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry_with_custom_extensions.atom'))
     end
     

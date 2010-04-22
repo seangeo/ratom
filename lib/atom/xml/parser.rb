@@ -29,6 +29,10 @@ unless defined?(ActiveSupport)
 end
 
 module Atom
+  def self.to_attrname(element_name)
+    element_name.to_s.sub(/:/, '_').gsub('-', '_').to_sym
+  end
+  
   class LoadError < StandardError
     attr_reader :response
     def initialize(response)
@@ -117,7 +121,7 @@ module Atom
       end
 
       def accessor_name(name)
-        name.to_s.sub(/:/, '_').to_sym
+        Atom.to_attrname(name)
       end
   
       def Parseable.included(o)
@@ -233,7 +237,7 @@ module Atom
           options.merge!(names.pop) if names.last.is_a?(Hash) 
         
           names.each do |name|
-            attr_accessor name.to_s.sub(/:/, '_').to_sym
+            attr_accessor Atom.to_attrname(name)
             ns, local_name = name.to_s[/(.*):(.*)/,1], $2 || name
             self.known_namespaces << self.extensions_namespaces[ns] if ns
             self.ordered_element_specs << self.element_specs[local_name.to_s] = ParseSpec.new(name, options)
@@ -245,7 +249,7 @@ module Atom
           options.merge!(names.pop) if names.last.is_a?(Hash)
         
           names.each do |name|
-            name_sym = name.to_s.sub(/:/, '_').to_sym
+            name_sym = Atom.to_attrname(name)
             attr_writer name_sym
             define_method name_sym do 
               ivar = :"@#{name_sym}"
@@ -349,7 +353,7 @@ module Atom
       
         def initialize(name, options = {})
           @name = name.to_s
-          @attribute = name.to_s.sub(/:/, '_')
+          @attribute = Atom.to_attrname(name)
           @options = options
         end
       
