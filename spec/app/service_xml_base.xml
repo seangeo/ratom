@@ -5,10 +5,10 @@
   <workspace>
     <atom:title>Main Site</atom:title>
     <collection
-        href="blog/main" >
+        href="/blog/main" >
       <atom:title>My Blog Entries</atom:title>
       <categories
-         href="http://example.com/cats/forMain.cats" />
+         href="/cats/forMain.cats" />
     </collection>
     <collection
         href="http://example.org/blog/pic" >

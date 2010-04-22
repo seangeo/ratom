@@ -34,7 +34,7 @@ shared_examples_for 'parser of spec/app/service.xml' do
   end
   
   it "should have a href on categories" do 
-    @collection1.categories.href.should == "http://example.com/cats/forMain.cats"
+    @collection1.categories.href.should == "http://example.org/cats/forMain.cats"
     @collection1.categories.fixed?.should be_false
   end
   

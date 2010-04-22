@@ -60,7 +60,8 @@ module Atom
     class Categories < DelegateClass(Array)
       include Atom::Xml::Parseable
       elements :categories, :class => Atom::Category
-      attribute :href, :fixed
+      attribute :fixed
+      uri_attribute :href
       
       def initialize(o)
         super([])

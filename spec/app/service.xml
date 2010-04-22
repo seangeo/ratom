@@ -7,7 +7,7 @@
         href="http://example.org/blog/main" >
       <atom:title>My Blog Entries</atom:title>
       <categories
-         href="http://example.com/cats/forMain.cats" />
+         href="http://example.org/cats/forMain.cats" />
     </collection>
     <collection
         href="http://example.org/blog/pic" >
