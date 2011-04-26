@@ -266,7 +266,7 @@ module Atom # :nodoc:
         #
         begin
           node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
-          node << Iconv.iconv('utf-8', 'utf-8', self.to_s)
+          node << Iconv.iconv('utf-8', 'utf-8', self.to_s).first
           node['type'] = 'html'
           node['xml:lang'] = self.xml_lang if self.xml_lang
           node
