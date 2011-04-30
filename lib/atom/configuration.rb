@@ -13,7 +13,7 @@ module Atom
           gem 'auth-hmac'
           require 'auth-hmac'
           @auth_hmac_enabled = true
-        rescue
+        rescue Exception
           @auth_hmac_enabled = false
         end
       else
