@@ -1,3 +1,8 @@
+== 0.6.8
+
+* Better auth-hmac detection.
+* Handles Ruby 1.9 arrays. [wilkie]
+
 == 0.6.7
 
 * Handle dashes in extension names.
