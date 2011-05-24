@@ -4,8 +4,10 @@
 #
 # Please visit http://www.peerworks.org/contact for further information.
 #
-require 'net/http'
+require 'net/https'
 require 'time'
+
+RootCA = '/etc/ssl/certs'
 
 # Just a couple methods form transforming strings
 unless defined?(ActiveSupport)
@@ -292,21 +294,32 @@ module Atom
                 when IO
                   XML::Reader.io(o)
                 when URI
-                  raise ArgumentError, "#{class_name}.load only handles http URIs" if o.scheme != 'http'
+                  raise ArgumentError, "#{class_name}.load only handles http(s) URIs" unless /http[s]?/ =~ o.scheme
                   response = nil
-                  Net::HTTP.start(o.host, o.port) do |http|
-                    request = Net::HTTP::Get.new(o.request_uri)
-                    if opts[:user] && opts[:pass]
-                      request.basic_auth(opts[:user], opts[:pass])
-                    elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
-                      if Atom::Configuration.auth_hmac_enabled?
-                        AuthHMAC.sign!(request, opts[:hmac_access_id], opts[:hmac_secret_key])
-                      else
-                        raise ArgumentError, "AuthHMAC credentials provides by auth-hmac gem is not installed"
-                      end
-                    end
-                    response = http.request(request)
+
+                  http = http = Net::HTTP.new(o.host, o.port)
+
+                  http.use_ssl = (o.scheme == 'https')
+                  if File.directory? RootCA
+                    http.ca_path = RootCA
+                    http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+                    http.verify_depth = 5
+                  else
+                    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
                   end
+
+                  request = Net::HTTP::Get.new(o.request_uri)
+                  if opts[:user] && opts[:pass]
+                    request.basic_auth(opts[:user], opts[:pass])
+                  elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
+                    if Atom::Configuration.auth_hmac_enabled?
+                      AuthHMAC.sign!(request, opts[:hmac_access_id], opts[:hmac_secret_key])
+                    else
+                      raise ArgumentError, "AuthHMAC credentials provides by auth-hmac gem is not installed"
+                    end
+                  end
+                  response = http.request(request)
+
                   case response
                   when Net::HTTPSuccess
                     XML::Reader.string(response.body)
