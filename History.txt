@@ -1,3 +1,7 @@
+== 0.6.9
+
+* SSL support [kossnocorp]
+
 == 0.6.8
 
 * Better auth-hmac detection.
