@@ -264,6 +264,10 @@ very well protected anyway.
 
 As of version 0.5.1 rAtom also support authentication via HMAC request signing using the AuthHMAC[http://auth-hmac.rubyforge.org] gem.  This is made available using the :hmac_access_id and :hmac_secret_key parameters which can be passed to the same methods as the HTTP Basic credentials support.
 
+=== SSL
+
+As of version 0.6.9, rAtom supports fetching feeds via https. This is done by using URLs with the SSL protocol. Publishing support is still limited to http, but patches are welcome.
+
 == TODO
 
 * Support partial content responses from the server.
