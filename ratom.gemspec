@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ratom}
-  s.version = "0.6.8"
+  s.version = "0.6.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Peerworks", "Sean Geoghegan"]
-  s.date = %q{2011-04-30}
+  s.date = %q{2011-07-13}
   s.description = %q{A fast Atom Syndication and Publication API based on libxml}
   s.email = %q{seangeo@gmail.com}
   s.extra_rdoc_files = [
