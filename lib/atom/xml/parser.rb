@@ -28,6 +28,11 @@ unless defined?(ActiveSupport)
       Object.module_eval("::#{self}", __FILE__, __LINE__)
     end
   end
+else 
+  begin
+    require 'active_support/inflector'
+  rescue
+  end
 end
 
 module Atom
