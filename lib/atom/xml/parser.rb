@@ -10,7 +10,7 @@ require 'time'
 RootCA = '/etc/ssl/certs'
 
 # Just a couple methods form transforming strings
-unless defined?(ActiveSupport)
+unless String.instance_methods.include?(:singularize)
   class String # :nodoc:
     def singularize
       if self =~ /ies$/
@@ -19,19 +19,21 @@ unless defined?(ActiveSupport)
         self.sub(/s$/, '')
       end
     end
-  
+  end
+end
+
+unless String.instance_methods.include?(:demodulize)
+  class String # :nodoc:
     def demodulize
       self.sub(/.*::/, '')
     end
-    
+end
+
+unless String.instance_methods.include?(:constantize)
+  class String # :nodoc:   
     def constantize
       Object.module_eval("::#{self}", __FILE__, __LINE__)
     end
-  end
-else 
-  begin
-    require 'active_support/inflector'
-  rescue
   end
 end
 
