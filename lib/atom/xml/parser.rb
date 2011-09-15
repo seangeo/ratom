@@ -27,6 +27,7 @@ unless String.instance_methods.include?(:demodulize)
     def demodulize
       self.sub(/.*::/, '')
     end
+  end
 end
 
 unless String.instance_methods.include?(:constantize)
