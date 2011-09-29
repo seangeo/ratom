@@ -1293,6 +1293,28 @@ describe Atom do
     end
   end
     
+  describe Atom::Content::External do
+    before(:each) do
+      feed = nil
+      lambda { feed = Atom::Feed.load_feed(File.open('spec/fixtures/external_content_single_entry.atom')) }.should_not raise_error
+      entry = feed.entries.first
+      entry.content.should_not be_nil
+      @content = entry.content
+      @content.class.should == Atom::Content::External
+    end
+
+    it "should capture the src" do
+      @content.type.should == 'application/pdf'
+      @content.src.should == 'http://example.org/pdfs/robots-run-amok.pdf'
+    end
+
+    it "should include type and src in the serialized xml" do
+      xml = @content.to_xml
+      xml['type'].should == 'application/pdf'
+      xml['src'].should == 'http://example.org/pdfs/robots-run-amok.pdf'
+    end
+  end
+  
   describe 'Atom::Category initializer' do
     it "should create a empty category" do
       lambda { Atom::Category.new }.should_not raise_error
