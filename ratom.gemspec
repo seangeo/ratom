@@ -4,11 +4,11 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{ratom}
+  s.name = %q{ratom-instructure}
   s.version = "0.6.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Peerworks", "Sean Geoghegan"]
+  s.authors = ["Peerworks", "Sean Geoghegan", "Jacob Fugal"]
   s.date = %q{2011-07-13}
   s.description = %q{A fast Atom Syndication and Publication API based on libxml}
   s.email = %q{seangeo@gmail.com}
@@ -66,9 +66,8 @@ Gem::Specification.new do |s|
     "spec/spec.opts",
     "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/seangeo/ratom}
+  s.homepage = %q{http://github.com/lukfugl/ratom}
   s.require_paths = ["lib"]
-  s.rubyforge_project = %q{ratom}
   s.rubygems_version = %q{1.6.2}
   s.summary = %q{Atom Syndication and Publication API}
   s.test_files = [
