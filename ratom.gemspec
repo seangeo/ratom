@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ratom}
-  s.version = "0.6.9"
+  s.version = "0.6.10"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Peerworks", "Sean Geoghegan"]
-  s.date = %q{2011-07-13}
+  s.date = %q{2011-10-15}
   s.description = %q{A fast Atom Syndication and Publication API based on libxml}
   s.email = %q{seangeo@gmail.com}
   s.extra_rdoc_files = [
@@ -56,6 +56,7 @@ Gem::Specification.new do |s|
     "spec/fixtures/entry_with_custom_extensions.atom",
     "spec/fixtures/entry_with_simple_extensions.atom",
     "spec/fixtures/entry_with_single_custom_extension.atom",
+    "spec/fixtures/external_content_single_entry.atom",
     "spec/fixtures/multiple_entry.atom",
     "spec/fixtures/simple_single_entry.atom",
     "spec/fixtures/with_stylesheet.atom",
@@ -69,7 +70,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/seangeo/ratom}
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{ratom}
-  s.rubygems_version = %q{1.6.2}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Atom Syndication and Publication API}
   s.test_files = [
     "spec/atom/pub_spec.rb",
@@ -79,9 +80,10 @@ Gem::Specification.new do |s|
   ]
 
   if s.respond_to? :specification_version then
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_runtime_dependency(%q<libxml-ruby>, [">= 1.1.2"])
     else
