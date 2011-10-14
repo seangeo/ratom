@@ -1,3 +1,7 @@
+== 0.6.10
+
+* Removed explicit dependency on ActiveSupport. [icambron]
+
 == 0.6.9
 
 * SSL support [kossnocorp]
