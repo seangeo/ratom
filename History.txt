@@ -1,6 +1,7 @@
 == 0.6.10
 
 * Removed explicit dependency on ActiveSupport. [icambron]
+* Added support for external content references using the src attribute. [lukfugl]
 
 == 0.6.9
 
