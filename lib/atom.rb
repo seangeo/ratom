@@ -170,13 +170,17 @@ module Atom # :nodoc:
     
   class Content  # :nodoc:
     def self.parse(xml)
-      case xml['type']
-      when "xhtml"
-        Xhtml.new(xml)
-      when "html"
-        Html.new(xml)
+      if xml['src'] && !xml['src'].empty?
+        External.new(xml)
       else
-        Text.new(xml)
+        case xml['type']
+        when "xhtml"
+          Xhtml.new(xml)
+        when "html"
+          Html.new(xml)
+        else
+          Text.new(xml)
+        end
       end
     end
   
@@ -209,6 +213,26 @@ module Atom # :nodoc:
       protected
       def set_content(c) # :nodoc:
         __setobj__(c)
+      end
+    end
+    
+    # External content reference within an Atom document.
+    class External < Base      
+      attribute :type, :src
+
+      # this one only works with XML::Reader instances, no strings, since the
+      # content won't be inline.
+      def initialize(o)
+        raise ArgumentError, "Got #{o} which isn't an XML::Reader" unless o.kind_of?(XML::Reader)
+        super("")
+        parse(o, :once => true)
+      end
+      
+      def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
+        node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
+        node['type'] = self.type if self.type
+        node['src'] = self.src if self.src
+        node
       end
     end
     
