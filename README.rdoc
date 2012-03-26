@@ -217,7 +217,7 @@ defined like this:
 	
 We can tell rAtom about our custom namespace and custom class using the following method calls:
 
-  Atom::Feed..add_extension_namespace :custom, "http://custom.namespace"
+  Atom::Feed.add_extension_namespace :custom, "http://custom.namespace"
   Atom::Entry.elements "custom:property", :class => Custom::Property
 	
 The first method call registers an alias for the "http://custom.namespace" namespace and the second method call
