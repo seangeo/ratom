@@ -5,10 +5,10 @@
 # Please visit http://www.peerworks.org/contact for further information.
 #
 
-require File.dirname(__FILE__) + '/spec_helper.rb'
+require 'spec_helper'
 require 'net/http'
 require 'time'
-require 'spec/property'
+require 'property'
 
 shared_examples_for 'simple_single_entry.atom attributes' do
   it "should parse title" do

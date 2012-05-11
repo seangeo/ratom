@@ -5,7 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 #
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 require 'atom'
 require 'atom/pub'
 require 'atom/version'
