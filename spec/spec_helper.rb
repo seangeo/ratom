@@ -32,6 +32,7 @@ RSpec.configure do |config|
     http = mock('http')
     http.should_receive(:request).with(req).and_return(response)
     http.stub!(:use_ssl=)
+    http.stub!(:ca_path=)
     http.stub!(:verify_mode=)
     http.stub!(:verify_depth=)
     Net::HTTP.should_receive(:new).with(url.host, url.port).and_return(http)
