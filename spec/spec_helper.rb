@@ -4,18 +4,11 @@
 #
 # Please visit http://www.peerworks.org/contact for further information.
 #
-begin
-  require 'spec'
-rescue LoadError
-  require 'rubygems'
-  gem 'rspec'
-  require 'spec'
-end
 
 $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'atom'
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
 
   def mock_response(klass, body, headers = {})
     response = klass.new(nil, nil, nil)
