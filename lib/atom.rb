@@ -280,22 +280,37 @@ module Atom # :nodoc:
       end
       
       def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new) # :nodoc:
-        require 'iconv'
-        # Convert from utf-8 to utf-8 as a way of making sure the content is UTF-8.
-        #
-        # This is a pretty crappy way to do it but if we don't check libxml just
+        # Reject content that isn't UTF-8. If we don't check libxml just
         # fails silently and outputs the content element without any content. At
         # least checking here and raising an exception gives the caller a chance
         # to try and recitfy the situation.
         #
-        begin
-          node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
-          node << Iconv.iconv('utf-8', 'utf-8', self.to_s).first
-          node['type'] = 'html'
-          node['xml:lang'] = self.xml_lang if self.xml_lang
-          node
-        rescue Iconv::IllegalSequence => e
-          raise SerializationError, "Content must be converted to UTF-8 before attempting to serialize to XML: #{e.message}."
+
+        if RUBY_VERSION =~ /^1.8/
+          require 'iconv'
+          # Convert from utf-8 to utf-8 as a way of making sure the content is
+          # UTF-8.
+          begin
+            node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
+            node << Iconv.iconv('utf-8', 'utf-8', self.to_s).first
+            node['type'] = 'html'
+            node['xml:lang'] = self.xml_lang if self.xml_lang
+            node
+          rescue Iconv::IllegalSequence => e
+            raise SerializationError, "Content must be converted to UTF-8 before attempting to serialize to XML: #{e.message}."
+          end
+
+        else
+
+          if self.to_s.force_encoding("UTF-8").ascii_only?
+            node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
+            node << self.to_s
+            node['type'] = 'html'
+            node['xml:lang'] = self.xml_lang if self.xml_lang
+            node
+          else
+            raise SerializationError, "Content must be converted to UTF-8 before attempting to serialize to XML: #{self}."
+          end
         end
       end
     end
