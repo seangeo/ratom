@@ -4,18 +4,11 @@
 #
 # Please visit http://www.peerworks.org/contact for further information.
 #
-begin
-  require 'spec'
-rescue LoadError
-  require 'rubygems'
-  gem 'rspec'
-  require 'spec'
-end
 
 $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'atom'
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
 
   def mock_response(klass, body, headers = {})
     response = klass.new(nil, nil, nil)
@@ -39,6 +32,7 @@ Spec::Runner.configure do |config|
     http = mock('http')
     http.should_receive(:request).with(req).and_return(response)
     http.stub!(:use_ssl=)
+    http.stub!(:ca_path=)
     http.stub!(:verify_mode=)
     http.stub!(:verify_depth=)
     Net::HTTP.should_receive(:new).with(url.host, url.port).and_return(http)
