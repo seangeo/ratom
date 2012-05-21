@@ -14,6 +14,8 @@ and can be used to access Atom feeds or to script publishing entries to a blog s
 
 {<img src="https://secure.travis-ci.org/seangeo/ratom.png?branch=master" alt="Build Status" />}[http://travis-ci.org/seangeo/ratom]
 
+API docs are {here}[http://rdoc.info/github/seangeo/ratom/frames].
+
 == Prerequisites
 
 * libxml-ruby, >= 1.1.2
