@@ -1,3 +1,9 @@
+== 0.7.0
+
+* Atom::VERSION is now a string.
+* Now works in 1.9.3 without any deprecation warnings. [clnclarinet]
+* Build system uses bundler and travis and a non-ancient version of Rspec. [clnclarinet]
+
 == 0.6.10
 
 * Removed explicit dependency on ActiveSupport. [icambron]
