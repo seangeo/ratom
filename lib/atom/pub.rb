@@ -175,7 +175,7 @@ module Atom
       def headers
         {'Accept' => 'application/atom+xml',
          'Content-Type' => 'application/atom+xml;type=entry',
-         'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
+         'User-Agent' => "rAtom #{Atom::VERSION}"
          }
       end
     end
@@ -216,7 +216,7 @@ module Atom
         uri = URI.parse(edit.href)
         response = nil
         Net::HTTP.start(uri.host, uri.port) do |http|
-          request = Net::HTTP::Delete.new(uri.request_uri, {'Accept' => 'application/atom+xml', 'User-Agent' => "rAtom #{Atom::VERSION::STRING}"})
+          request = Net::HTTP::Delete.new(uri.request_uri, {'Accept' => 'application/atom+xml', 'User-Agent' => "rAtom #{Atom::VERSION}"})
           if opts[:user] && opts[:pass]
             request.basic_auth(opts[:user], opts[:pass])
           elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
@@ -244,7 +244,7 @@ module Atom
     def headers
       {'Accept' => 'application/atom+xml',
        'Content-Type' => 'application/atom+xml;type=entry',
-       'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
+       'User-Agent' => "rAtom #{Atom::VERSION}"
        }
     end    
   end

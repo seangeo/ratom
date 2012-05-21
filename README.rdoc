@@ -12,6 +12,8 @@ built by Peerworks[http://peerworks.org], via the Atom Publishing protocol.  How
 supports, or aims to support, all the Atom Syndication Format and Publication Protocol
 and can be used to access Atom feeds or to script publishing entries to a blog supporting APP.
 
+{<img src="https://secure.travis-ci.org/seangeo/ratom.png?branch=master" alt="Build Status" />}[http://travis-ci.org/seangeo/ratom]
+
 == Prerequisites
 
 * libxml-ruby, >= 1.1.2
@@ -281,6 +283,12 @@ As of version 0.6.9, rAtom supports fetching feeds via https. This is done by us
 The source repository is accessible via GitHub:
 
   git clone git://github.com/seangeo/ratom.git
+
+The project now uses Bundler for dependency management so, just do 
+
+  bundle install
+
+to get going.
 
 == Contact Information
 

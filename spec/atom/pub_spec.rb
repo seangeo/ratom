@@ -238,7 +238,7 @@ describe Atom::Pub do
         @collection = Atom::Pub::Collection.new(:href => 'http://example.org/blog')
         @request_headers = {'Accept' => 'application/atom+xml', 
                    'Content-Type' => 'application/atom+xml;type=entry',
-                   'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
+                   'User-Agent' => "rAtom #{Atom::VERSION}"
                    }
       end
           
@@ -380,7 +380,7 @@ describe Atom::Pub do
     before(:each) do
       @request_headers = {'Accept' => 'application/atom+xml', 
                           'Content-Type' => 'application/atom+xml;type=entry',
-                          'User-Agent' => "rAtom #{Atom::VERSION::STRING}"
+                          'User-Agent' => "rAtom #{Atom::VERSION}"
                          }
     end
     
