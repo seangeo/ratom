@@ -32,6 +32,10 @@ will need to install a more recent version.  If you are using Macports:
 
   port install libxml2
 
+Alternatively, using Homebrew:
+
+  brew install libxml2
+
 == Installation
 
 You can install via gem using:
