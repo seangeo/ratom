@@ -46,6 +46,8 @@ You can install via gem using:
 
 To fetch a parse an Atom Feed you can simply:
 
+  require 'atom'
+
   feed = Atom::Feed.load_feed(URI.parse("http://example.com/feed.atom"))
   
 And then iterate over the entries in the feed using:
