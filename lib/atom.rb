@@ -301,10 +301,11 @@ module Atom # :nodoc:
           end
 
         else
+          self_string = self.to_s
 
-          if self.to_s.force_encoding("UTF-8").ascii_only?
+          if self_string.dup.force_encoding("UTF-8").valid_encoding?
             node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
-            node << self.to_s
+            node << self_string
             node['type'] = 'html'
             node['xml:lang'] = self.xml_lang if self.xml_lang
             node

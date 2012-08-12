@@ -1,3 +1,4 @@
+# encoding: utf-8
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # For licensing information see LICENSE.
@@ -1231,8 +1232,18 @@ describe Atom do
           entry.title = "My entry"
           entry.id = "urn:entry:1"
           entry.content = Atom::Content::Html.new("this is not \227 utf8")
-        end.to_xml)  
-      }.should raise_error(Atom::SerializationError)      
+        end.to_xml)
+      }.should raise_error(Atom::SerializationError)
+    end
+
+    it "should not raise error when to_xml'ing utf8 but non-ascii content" do
+      xml = Atom::Entry.new do |entry|
+        entry.title = "My entry"
+        entry.id = "urn:entry:1"
+        entry.content = Atom::Content::Html.new("Žižek is utf8")
+      end.to_xml
+
+      xml.should match(/Žižek/)
     end
   end
   
