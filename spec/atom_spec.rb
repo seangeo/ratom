@@ -889,6 +889,48 @@ describe Atom do
         end
       end
     end
+
+    describe 'atom.rng' do
+
+      before(:all) do
+        require 'nokogiri'
+        rng_schema = File.expand_path("conformance/atom.rng",
+                                      File.dirname(__FILE__))
+        @schema = Nokogiri::XML::RelaxNG(File.open(rng_schema))
+      end
+
+      def validate_against_atom_rng
+        @schema.validate(Nokogiri::XML(subject.to_xml)).should be == []
+      end
+
+      subject do
+        Atom::Feed.new do |feed|
+          # Order is important
+          feed.id = "http://example.test/feed"
+          feed.updated = DateTime.now
+          feed.title = 'Test Feed'
+          # Add entries
+          feed.entries << Atom::Entry.new do |entry|
+            entry.id = "http://example.test/entry/1"
+            entry.updated = feed.updated
+            entry.title = 'Test Entry'
+          end
+        end
+      end
+
+      it 'should validate against a feed without extensions' do
+        validate_against_atom_rng
+      end
+
+      it 'should validate against a feed with simple extensions' do
+        pending 'Does not conform yet - see seangeo/ratom#21'
+        # Mark feed as complete
+        subject['http://purl.org/syndication/history/1.0', 'complete'] << ''
+        validate_against_atom_rng
+      end
+
+    end
+
   end
   
   describe 'pagination' do
