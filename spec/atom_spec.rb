@@ -1179,7 +1179,18 @@ describe Atom do
       @entry.ns_alias_property.map { |x| [x.name, x.value] }.should == [['foo', 'bar'], ['baz', 'bat']]
     end
   end
-  
+
+  describe 'custom content type extensions' do
+    before(:all) do
+      Atom::Content::PARSERS['custom-content-type/xml'] = Atom::Content::Xhtml
+      @entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry_with_custom_content_type.atom'))
+    end
+
+    it "should parse content by specified content parser" do
+      @entry.content.should == '<changes xmlns="http://www.xxx.com/app"/>'
+    end
+  end
+
   describe 'single custom_extensions' do
      before(:all) do
        Atom::Entry.add_extension_namespace :custom, "http://single.custom.namespace"

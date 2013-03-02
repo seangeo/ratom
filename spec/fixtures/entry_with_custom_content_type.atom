@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns='http://www.w3.org/2005/Atom' xmlns:custom='http://custom.namespace'>
+  <title>Atom-Powered Robots Run Amok</title>
+  <link href="http://example.org/2003/12/13/atom03"/>
+  <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+  <content type="custom-content-type/xml">
+    <changes xmlns="http://www.xxx.com/app"/>
+  </content>
+  <updated>2003-12-13T18:30:02Z</updated>
+</entry>
