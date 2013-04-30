@@ -39,7 +39,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rake>, ["~> 0.9.2"])
     end
   else
-    s.add_dependency(%q<libxml-ruby>, ["~> 2.3.2"])
+    s.add_dependency(%q<libxml-ruby>, ["~> 2.6.0"])
     s.add_dependency(%q<bundler>, ["~> 1.1.0"])
     s.add_dependency(%q<rspec>, ["~> 2.10.0"])
     s.add_dependency(%q<rake>, ["~> 0.9.2"])
