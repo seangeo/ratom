@@ -173,14 +173,8 @@ module Atom # :nodoc:
       if xml['src'] && !xml['src'].empty?
         External.new(xml)
       else
-        case xml['type']
-        when "xhtml"
-          Xhtml.new(xml)
-        when "html"
-          Html.new(xml)
-        else
-          Text.new(xml)
-        end
+        parser = PARSERS[xml['type']] || Text
+        parser.new(xml)
       end
     end
   
@@ -364,6 +358,8 @@ module Atom # :nodoc:
         node
       end
     end
+
+    PARSERS = {'html' => Html, 'xhtml' => Xhtml}
   end
    
   # Represents a Source as defined by the Atom Syndication Format specification.
