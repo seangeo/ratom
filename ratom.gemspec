@@ -9,7 +9,6 @@ Gem::Specification.new do |s|
   s.version = Atom::VERSION
 
   s.authors = ["Peerworks", "Sean Geoghegan"]
-  s.date = "2012-05-11"
   s.description = "A fast Atom Syndication and Publication API based on libxml"
   s.email = "seangeo@gmail.com"
   s.extra_rdoc_files = [
