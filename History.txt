@@ -1,6 +1,7 @@
 == 0.8.0
 
 * Add support for custom content types. [xli]
+* Update libxml-ruby to ~> 2.6
 
 == 0.7.2
 
