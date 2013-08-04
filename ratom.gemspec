@@ -27,13 +27,13 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<libxml-ruby>, ["~> 2.3"])
+      s.add_runtime_dependency(%q<libxml-ruby>, ["~> 2.6.0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.1"])
       s.add_development_dependency(%q<rspec>, ["~> 2.10.0"])
       s.add_development_dependency(%q<rake>, ["~> 0.9.2"])
       s.add_development_dependency(%q<nokogiri>, ["~> 1.5.6"])
     else
-      s.add_dependency(%q<libxml-ruby>, ["~> 2.3"])
+      s.add_dependency(%q<libxml-ruby>, ["~> 2.6.0"])
       s.add_dependency(%q<bundler>, ["~> 1.1"])
       s.add_dependency(%q<rspec>, ["~> 2.10.0"])
       s.add_dependency(%q<rake>, ["~> 0.9.2"])
