@@ -316,7 +316,7 @@ module Atom
                     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
                   end
 
-                  request = Net::HTTP::Get.new(o.request_uri)
+                  request = Net::HTTP::Get.new(o.request_uri, { 'Accept' => 'application/atom+xml'})
                   if opts[:user] && opts[:pass]
                     request.basic_auth(opts[:user], opts[:pass])
                   elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
